@@ -23,6 +23,7 @@ import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
 import { trpc } from '@/utils/trpc';
+import { useRouter } from 'next/router';
 
 interface HeaderProps {
   children?: ReactNode;
@@ -31,12 +32,25 @@ interface HeaderProps {
 const CustomMenuItem = ({
   href,
   children,
+  cta,
 }: {
   href: string;
   children: ReactNode;
+  cta?: boolean;
 }) => {
+  const router = useRouter();
+
+  const isActive = router.pathname === href;
   return (
-    <Button variant={'link'} as={NextLink} href={href} mr={1}>
+    <Button
+      variant={'ghost'}
+      as={NextLink}
+      href={href}
+      size="sm"
+      mr={1}
+      colorScheme={cta ? 'green' : 'gray'}
+      isActive={isActive}
+    >
       {children}
     </Button>
   );
@@ -48,7 +62,7 @@ export function Header({}: HeaderProps) {
     { href: '/', label: 'Início' },
     { href: '/store', label: 'Loja' },
     { href: '/activities', label: 'Atividades' },
-    { href: '/sejasocio', label: 'Seja Sócio' },
+    { href: '/sejasocio', label: 'Seja Sócio', cta: true },
   ];
 
   const isAuth = status === 'authenticated';
@@ -84,7 +98,7 @@ export function Header({}: HeaderProps) {
         alignItems="center"
         flexWrap={'wrap'}
         maxW="8xl"
-        px={{ base: '3', md: '7', lg: '12' }}
+        px={{ base: '3', md: '7', lg: '10' }}
         py={2}
       >
         <HStack>
@@ -97,7 +111,7 @@ export function Header({}: HeaderProps) {
             mr={4}
           >
             <NextImage
-              sizes="5vw"
+              sizes="20vw"
               src={'/header-logo.webp'}
               alt={'headerLogo'}
               fill
@@ -109,16 +123,15 @@ export function Header({}: HeaderProps) {
             />
           </Flex>
           <HStack display={['none', 'none', 'flex']}>
-            <HStack>
-              {menuItems.map((item) => (
-                <CustomMenuItem
-                  key={item.href.split('/').join('')}
-                  href={item.href}
-                >
-                  {item.label}
-                </CustomMenuItem>
-              ))}
-            </HStack>
+            {menuItems.map((item) => (
+              <CustomMenuItem
+                key={item.href.split('/').join('')}
+                href={item.href}
+                cta={item.cta}
+              >
+                {item.label}
+              </CustomMenuItem>
+            ))}
           </HStack>
         </HStack>
         {isAuth ? (

@@ -28,7 +28,7 @@ function AdminDashboard() {
     },
   ];
   return (
-    <Layout>
+    <Layout title="Área do Diretor">
       <Box maxW="xl" mx="auto">
         <Heading as="h1" size="md" mb={8}>
           Área do Diretor

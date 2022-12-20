@@ -88,7 +88,7 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
   );
 
   return (
-    <Layout>
+    <Layout title="Editar produto">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card rounded="lg" maxW="xl" mx="auto">
           <CardHeader>
@@ -162,7 +162,7 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
                   <Input isRequired type="number" {...register('stock')} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Rating</FormLabel>
+                  <FormLabel>Estrelas</FormLabel>
                   <Select defaultValue={'0'} {...register('rating')}>
                     <option value={'0'}>0</option>
                     <option value={'1'}>1</option>

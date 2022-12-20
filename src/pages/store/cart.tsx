@@ -25,7 +25,7 @@ function Cart() {
     0,
   );
   return (
-    <Layout>
+    <Layout title="Meu carrinho">
       <Stack
         direction={{ base: 'column', lg: 'row' }}
         align={{ lg: 'flex-start' }}

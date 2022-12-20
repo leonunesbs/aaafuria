@@ -32,7 +32,7 @@ export type ItemsWithParentAndChilds = Item & {
 
 function Items({ items }: { items: ItemsWithParentAndChilds[] }) {
   return (
-    <Layout>
+    <Layout title="Lista de itens">
       <Card>
         <CardHeader>
           <Heading size="md">Lista de itens</Heading>

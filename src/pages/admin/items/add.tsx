@@ -83,7 +83,7 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
   const orphanItems = items.filter((item) => !item.parentId);
 
   return (
-    <Layout>
+    <Layout title="Adicionar produto">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card maxW="xl" mx="auto" variant={'responsive'}>
           <CardHeader>
@@ -139,7 +139,7 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
                   <Input isRequired type="number" {...register('stock')} />
                 </FormControl>
                 <FormControl>
-                  <FormLabel>Rating</FormLabel>
+                  <FormLabel>Estrelas</FormLabel>
                   <Select defaultValue="0" {...register('rating')}>
                     <option value={0}>0</option>
                     <option value={1}>1</option>

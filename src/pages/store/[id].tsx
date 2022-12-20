@@ -112,7 +112,9 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
   const { data: isStaff } = trpc.auth.isStaff.useQuery();
 
   return (
-    <Layout>
+    <Layout
+      title={item.parentId ? `${item.parent?.name} - ${item.name}` : item.name}
+    >
       <Stack direction={['column', 'column', 'row']} spacing={10}>
         <Stack spacing={10} w="full" maxW="lg">
           <Stack spacing={4}>

@@ -52,7 +52,7 @@ export const status = (order: OrderWithPaymentAndItems) => {
 
 function MyOrders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
   return (
-    <Layout>
+    <Layout title="Meus pedidos">
       <Card variant={'responsive'}>
         <CardHeader>
           <Heading as="h1" size="md">

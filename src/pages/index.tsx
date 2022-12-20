@@ -4,7 +4,7 @@ import { authOptions } from './api/auth/[...nextauth]';
 import { unstable_getServerSession } from 'next-auth';
 
 export default function Home() {
-  return <Layout>Teste</Layout>;
+  return <Layout title="Início">Teste</Layout>;
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {

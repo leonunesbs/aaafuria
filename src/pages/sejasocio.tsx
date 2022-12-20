@@ -6,7 +6,7 @@ import { unstable_getServerSession } from 'next-auth';
 
 function Subscribe() {
   return (
-    <Layout>
+    <Layout title="Seja Sócio">
       <h1>Subscribe</h1>
     </Layout>
   );

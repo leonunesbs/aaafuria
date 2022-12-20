@@ -86,7 +86,7 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
   const btnRef = useRef<HTMLButtonElement>(null);
 
   return (
-    <Layout>
+    <Layout title="Pagamento">
       <Card maxW="md" mx="auto" variant={'responsive'}>
         <CardHeader>
           <Heading size="md">Pagamento</Heading>

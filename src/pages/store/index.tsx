@@ -16,7 +16,7 @@ export type ItemsWithParentAndChildrens = Item & {
 
 function Store({ items }: { items: ItemsWithParentAndChildrens[] }) {
   return (
-    <Layout>
+    <Layout title="Loja">
       <Box textAlign={'right'} mb={4}>
         <Button
           as={NextLink}

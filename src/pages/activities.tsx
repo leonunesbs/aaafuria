@@ -2,7 +2,7 @@ import { Layout } from '@/components/templates';
 
 function Activities() {
   return (
-    <Layout>
+    <Layout title="Atividades">
       <h1>Activities</h1>
     </Layout>
   );
