@@ -5,7 +5,7 @@ import {
   Flex,
   HStack,
   IconButton,
-  Input,
+  Text,
   useToast,
 } from '@chakra-ui/react';
 import { MdAdd, MdRemove } from 'react-icons/md';
@@ -15,7 +15,6 @@ import { CartProductMeta } from '../atoms/CartProductMeta';
 import { ItemsWithParentAndChildrens } from '@/pages/store';
 import { PriceTag } from '../atoms/PriceTag';
 import { trpc } from '@/utils/trpc';
-import { useSession } from 'next-auth/react';
 
 type CartItemProps = OrderItem & {
   order: Order;
@@ -36,7 +35,6 @@ const QuantitySelect = ({
   refetch,
 }: QuantitySelectProps) => {
   const toast = useToast();
-  const { data: session } = useSession();
 
   const addToCart = trpc.store.cart.add.useMutation({
     onSuccess: () => {
@@ -45,8 +43,8 @@ const QuantitySelect = ({
         title: 'Adicionado ao carrinho',
         description: 'Produto adicionado ao carrinho',
         status: 'success',
-      }),
-        refetch();
+      });
+      refetch();
     },
     onError: (err) => {
       toast({
@@ -64,8 +62,8 @@ const QuantitySelect = ({
         title: 'Removido do carrinho',
         description: 'Produto removido do carrinho',
         status: 'info',
-      }),
-        refetch();
+      });
+      refetch();
     },
     onError: (err) => {
       toast({
@@ -88,20 +86,21 @@ const QuantitySelect = ({
             removeFromCart.mutate({
               orderItemId: id,
               quantity: 1,
-              userEmail: session?.user?.email as string,
             });
           }}
         />
       </Box>
-      <Input
-        value={quantity}
-        size={['xs', 'sm']}
-        maxW={12}
-        minW={8}
-        isReadOnly
-        textAlign={'center'}
-        focusBorderColor={'blue.500'}
-      />
+      <Box>
+        <IconButton
+          variant={'unstyled'}
+          size={['xs', 'sm']}
+          aria-label="quantity"
+          icon={<Text>{quantity}</Text>}
+          cursor="auto"
+          borderWidth={1}
+        />
+      </Box>
+
       <Box>
         <IconButton
           size={['xs', 'sm']}
@@ -111,7 +110,6 @@ const QuantitySelect = ({
             addToCart.mutate({
               itemId,
               quantity: 1,
-              userEmail: session?.user?.email as string,
             })
           }
         />
@@ -122,7 +120,6 @@ const QuantitySelect = ({
 
 export function CartItem({ ...rest }: CartItemProps) {
   const { id, item, quantity, price, currency, refetch } = rest;
-  const { data: session } = useSession();
 
   const removeFromCart = trpc.store.cart.remove.useMutation({
     onSuccess: refetch,
@@ -151,13 +148,12 @@ export function CartItem({ ...rest }: CartItemProps) {
         <PriceTag
           price={item.price * quantity}
           currency={currency}
-          salePrice={price * quantity}
+          salePrice={price}
         />
         <CloseButton
           aria-label={`Delete ${item.name} from cart`}
           onClick={() => {
             removeFromCart.mutateAsync({
-              userEmail: session?.user?.email as string,
               orderItemId: id,
               quantity: quantity,
             });
@@ -179,7 +175,6 @@ export function CartItem({ ...rest }: CartItemProps) {
           variant={'link'}
           onClick={() => {
             removeFromCart.mutateAsync({
-              userEmail: session?.user?.email as string,
               orderItemId: id,
               quantity: quantity,
             });

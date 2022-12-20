@@ -1,5 +1,9 @@
 import {
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Flex,
   FormControl,
   FormLabel,
@@ -47,64 +51,71 @@ export function CartOrderSummary({
   const router = useRouter();
   const [method, setMethod] = useState('');
   const checkout = trpc.store.cart.checkout.useMutation();
-  const { data: isMember } = trpc.isMember.useQuery();
+  const { data: isMember } = trpc.auth.isMember.useQuery();
   const handleCheckout = async () => {
     await checkout.mutateAsync({ orderId, method }).then((data) => {
       router.push(`/payments/${data?.paymentId}`);
     });
   };
   return (
-    <Stack spacing="10" borderWidth="1px" rounded="lg" padding="6" width="full">
-      <Heading size="md">Resumo do pedido</Heading>
+    <Card variant={'responsive'} w="full">
+      <CardHeader>
+        <Heading size="md">Resumo do pedido</Heading>
+      </CardHeader>
+      <CardBody>
+        <Stack spacing="6">
+          <OrderSummaryItem label="Subtotal" value={formatPrice(subTotal)} />
+          {isMember && (
+            <OrderSummaryItem
+              label="Sócio Fúria"
+              value={formatPrice(total - subTotal)}
+            />
+          )}
 
-      <Stack spacing="6">
-        <OrderSummaryItem label="Subtotal" value={formatPrice(subTotal)} />
-        {isMember && (
-          <OrderSummaryItem
-            label="Sócio Fúria"
-            value={formatPrice(total - subTotal)}
-          />
-        )}
+          <Flex justify="space-between">
+            <Text fontSize="lg" fontWeight="semibold">
+              Total
+            </Text>
+            <Text fontSize="xl" fontWeight="extrabold">
+              {formatPrice(total)}
+            </Text>
+          </Flex>
+        </Stack>
+      </CardBody>
+      <CardFooter w="full">
+        <Stack w="full" spacing={6}>
+          <FormControl>
+            <FormLabel>
+              <Heading size="sm">Forma de pagamento</Heading>
+            </FormLabel>
 
-        <Flex justify="space-between">
-          <Text fontSize="lg" fontWeight="semibold">
-            Total
-          </Text>
-          <Text fontSize="xl" fontWeight="extrabold">
-            {formatPrice(total)}
-          </Text>
-        </Flex>
-      </Stack>
-      <FormControl>
-        <FormLabel>
-          <Heading size="sm">Forma de pagamento</Heading>
-        </FormLabel>
-
-        <RadioGroup value={method} onChange={setMethod}>
-          <Stack>
-            <Radio value="PIX" w="full">
-              PIX
-            </Radio>
-            <Radio value="STRIPE" w="full">
-              Cartão de crédito à vista
-            </Radio>
-            <Radio value="PAGSEGURO" w="full">
-              Cartão de crédito parcelado
-            </Radio>
-          </Stack>
-        </RadioGroup>
-      </FormControl>
-      <Button
-        colorScheme="blue"
-        size="lg"
-        fontSize="md"
-        rightIcon={<FaArrowRight />}
-        isLoading={checkout.isLoading}
-        onClick={handleCheckout}
-        isDisabled={!method}
-      >
-        Pagar
-      </Button>
-    </Stack>
+            <RadioGroup value={method} onChange={setMethod} colorScheme="green">
+              <Stack>
+                <Radio value="PIX" w="full">
+                  PIX
+                </Radio>
+                <Radio value="STRIPE" w="full">
+                  Cartão de crédito à vista
+                </Radio>
+                <Radio value="PAGSEGURO" w="full">
+                  Cartão de crédito parcelado
+                </Radio>
+              </Stack>
+            </RadioGroup>
+          </FormControl>
+          <Button
+            colorScheme="green"
+            size="lg"
+            fontSize="md"
+            rightIcon={<FaArrowRight />}
+            isLoading={checkout.isLoading}
+            onClick={handleCheckout}
+            isDisabled={!method}
+          >
+            Pagar
+          </Button>
+        </Stack>
+      </CardFooter>
+    </Card>
   );
 }

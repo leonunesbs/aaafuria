@@ -1,10 +1,12 @@
 import {
   Badge,
+  Card,
+  CardBody,
+  CardHeader,
   Heading,
   Link,
   List,
   ListItem,
-  Stack,
   Table,
   TableContainer,
   Tbody,
@@ -51,110 +53,108 @@ export const status = (order: OrderWithPaymentAndItems) => {
 function MyOrders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
   return (
     <Layout>
-      <Stack
-        spacing={4}
-        borderWidth="1px"
-        rounded="lg"
-        padding="6"
-        width="full"
-      >
-        <Heading as="h1" size="md">
-          Meus pedidos
-        </Heading>
-        <TableContainer>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>
-                  <Text>Pagamento</Text>
-                </Th>
-                <Th>
-                  <Text>Status</Text>
-                </Th>
-                <Th>
-                  <Text>Total</Text>
-                </Th>
-                <Th>
-                  <Text>Data</Text>
-                </Th>
-                <Th>
-                  <Text>Items</Text>
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {orders.map((order) => (
-                <Tr key={order.id}>
-                  <Td>
-                    <Link
-                      as={NextLink}
-                      href={`/payments/${order.paymentId}`}
-                      color="blue.500"
-                      fontWeight={'bold'}
-                    >
-                      <Text
-                        maxW={28}
-                        whiteSpace="nowrap"
-                        overflow={'hidden'}
-                        textOverflow={'ellipsis'}
-                      >
-                        {order.paymentId}
-                      </Text>
-                    </Link>
-                  </Td>
-                  <Td>
-                    <Badge>{status(order)}</Badge>
-                  </Td>
-                  <Td>
-                    <Text>{formatPrice(order.payment?.amount)}</Text>
-                  </Td>
-                  <Td>
-                    <Text>
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </Text>
-                  </Td>
-
-                  <Td>
-                    <List>
-                      {order.items.map((orderItem) => (
-                        <ListItem key={orderItem.item.id}>
-                          <Text as={'i'} fontSize="sm">
-                            {orderItem.quantity}x
-                          </Text>{' '}
-                          <Link
-                            href={`/store/${
-                              orderItem.item.parentId || orderItem.item.id
-                            }`}
-                          >
-                            {orderItem.item.parentId
-                              ? `${orderItem.item.parent?.name} - ${orderItem.item.name}`
-                              : orderItem.item.name}
-                          </Link>
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Td>
-                </Tr>
-              ))}
-              {!orders.length && (
+      <Card variant={'responsive'}>
+        <CardHeader>
+          <Heading as="h1" size="md">
+            Meus pedidos
+          </Heading>
+        </CardHeader>
+        <CardBody>
+          <TableContainer>
+            <Table>
+              <Thead>
                 <Tr>
-                  <Td colSpan={5} textAlign="center">
-                    <Text as={'i'}>
-                      Nenhum pedido encontrado, ir para a{' '}
-                      <Link href="/store" as={NextLink}>
-                        <Text as="span" color="blue.500" fontWeight={'bold'}>
-                          loja
+                  <Th>
+                    <Text>Pagamento</Text>
+                  </Th>
+                  <Th>
+                    <Text>Status</Text>
+                  </Th>
+                  <Th>
+                    <Text>Total</Text>
+                  </Th>
+                  <Th>
+                    <Text>Data</Text>
+                  </Th>
+                  <Th>
+                    <Text>Items</Text>
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {orders.map((order) => (
+                  <Tr key={order.id}>
+                    <Td>
+                      <Link
+                        as={NextLink}
+                        href={`/payments/${order.paymentId}`}
+                        color="green.500"
+                        fontWeight={'bold'}
+                      >
+                        <Text
+                          maxW={28}
+                          whiteSpace="nowrap"
+                          overflow={'hidden'}
+                          textOverflow={'ellipsis'}
+                        >
+                          {order.paymentId}
                         </Text>
                       </Link>
-                      .
-                    </Text>
-                  </Td>
-                </Tr>
-              )}
-            </Tbody>
-          </Table>
-        </TableContainer>
-      </Stack>
+                    </Td>
+                    <Td>
+                      <Badge>{status(order)}</Badge>
+                    </Td>
+                    <Td>
+                      <Text>{formatPrice(order.payment?.amount)}</Text>
+                    </Td>
+                    <Td>
+                      <Text>
+                        {new Date(order.createdAt).toLocaleDateString()}
+                      </Text>
+                    </Td>
+
+                    <Td>
+                      <List>
+                        {order.items.map((orderItem) => (
+                          <ListItem key={orderItem.item.id}>
+                            <Text as={'i'} fontSize="sm">
+                              {orderItem.quantity}x
+                            </Text>{' '}
+                            <Link
+                              href={`/store/${
+                                orderItem.item.parentId || orderItem.item.id
+                              }`}
+                            >
+                              {orderItem.item.parentId
+                                ? `${orderItem.item.parent?.name} - ${orderItem.item.name}`
+                                : orderItem.item.name}
+                            </Link>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Td>
+                  </Tr>
+                ))}
+                {!orders.length && (
+                  <Tr>
+                    <Td colSpan={5} textAlign="center">
+                      <Text as={'i'}>
+                        Nenhum pedido encontrado, ir para a{' '}
+                        <Link href="/store" as={NextLink}>
+                          <Text as="span" color="green.500" fontWeight={'bold'}>
+                            loja
+                          </Text>
+                        </Link>
+                        .
+                      </Text>
+                    </Td>
+                  </Tr>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        </CardBody>
+      </Card>
     </Layout>
   );
 }

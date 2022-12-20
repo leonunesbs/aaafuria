@@ -78,10 +78,17 @@ CREATE TABLE "Item" (
     "price" REAL NOT NULL,
     "currency" TEXT NOT NULL,
     "stock" INTEGER NOT NULL DEFAULT 0,
+    "rating" INTEGER NOT NULL DEFAULT 0,
     "staffPrice" REAL,
     "coordinatorPrice" REAL,
     "athletePrice" REAL,
     "memberPrice" REAL,
+    "isAnalog" BOOLEAN NOT NULL DEFAULT false,
+    "isDigital" BOOLEAN NOT NULL DEFAULT false,
+    "isMemberExclusive" BOOLEAN NOT NULL DEFAULT false,
+    "isAthleteExclusive" BOOLEAN NOT NULL DEFAULT false,
+    "isCoordinatorExclusive" BOOLEAN NOT NULL DEFAULT false,
+    "isStaffExclusive" BOOLEAN NOT NULL DEFAULT false,
     CONSTRAINT "Item_parentId_fkey" FOREIGN KEY ("parentId") REFERENCES "Item" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
 
@@ -123,6 +130,7 @@ CREATE TABLE "Payment" (
     "paid" BOOLEAN NOT NULL DEFAULT false,
     "expired" BOOLEAN NOT NULL DEFAULT false,
     "canceled" BOOLEAN NOT NULL DEFAULT false,
+    "attachment" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE

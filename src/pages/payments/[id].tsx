@@ -6,18 +6,21 @@ import {
   Badge,
   Button,
   Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   Heading,
   HStack,
   IconButton,
   Input,
   Link,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
   Select,
   Stack,
   Table,
@@ -42,13 +45,13 @@ import { authOptions } from '../api/auth/[...nextauth]';
 
 function Payment({ payment }: { payment: Payment & { user: User } }) {
   const router = useRouter();
-  const popover = useDisclosure();
+  const drawer = useDisclosure();
   const updatePayment = trpc.payment.update.useMutation({
     onSuccess: () => router.replace(router.asPath),
   });
   const handleSwitchMethod = async (method: string) => {
     await updatePayment.mutateAsync({ id: payment.id, method }).then(() => {
-      popover.onClose();
+      drawer.onClose();
     });
   };
 
@@ -80,12 +83,15 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
       });
     }
   };
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Layout>
-      <Card rounded="lg" p={8} maxW="md" mx="auto">
-        <Stack spacing={4}>
+      <Card maxW="md" mx="auto" variant={'responsive'}>
+        <CardHeader>
           <Heading size="md">Pagamento</Heading>
+        </CardHeader>
+        <CardBody>
           <TableContainer>
             <Table size="sm">
               <Tbody>
@@ -106,33 +112,32 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                   <Td>
                     <HStack>
                       <Text>{payment.method}</Text>
-                      <Popover
-                        isOpen={popover.isOpen}
-                        onClose={popover.onClose}
-                        onOpen={popover.onOpen}
+                      {!payment.canceled &&
+                        !payment.paid &&
+                        !payment.expired && (
+                          <Button
+                            ref={btnRef}
+                            size="xs"
+                            leftIcon={<CgArrowsExchange size="1rem" />}
+                            onClick={drawer.onOpen}
+                          >
+                            Alterar
+                          </Button>
+                        )}
+                      <Drawer
+                        isOpen={drawer.isOpen}
+                        placement="bottom"
+                        onClose={drawer.onClose}
+                        finalFocusRef={btnRef}
                       >
-                        <PopoverTrigger>
-                          <IconButton
-                            aria-label="switch"
-                            size="sm"
-                            colorScheme="blue"
-                            variant={'outline'}
-                            icon={<CgArrowsExchange size="1rem" />}
-                          />
-                        </PopoverTrigger>
-                        <PopoverContent
-                          color="white"
-                          bg="blue.800"
-                          borderColor="blue.800"
-                        >
-                          <PopoverArrow />
-                          <PopoverCloseButton />
-                          <PopoverHeader>
-                            <Text fontWeight={'bold'}>
-                              Alterar forma de pagamento
-                            </Text>
-                          </PopoverHeader>
-                          <PopoverBody>
+                        <DrawerOverlay />
+                        <DrawerContent>
+                          <DrawerCloseButton />
+                          <DrawerHeader>
+                            Alterar forma de pagamento
+                          </DrawerHeader>
+
+                          <DrawerBody>
                             <Select
                               placeholder="Selecione uma opção..."
                               defaultValue={payment.method}
@@ -148,9 +153,20 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                                 Cartão de crédito (parcelado)
                               </option>
                             </Select>
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
+                          </DrawerBody>
+                          <DrawerFooter>
+                            <Button mr={3} onClick={drawer.onClose}>
+                              Cancelar
+                            </Button>
+                            <Button
+                              colorScheme="green"
+                              onClick={drawer.onClose}
+                            >
+                              Alterar
+                            </Button>
+                          </DrawerFooter>
+                        </DrawerContent>
+                      </Drawer>
                     </HStack>
                   </Td>
                 </Tr>
@@ -197,7 +213,7 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                           isExternal
                         >
                           <Button
-                            colorScheme="blue"
+                            colorScheme="green"
                             variant={'outline'}
                             size="sm"
                             rightIcon={<HiOutlineExternalLink />}
@@ -205,19 +221,23 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                             Abrir
                           </Button>
                         </Link>
-                        <IconButton
-                          icon={<MdDelete />}
-                          aria-label="remove"
-                          variant={'ghost'}
-                          colorScheme="red"
-                          size="sm"
-                          onClick={() => {
-                            updatePayment.mutateAsync({
-                              id: payment.id,
-                              attachment: '',
-                            });
-                          }}
-                        />
+                        {!payment.canceled &&
+                          !payment.paid &&
+                          !payment.expired && (
+                            <IconButton
+                              icon={<MdDelete />}
+                              aria-label="remove"
+                              variant={'ghost'}
+                              colorScheme="red"
+                              size="sm"
+                              onClick={() => {
+                                updatePayment.mutateAsync({
+                                  id: payment.id,
+                                  attachment: '',
+                                });
+                              }}
+                            />
+                          )}
                       </HStack>
                     ) : (
                       <Text>---</Text>
@@ -227,11 +247,13 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
               </Tbody>
             </Table>
           </TableContainer>
+        </CardBody>
+        <CardFooter>
           {!payment.canceled && (
-            <Stack>
+            <Stack w="full">
               {payment.method === 'PIX' ? (
                 <Button
-                  colorScheme={'blue'}
+                  colorScheme={'green'}
                   onClick={handleButtonClick}
                   isDisabled={!!payment.attachment}
                 >
@@ -239,7 +261,7 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                 </Button>
               ) : (
                 <Button
-                  colorScheme={'blue'}
+                  colorScheme={'green'}
                   onClick={handleCheckout}
                   isLoading={checkoutPayment.isLoading}
                 >
@@ -247,11 +269,11 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                 </Button>
               )}
               <Button colorScheme={'red'} onClick={handleCancel}>
-                Cancelar
+                Cancelar pagamento
               </Button>
             </Stack>
           )}
-        </Stack>
+        </CardFooter>
       </Card>
     </Layout>
   );

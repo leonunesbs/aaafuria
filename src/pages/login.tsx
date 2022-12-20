@@ -1,26 +1,37 @@
 import {
   Box,
   Button,
-  Checkbox,
+  Center,
   Container,
   Divider,
   FormControl,
-  FormLabel,
   HStack,
   Heading,
   Input,
+  Link,
   Stack,
   Text,
+  chakra,
 } from '@chakra-ui/react';
-import { signOut, useSession } from 'next-auth/react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { GetServerSideProps } from 'next';
+import Image from 'next/image';
+import NextLink from 'next/link';
 import { OAuthButtonGroup } from '@/components/molecules';
 import { authOptions } from './api/auth/[...nextauth]';
+import { signIn } from 'next-auth/react';
 import { unstable_getServerSession } from 'next-auth';
+import { useState } from 'react';
 
 function Login() {
-  const { data, status } = useSession();
+  const { register, handleSubmit } = useForm<{ email: string }>();
+  const ChakraNextImage = chakra(Image);
+  const [isLoading, setIsLoading] = useState(false);
+  const onSubmit: SubmitHandler<{ email: string }> = async ({ email }) => {
+    setIsLoading(true);
+    signIn('email', { email }).finally(() => setIsLoading(false));
+  };
   return (
     <Container
       maxW="lg"
@@ -29,60 +40,76 @@ function Login() {
     >
       <Stack spacing="8">
         <Stack spacing="6">
-          <Box>{data?.user?.name}</Box>
-          <Box>Status: {status}</Box>
-          {status === 'authenticated' && (
-            <Button onClick={() => signOut()}>Sair</Button>
-          )}
-          <Stack spacing={{ base: '2', md: '3' }} textAlign="center">
-            <Heading size={{ base: 'xs', md: 'sm' }}>
-              Log in to your account
+          <Center>
+            <Box boxSize="3xs" position="relative" as={NextLink} href="/">
+              <ChakraNextImage
+                placeholder="blur"
+                layout="fill"
+                objectFit="cover"
+                src={'/calango-verde.png'}
+                blurDataURL={'/calango-verde.png'}
+                quality={1}
+                alt="logo"
+                mx="auto"
+                mb={{ base: '8', md: '12' }}
+                draggable={false}
+              />
+            </Box>
+          </Center>
+          <Stack spacing={1} textAlign="center">
+            <Heading size={{ base: 'md', md: 'lg' }}>
+              Acesse a sua conta
             </Heading>
-            <HStack spacing="1" justify="center">
-              <Text color="muted">Don t have an account?</Text>
-              <Button variant="link" colorScheme="blue">
-                Sign up
-              </Button>
-            </HStack>
+            <Text textColor={'gray.500'}>
+              Você não precisa de uma senha. É mais seguro assim.
+            </Text>
           </Stack>
         </Stack>
-        <Box
-          py={{ base: '0', sm: '8' }}
-          px={{ base: '4', sm: '10' }}
-          bg={{ base: 'transparent', sm: 'bg-surface' }}
-          boxShadow={{ base: 'none', sm: 'md' }}
-          borderRadius={{ base: 'none', sm: 'xl' }}
-        >
-          <Stack spacing="6">
-            <Stack spacing="5">
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box
+            py={{ base: '0', sm: '8' }}
+            px={{ base: '4', sm: '10' }}
+            bg={{ base: 'transparent', sm: 'bg-surface' }}
+            borderWidth={{ base: '0', sm: 1 }}
+            borderRadius={{ base: 'none', sm: 'xl' }}
+          >
+            <Stack spacing="4">
               <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
-                <Input id="email" type="email" />
+                <Input
+                  type="email"
+                  placeholder="Digite seu email"
+                  {...register('email')}
+                />
               </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="password">Senha</FormLabel>
-                <Input id="password" type="password" />
-              </FormControl>
+              <Stack spacing="6">
+                <Button
+                  colorScheme={'green'}
+                  type="submit"
+                  isLoading={isLoading}
+                >
+                  Entrar com Email
+                </Button>
+                <HStack>
+                  <Divider />
+                  <Text fontSize="sm" whiteSpace="nowrap" color="muted">
+                    ou
+                  </Text>
+                  <Divider />
+                </HStack>
+                <OAuthButtonGroup />
+              </Stack>
             </Stack>
-            <HStack justify="space-between">
-              <Checkbox defaultChecked>Remember me</Checkbox>
-              <Button variant="link" colorScheme="blue" size="sm">
-                Forgot password?
-              </Button>
-            </HStack>
-            <Stack spacing="6">
-              <Button colorScheme={'blue'}>Sign in</Button>
-              <HStack>
-                <Divider />
-                <Text fontSize="sm" whiteSpace="nowrap" color="muted">
-                  or continue with
-                </Text>
-                <Divider />
-              </HStack>
-              <OAuthButtonGroup />
-            </Stack>
-          </Stack>
-        </Box>
+          </Box>
+        </form>
+        <Text textAlign={'center'} fontSize="sm">
+          Não consegue entrar?{' '}
+          <Link as={NextLink} href="/contact">
+            {' '}
+            <Text as="span" color={'green.500'}>
+              Fale conosco
+            </Text>
+          </Link>
+        </Text>
       </Stack>
     </Container>
   );

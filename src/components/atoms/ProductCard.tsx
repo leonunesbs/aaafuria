@@ -27,7 +27,7 @@ interface ProductCardProps {
 export function ProductCard({ item, rootProps }: ProductCardProps) {
   const router = useRouter();
   const toast = useToast();
-  const { id, name, price, memberPrice, childrens } = item;
+  const { id, name, price, memberPrice, childrens, rating } = item;
 
   const addToCart = trpc.store.cart.add.useMutation({
     onSuccess: () => {
@@ -78,45 +78,24 @@ export function ProductCard({ item, rootProps }: ProductCardProps) {
           />
         </Stack>
         <HStack>
-          <Rating defaultValue={4} size="sm" />
-          <Text fontSize="sm" color={'gray.600'}>
-            12 Reviews
-          </Text>
+          <Rating defaultValue={rating} size="sm" />
         </HStack>
       </Stack>
       <Stack align="center">
         <Button
-          colorScheme="blue"
+          colorScheme="green"
           width="full"
           isLoading={addToCart.isLoading}
-          onClick={async () =>
+          onClick={() =>
             childrens.length > 0
               ? router.push(`/store/${id}`)
-              : await addToCart.mutateAsync({
+              : addToCart.mutate({
                   itemId: item.id,
                   quantity: 1,
                 })
           }
         >
           Adicionar ao carrinho
-        </Button>
-        <Button
-          variant={'link'}
-          textDecoration="underline"
-          fontWeight="medium"
-          color={'gray.600'}
-          onClick={async () =>
-            childrens.length > 0
-              ? router.push(`/store/${id}`)
-              : await addToCart
-                  .mutateAsync({
-                    itemId: item.id,
-                    quantity: 1,
-                  })
-                  .then(() => router.push('/store/cart'))
-          }
-        >
-          Comprar agora
         </Button>
       </Stack>
     </Stack>

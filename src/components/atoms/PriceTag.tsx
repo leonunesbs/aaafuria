@@ -7,7 +7,6 @@ import {
 } from '@chakra-ui/react';
 
 import { trpc } from '@/utils/trpc';
-import { useSession } from 'next-auth/react';
 
 interface PriceTagProps {
   currency: string;
@@ -70,11 +69,7 @@ export function PriceTag(props: PriceTagProps) {
   const { price, currency, salePrice, rootProps, priceProps, salePriceProps } =
     props;
 
-  const { data: session } = useSession();
-
-  const { data: isMember } = trpc.isMember.useQuery(
-    session?.user?.email as string,
-  );
+  const { data: isMember } = trpc.auth.isMember.useQuery();
 
   return (
     <HStack spacing="1" {...rootProps}>

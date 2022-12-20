@@ -1,10 +1,14 @@
 import {
   Box,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
   FormControl,
   FormLabel,
   HStack,
   Heading,
+  IconButton,
   Input,
   Stack,
   Text,
@@ -19,12 +23,13 @@ import { PriceTag, Rating } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { ItemsWithParentAndChildrens } from '.';
 import { Layout } from '@/components/templates';
+import Link from 'next/link';
+import { MdEdit } from 'react-icons/md';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
-import { useSession } from 'next-auth/react';
 
 function Item({ item }: { item: ItemsWithParentAndChildrens }) {
-  const { price, memberPrice, description, childrens } = item;
+  const { price, memberPrice, description, rating, childrens } = item;
 
   function CustomRadio(props: any) {
     const { name, ...radioProps } = props;
@@ -34,9 +39,9 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
     const checkedProps = () => {
       if (state.isChecked) {
         return {
-          bg: 'blue.50',
-          color: 'blue.500',
-          borderColor: 'blue.500',
+          bg: 'green.50',
+          color: 'green.500',
+          borderColor: 'green.500',
           borderWidth: '2px',
         };
       }
@@ -51,8 +56,8 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
           py={2}
           rounded="md"
           textColor="gray.600"
-          fontWeight="bold"
-          borderWidth="1px"
+          fontWeight="semibold"
+          borderWidth={1}
           borderColor="gray.200"
           {...checkedProps()}
         >
@@ -97,25 +102,38 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
         isClosable: true,
       }),
   });
-  const { data: session } = useSession();
   const handleAddToCart = () => {
     addToCart.mutate({
       itemId: itemVariationId as string,
       quantity: input['aria-valuenow'] as number,
-      userEmail: session?.user?.email as string,
     });
   };
+
+  const { data: isStaff } = trpc.auth.isStaff.useQuery();
 
   return (
     <Layout>
       <Stack direction={['column', 'column', 'row']} spacing={10}>
-        <Stack spacing={10} w="full" maxW="md">
+        <Stack spacing={10} w="full" maxW="lg">
           <Stack spacing={4}>
-            <Heading color={'gray.700'}>
-              {item.parentId
-                ? `${item.parent?.name} - ${item.name}`
-                : item.name}
-            </Heading>
+            <HStack>
+              {isStaff && (
+                <IconButton
+                  as={Link}
+                  href={`/admin/items/${item.id}`}
+                  aria-label="edit"
+                  icon={<MdEdit />}
+                  variant="outline"
+                  colorScheme={'green'}
+                  size="xs"
+                />
+              )}
+              <Heading color={'gray.700'}>
+                {item.parentId
+                  ? `${item.parent?.name} - ${item.name}`
+                  : item.name}
+              </Heading>
+            </HStack>
             <Stack>
               <PriceTag
                 price={price}
@@ -123,52 +141,60 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                 currency="BRL"
               />
               <HStack>
-                <Rating defaultValue={4} size="sm" />
-                <Text fontSize="sm" color={'gray.600'}>
-                  12 Reviews
-                </Text>
+                <Rating defaultValue={rating} size="sm" />
               </HStack>
             </Stack>
             <Text color={'gray.600'}>{description}</Text>
           </Stack>
-          <Stack spacing={6}>
-            {childrens.length > 0 && (
-              <FormControl>
-                <FormLabel>
-                  <Text color={'gray.600'}>Selecione uma variação</Text>
-                </FormLabel>
-                <HStack {...getRootProps()}>
-                  {childrens.map((child) => {
-                    const radio = getRadioProps({ value: child.id });
-                    return (
-                      <CustomRadio
-                        key={child.id}
-                        {...radio}
-                        name={child.name}
-                      />
-                    );
-                  })}
-                </HStack>
-              </FormControl>
-            )}
-            <FormControl>
-              <FormLabel>
-                <Text color={'gray.600'}>Quantidade</Text>
-              </FormLabel>
-              <HStack maxW="3xs">
-                <Button {...dec}>-</Button>
-                <Input textAlign={'center'} {...input} />
-                <Button {...inc}>+</Button>
-              </HStack>
-            </FormControl>
-            <Button
-              colorScheme={'blue'}
-              onClick={handleAddToCart}
-              isLoading={addToCart.isLoading}
-            >
-              Adicionar ao carrinho
-            </Button>
-          </Stack>
+          <Card>
+            <CardBody>
+              <Stack>
+                {childrens.length > 0 && (
+                  <FormControl>
+                    <FormLabel>
+                      <Text color={'gray.600'}>Selecione uma variação</Text>
+                    </FormLabel>
+                    <HStack {...getRootProps()}>
+                      {childrens.map((child) => {
+                        const radio = getRadioProps({ value: child.id });
+                        return (
+                          <CustomRadio
+                            key={child.id}
+                            {...radio}
+                            name={child.name}
+                          />
+                        );
+                      })}
+                    </HStack>
+                  </FormControl>
+                )}
+                <FormControl>
+                  <FormLabel>
+                    <Text color={'gray.600'}>Quantidade</Text>
+                  </FormLabel>
+                  <HStack maxW="3xs">
+                    <Button {...dec}>-</Button>
+                    <Input textAlign={'center'} {...input} />
+                    <Button {...inc}>+</Button>
+                  </HStack>
+                </FormControl>
+              </Stack>
+            </CardBody>
+            <CardFooter>
+              <Stack w="full">
+                <Button
+                  colorScheme={'green'}
+                  onClick={handleAddToCart}
+                  isLoading={addToCart.isLoading}
+                >
+                  Adicionar ao carrinho
+                </Button>
+                <Button as={Link} href="/store">
+                  Loja
+                </Button>
+              </Stack>
+            </CardFooter>
+          </Card>
         </Stack>
         <Stack w="full" h={'50vh'} bgColor="red.500">
           Images

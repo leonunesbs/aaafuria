@@ -36,7 +36,7 @@ function Cart() {
       >
         <Stack spacing={{ base: '8', md: '10' }} flex="2">
           <Heading fontSize="2xl" fontWeight="extrabold">
-            Carrinho ({orderItems?.length} ite
+            Meu carrinho ({orderItems?.length} ite
             {orderItems && orderItems.length > 1 ? 'ns' : 'm'})
           </Heading>
 
@@ -56,7 +56,7 @@ function Cart() {
             {orderItems && orderItems.length === 0 && (
               <Box textAlign="center">
                 <p>Seu carrinho está vazio.</p>
-                <Link as={NextLink} color={'blue.500'} href="/store">
+                <Link as={NextLink} color={'green.500'} href="/store">
                   Ir para a Loja
                 </Link>
               </Box>
@@ -73,7 +73,7 @@ function Cart() {
             />
             <HStack mt="6" fontWeight="semibold">
               <p>ou</p>
-              <Link as={NextLink} color={'blue.500'} href="/store">
+              <Link as={NextLink} color={'green.500'} href="/store">
                 continuar comprando
               </Link>
             </HStack>

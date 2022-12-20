@@ -2,12 +2,14 @@ import { authedProcedure, router } from '../trpc';
 
 import Stripe from 'stripe';
 import { TRPCError } from '@trpc/server';
+import { auth } from './auth';
 import { prisma } from '@/server/prisma';
 import { store } from './store';
 import { z } from 'zod';
 
 export const appRouter = router({
-  store: store,
+  store,
+  auth,
   payment: router({
     update: authedProcedure
       .input(
@@ -131,24 +133,6 @@ export const appRouter = router({
           },
         });
       }),
-  }),
-  isMember: authedProcedure.query(async ({ ctx }) => {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: ctx.user.email,
-      },
-      include: {
-        groups: {
-          where: {
-            name: 'SÓCIOS',
-          },
-        },
-      },
-    });
-    if (!user) {
-      return false;
-    }
-    return true;
   }),
 });
 export type AppRouter = typeof appRouter;

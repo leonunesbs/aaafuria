@@ -1,8 +1,9 @@
-import { Box, Link } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 
 import { GetServerSideProps } from 'next';
 import { Item } from '@prisma/client';
 import { Layout } from '@/components/templates';
+import { MdShoppingCart } from 'react-icons/md';
 import NextLink from 'next/link';
 import { ProductCard } from '@/components/atoms';
 import { ProductGrid } from '@/components/molecules';
@@ -16,10 +17,15 @@ export type ItemsWithParentAndChildrens = Item & {
 function Store({ items }: { items: ItemsWithParentAndChildrens[] }) {
   return (
     <Layout>
-      <Box textAlign={'right'}>
-        <Link as={NextLink} href="/store/cart">
-          Ir para o carrinho
-        </Link>
+      <Box textAlign={'right'} mb={4}>
+        <Button
+          as={NextLink}
+          size="sm"
+          href="/store/cart"
+          leftIcon={<MdShoppingCart />}
+        >
+          Meu carrinho
+        </Button>
       </Box>
       <ProductGrid>
         {items.map((item) => (

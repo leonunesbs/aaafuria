@@ -1,4 +1,4 @@
-import { authedProcedure, procedure, router } from '../trpc';
+import { authedProcedure, procedure, router, staffProcedure } from '../trpc';
 
 import { User } from '@prisma/client';
 import { prisma } from '@/server/prisma';
@@ -214,7 +214,7 @@ export const store = router({
                 orderItem.item.price,
                 orderItem.item.memberPrice || undefined,
               ) +
-              (quantity - 1) * orderItem.item.price,
+              (orderItem.quantity - quantity - 1) * orderItem.item.price,
           },
         });
 
@@ -315,12 +315,13 @@ export const store = router({
       }),
   }),
   item: router({
-    create: procedure
+    create: staffProcedure
       .input(
         z.object({
           parentId: z.string().nullable(),
           name: z.string(),
           description: z.string(),
+          rating: z.number(),
           price: z.number(),
           memberPrice: z.number().nullable(),
           staffPrice: z.number().nullable(),
@@ -337,5 +338,39 @@ export const store = router({
           },
         });
       }),
+    update: staffProcedure
+      .input(
+        z.object({
+          id: z.string(),
+          parentId: z.string().nullable(),
+          name: z.string().optional(),
+          description: z.string().optional(),
+          rating: z.number().optional(),
+          price: z.number().optional(),
+          memberPrice: z.number().nullable().optional(),
+          staffPrice: z.number().nullable().optional(),
+          athletePrice: z.number().nullable().optional(),
+          coordinatorPrice: z.number().nullable().optional(),
+          stock: z.number().optional(),
+          currency: z.string().optional(),
+        }),
+      )
+      .mutation(async ({ input }) => {
+        return prisma.item.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            ...input,
+          },
+        });
+      }),
+    delete: staffProcedure.input(z.string()).mutation(async ({ input }) => {
+      return prisma.item.delete({
+        where: {
+          id: input,
+        },
+      });
+    }),
   }),
 });

@@ -1,4 +1,5 @@
-import { Container } from '@chakra-ui/react';
+import { Box, Container } from '@chakra-ui/react';
+
 import { Header } from '../molecules';
 import { ReactNode } from 'react';
 
@@ -8,7 +9,7 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <>
+    <Box bgColor="white" minH="100vh">
       <Header />
       <Container
         maxW="8xl"
@@ -18,6 +19,6 @@ export function Layout({ children }: LayoutProps) {
       >
         {children}
       </Container>
-    </>
+    </Box>
   );
 }

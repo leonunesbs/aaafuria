@@ -104,12 +104,21 @@ model Item {
   price    Float
   currency String
 
-  stock Int @default(0)
+  stock  Int @default(0)
+  rating Int @default(0)
 
   staffPrice       Float?
   coordinatorPrice Float?
   athletePrice     Float?
   memberPrice      Float?
+
+  isAnalog  Boolean @default(false)
+  isDigital Boolean @default(false)
+
+  isMemberExclusive      Boolean @default(false)
+  isAthleteExclusive     Boolean @default(false)
+  isCoordinatorExclusive Boolean @default(false)
+  isStaffExclusive       Boolean @default(false)
 
   OrderItem OrderItem[]
 }
