@@ -7,16 +7,19 @@ import { ReactNode } from 'react';
 interface LayoutProps {
   children: ReactNode;
   title: string;
+  subHeader?: ReactNode;
 }
 
-export function Layout({ title, children }: LayoutProps) {
+export function Layout({ title, children, subHeader }: LayoutProps) {
   return (
     <>
       <Head>
         <title>{`${title} | @aaafuria`}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <Box minH="100vh">
         <Header />
+        {subHeader}
         <Container
           maxW="8xl"
           mx="auto"

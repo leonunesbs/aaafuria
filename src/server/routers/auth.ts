@@ -4,13 +4,23 @@ import { prisma } from '../prisma';
 
 export const auth = router({
   isMember: authedProcedure.query(async ({ ctx }) => {
-    console.log('NÃO ESTÁ PRONTO');
     const user = await prisma.user.findUnique({
       where: {
         email: ctx.user.email,
       },
       include: {
-        memberships: true,
+        memberships: {
+          where: {
+            endDate: {
+              gte: new Date(),
+            },
+            payment: {
+              paid: true,
+              canceled: false,
+              expired: false,
+            },
+          },
+        },
       },
     });
     if (!user?.memberships.length) {

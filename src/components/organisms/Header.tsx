@@ -67,7 +67,7 @@ export function Header({}: HeaderProps) {
         <HeaderAlert>
           <Text>
             Você possui pedidos pendentes, para ver acesse{' '}
-            <Link as={NextLink} href="/dashboard/my-orders">
+            <Link as={NextLink} href="/dashboard/orders">
               <Text as="span" fontWeight="bold">
                 meus pedidos
               </Text>

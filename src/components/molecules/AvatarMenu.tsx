@@ -37,7 +37,7 @@ export function AvatarMenu({}: AvatarMenuProps) {
         <CustomAvatar />
       </MenuButton>
       <MenuList fontSize={'sm'}>
-        <MenuItem>
+        <MenuItem as={NextLink} href={'/dashboard/profile'}>
           <Text>
             Olá{'  '}
             <Text as="span" fontWeight={'semibold'}>
@@ -67,7 +67,7 @@ export function AvatarMenu({}: AvatarMenuProps) {
         <MenuItem as={NextLink} href="/store/cart">
           Meu carrinho
         </MenuItem>
-        <MenuItem as={NextLink} href="/dashboard/my-orders">
+        <MenuItem as={NextLink} href="/dashboard/orders">
           Meus pedidos
         </MenuItem>
         <MenuDivider />

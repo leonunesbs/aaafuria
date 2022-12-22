@@ -17,6 +17,7 @@ import {
   Heading,
   IconButton,
   Input,
+  Link,
   Select,
   Stack,
   Table,
@@ -182,14 +183,22 @@ function User({
               <Table size="sm">
                 <Thead>
                   <Tr>
-                    <Th>Grupos</Th>
+                    <Th>
+                      <Link as={NextLink} href="/admin/groups">
+                        Grupos
+                      </Link>
+                    </Th>
                     <Th></Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {user.groups.map((group) => (
                     <Tr key={group.id}>
-                      <Td>{group.name}</Td>
+                      <Td>
+                        <Link as={NextLink} href={`/admin/groups/${group.id}`}>
+                          {group.name}
+                        </Link>
+                      </Td>
                       <Td isNumeric>
                         <IconButton
                           aria-label="remove from group"

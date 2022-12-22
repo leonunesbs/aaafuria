@@ -81,7 +81,7 @@ export function Header({}: HeaderProps) {
           <AlertIcon />
           <Text>
             Você possui pedidos pendentes, para ver acesse{' '}
-            <Link as={NextLink} href="/dashboard/my-orders">
+            <Link as={NextLink} href="/dashboard/orders">
               <Text as="span" fontWeight="bold">
                 meus pedidos
               </Text>
@@ -173,7 +173,7 @@ export function Header({}: HeaderProps) {
               <MenuItem as={NextLink} href="/store/cart">
                 Meu carrinho
               </MenuItem>
-              <MenuItem as={NextLink} href="/dashboard/my-orders">
+              <MenuItem as={NextLink} href="/dashboard/orders">
                 Meus pedidos
               </MenuItem>
               <MenuDivider />

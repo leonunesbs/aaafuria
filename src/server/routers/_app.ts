@@ -1,4 +1,4 @@
-import { auth, group, plan, store, user } from '.';
+import { auth, group, plan, schedule, store, user } from '.';
 import { authedProcedure, router } from '../trpc';
 
 import Stripe from 'stripe';
@@ -12,6 +12,7 @@ export const appRouter = router({
   store,
   plan,
   group,
+  schedule,
   payment: router({
     update: authedProcedure
       .input(

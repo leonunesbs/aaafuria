@@ -1,24 +1,35 @@
+import { Plan, Profile, User } from '@prisma/client';
 import { SimpleGrid, useDisclosure } from '@chakra-ui/react';
 
 import { ActionButton } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
-import { Plan } from '@prisma/client';
 import { PlanCard } from '@/components/molecules';
 import { SejaSocioDrawer } from '@/components/organisms';
 import { authOptions } from './api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import { unstable_getServerSession } from 'next-auth';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-function Subscribe({ plans }: { plans: Plan[] }) {
+function Subscribe({
+  plans,
+  user,
+}: {
+  plans: Plan[];
+  user: User & { profile?: Profile };
+}) {
   const sejaSocioDrawer = useDisclosure();
   const [plan, setPlan] = useState<Plan>();
   const mensal = plans.find((plan) => plan.periodInDays === 30);
   const semestral = plans.find((plan) => plan.periodInDays === 180);
   const anual = plans.find((plan) => plan.periodInDays === 365);
 
+  const router = useRouter();
   const handlePlan = (plan?: Plan) => {
+    if (!user.profile) {
+      router.push('/dashboard/profile');
+    }
     if (plan) {
       setPlan(plan);
       sejaSocioDrawer.onOpen();
@@ -124,9 +135,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
 
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session.user?.email as string,
+    },
+    include: {
+      profile: true,
+    },
+  });
+
   return {
     props: {
       plans,
+      user: JSON.parse(JSON.stringify(user)),
     },
   };
 };
