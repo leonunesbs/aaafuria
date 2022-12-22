@@ -1,15 +1,17 @@
+import { auth, group, plan, store, user } from '.';
 import { authedProcedure, router } from '../trpc';
 
 import Stripe from 'stripe';
 import { TRPCError } from '@trpc/server';
-import { auth } from './auth';
 import { prisma } from '@/server/prisma';
-import { store } from './store';
 import { z } from 'zod';
 
 export const appRouter = router({
-  store,
   auth,
+  user,
+  store,
+  plan,
+  group,
   payment: router({
     update: authedProcedure
       .input(
@@ -56,26 +58,32 @@ export const appRouter = router({
           const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
             apiVersion: '2022-11-15',
           });
-
-          const session = await stripe.checkout.sessions.create({
-            payment_method_types: ['card'],
-            line_items: [
-              {
-                price_data: {
-                  currency: 'brl',
-                  product_data: {
-                    name: 'Sócio',
+          const getStripeSession = async () => {
+            if (payment?.refId) {
+              return await stripe.checkout.sessions.retrieve(payment.refId);
+            } else {
+              return await stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: [
+                  {
+                    price_data: {
+                      currency: 'brl',
+                      product_data: {
+                        name: 'Compra online em @aaafuria',
+                      },
+                      unit_amount: (payment?.amount as number) * 100,
+                    },
+                    quantity: 1,
                   },
-                  unit_amount: 10000,
-                },
-                quantity: 1,
-              },
-            ],
-            mode: 'payment',
-            success_url: `${process.env.NEXT_PUBLIC_URL}/app`,
-            cancel_url: `${process.env.NEXT_PUBLIC_URL}/payments/${id}`,
-          });
+                ],
+                mode: 'payment',
+                success_url: `${process.env.NEXT_PUBLIC_URL}/payments/${id}`,
+                cancel_url: `${process.env.NEXT_PUBLIC_URL}/payments/${id}`,
+              });
+            }
+          };
 
+          const session = await getStripeSession();
           await prisma.payment.update({
             where: {
               id,
@@ -89,7 +97,6 @@ export const appRouter = router({
             url: session.url,
           };
         }
-
         switch (payment.method) {
           case 'STRIPE':
             return stripeCheckout();

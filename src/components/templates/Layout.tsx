@@ -1,7 +1,7 @@
 import { Box, Container } from '@chakra-ui/react';
 
 import Head from 'next/head';
-import { Header } from '../molecules';
+import { Header } from '../organisms';
 import { ReactNode } from 'react';
 
 interface LayoutProps {
@@ -13,9 +13,9 @@ export function Layout({ title, children }: LayoutProps) {
   return (
     <>
       <Head>
-        <title>{title} | @aaafuria</title>
+        <title>{`${title} | @aaafuria`}</title>
       </Head>
-      <Box bgColor="white" minH="100vh">
+      <Box minH="100vh">
         <Header />
         <Container
           maxW="8xl"

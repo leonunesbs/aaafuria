@@ -192,7 +192,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                   Adicionar ao carrinho
                 </Button>
                 <Button as={Link} href="/store">
-                  Loja
+                  Voltar à loja
                 </Button>
               </Stack>
             </CardFooter>

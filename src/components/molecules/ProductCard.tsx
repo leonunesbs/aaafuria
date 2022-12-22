@@ -15,8 +15,8 @@ import {
 
 import { ItemsWithParentAndChildrens } from '@/pages/store';
 import NextLink from 'next/link';
-import { PriceTag } from './PriceTag';
-import { Rating } from './Rating';
+import { PriceTag } from '../atoms/PriceTag';
+import { Rating } from '../atoms/Rating';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
 

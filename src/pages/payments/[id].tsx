@@ -32,7 +32,7 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react';
-import { Payment } from '@prisma/client';
+import { Membership, Order, Payment } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { unstable_getServerSession, User } from 'next-auth';
 import NextLink from 'next/link';
@@ -43,11 +43,16 @@ import { HiOutlineExternalLink } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
 import { authOptions } from '../api/auth/[...nextauth]';
 
-function Payment({ payment }: { payment: Payment & { user: User } }) {
+function Payment({
+  payment,
+}: {
+  payment: Payment & { user: User; membership: Membership; order: Order };
+}) {
   const router = useRouter();
   const drawer = useDisclosure();
   const updatePayment = trpc.payment.update.useMutation({
-    onSuccess: () => router.replace(router.asPath),
+    onSuccess: () =>
+      router.replace(router.asPath, undefined, { scroll: false }),
   });
   const handleSwitchMethod = async (method: string) => {
     await updatePayment.mutateAsync({ id: payment.id, method }).then(() => {
@@ -63,7 +68,8 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
   };
 
   const cancelPayment = trpc.payment.cancel.useMutation({
-    onSuccess: () => router.replace(router.asPath),
+    onSuccess: () =>
+      router.replace(router.asPath, undefined, { scroll: false }),
   });
   const handleCancel = async () => {
     await cancelPayment.mutateAsync(payment.id);
@@ -107,6 +113,19 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                   <Th>Usuário</Th>
                   <Td>{payment.user.email}</Td>
                 </Tr>
+                {payment.order && (
+                  <Tr>
+                    <Th>Pedido</Th>
+                    <Td>{payment.order.id}</Td>
+                  </Tr>
+                )}
+                {payment.membership && (
+                  <Tr>
+                    <Th>Associação</Th>
+                    <Td>{payment.membership.id}</Td>
+                  </Tr>
+                )}
+
                 <Tr>
                   <Th>Método</Th>
                   <Td>
@@ -117,9 +136,9 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                         !payment.expired && (
                           <Button
                             ref={btnRef}
+                            onClick={drawer.onOpen}
                             size="xs"
                             leftIcon={<CgArrowsExchange size="1rem" />}
-                            onClick={drawer.onOpen}
                           >
                             Alterar
                           </Button>
@@ -190,11 +209,23 @@ function Payment({ payment }: { payment: Payment & { user: User } }) {
                 </Tr>
                 <Tr>
                   <Th>Criado em</Th>
-                  <Td>{new Date(payment.createdAt).toISOString()}</Td>
+                  <Td>
+                    {new Date(payment.createdAt).toLocaleString('pt-BR', {
+                      timeZone: 'America/Sao_Paulo',
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                    })}
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Atualizado em</Th>
-                  <Td>{new Date(payment.updatedAt).toISOString()}</Td>
+                  <Td>
+                    {new Date(payment.updatedAt).toLocaleString('pt-BR', {
+                      timeZone: 'America/Sao_Paulo',
+                      dateStyle: 'short',
+                      timeStyle: 'short',
+                    })}
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Anexo</Th>
@@ -288,7 +319,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session) {
     return {
       redirect: {
-        destination: '/login',
+        destination: `/login?after=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };
@@ -300,6 +331,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
     include: {
       user: true,
+      membership: true,
+      order: true,
     },
   });
 

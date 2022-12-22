@@ -5,8 +5,8 @@ import { Item } from '@prisma/client';
 import { Layout } from '@/components/templates';
 import { MdShoppingCart } from 'react-icons/md';
 import NextLink from 'next/link';
-import { ProductCard } from '@/components/atoms';
-import { ProductGrid } from '@/components/molecules';
+import { ProductCard } from '@/components/molecules';
+import { ProductGrid } from '@/components/organisms';
 import { prisma } from '@/server/prisma';
 
 export type ItemsWithParentAndChildrens = Item & {

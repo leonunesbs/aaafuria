@@ -58,7 +58,7 @@ const isStaff = t.middleware(async ({ next, ctx }) => {
     },
   });
 
-  if (!user) {
+  if (!user?.groups?.length) {
     throw new TRPCError({ code: 'FORBIDDEN' });
   }
 

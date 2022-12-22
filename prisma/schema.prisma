@@ -50,34 +50,58 @@ model User {
   groups        Group[]
   payments      Payment[]
   orders        Order[]
+
+  interestedSchedules Schedule[] @relation("Interested")
+  presentSchedules    Schedule[] @relation("Present")
 }
 
 model Profile {
-  id     String @id @default(cuid())
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id     String    @id @default(cuid())
+  userId String    @unique
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rg     String?
+  cpf    String?
+  phone  String?
+  birth  DateTime?
 }
 
 model Group {
-  id    String @id @default(cuid())
-  name  String
-  type  String
-  users User[]
+  id       String     @id @default(cuid())
+  name     String
+  type     String
+  users    User[]
+  Schedule Schedule[]
+}
+
+model Schedule {
+  id      String @id @default(cuid())
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId String
+
+  name        String
+  description String?
+  location    String
+  start       DateTime
+  end         DateTime?
+
+  interestedUsers User[] @relation("Interested")
+  presentUsers    User[] @relation("Present")
 }
 
 model Plan {
-  id           String @id @default(cuid())
+  id           String  @id @default(cuid())
   name         String
   price        Float
   periodInDays Int
+  isActive     Boolean @default(true)
 
-  membership Membership[]
+  memberships Membership[]
 }
 
 model Membership {
-  id     String @id @default(cuid())
-  plan   Plan   @relation(fields: [planId], references: [id])
-  planId String
+  id     String  @id @default(cuid())
+  plan   Plan?   @relation(fields: [planId], references: [id], onDelete: SetNull)
+  planId String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

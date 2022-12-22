@@ -3,12 +3,15 @@ import { GitHubIcon, GoogleIcon } from '../atoms';
 
 import { ReactNode } from 'react';
 import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 interface OAuthButtonGroupProps {
   children?: ReactNode;
 }
 
 export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
+  const router = useRouter();
+  const { after } = router.query;
   const providers = [
     { name: 'Google', icon: <GoogleIcon boxSize="5" /> },
     { name: 'GitHub', icon: <GitHubIcon boxSize="5" /> },
@@ -22,7 +25,11 @@ export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
           variant="outline"
           fontWeight={'normal'}
           width="full"
-          onClick={() => signIn(name.toLocaleLowerCase())}
+          onClick={() =>
+            signIn(name.toLocaleLowerCase(), {
+              callbackUrl: after as string,
+            })
+          }
           leftIcon={icon}
         >
           <Text>Entrar com {name}</Text>

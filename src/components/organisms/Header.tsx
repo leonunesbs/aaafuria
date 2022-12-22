@@ -1,29 +1,21 @@
 import {
-  Alert,
-  AlertIcon,
-  Badge,
   Box,
   Button,
   Container,
   Flex,
   HStack,
   Link,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
   Text,
 } from '@chakra-ui/react';
-import { signOut, useSession } from 'next-auth/react';
 
-import { CgChevronDown } from 'react-icons/cg';
-import { CustomAvatar } from '../atoms';
+import { AvatarMenu } from '../molecules';
+import { HeaderAlert } from '../atoms';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 interface HeaderProps {
   children?: ReactNode;
@@ -57,7 +49,6 @@ const CustomMenuItem = ({
 };
 
 export function Header({}: HeaderProps) {
-  const { data: session, status } = useSession();
   const menuItems = [
     { href: '/', label: 'Início' },
     { href: '/store', label: 'Loja' },
@@ -65,20 +56,15 @@ export function Header({}: HeaderProps) {
     { href: '/sejasocio', label: 'Seja Sócio', cta: true },
   ];
 
+  const { status } = useSession();
   const isAuth = status === 'authenticated';
 
-  const { data: isMember } = trpc.auth.isMember.useQuery();
   const { data: hasPendingOrders } = trpc.store.hasPendingOrders.useQuery();
 
   return (
     <Box borderBottomWidth={1}>
       {hasPendingOrders && (
-        <Alert
-          status="info"
-          fontSize={'sm'}
-          px={{ base: '4', md: '8', lg: '12' }}
-        >
-          <AlertIcon />
+        <HeaderAlert>
           <Text>
             Você possui pedidos pendentes, para ver acesse{' '}
             <Link as={NextLink} href="/dashboard/my-orders">
@@ -88,7 +74,7 @@ export function Header({}: HeaderProps) {
             </Link>
             .
           </Text>
-        </Alert>
+        </HeaderAlert>
       )}
       <Container
         as="nav"
@@ -111,13 +97,13 @@ export function Header({}: HeaderProps) {
             mr={4}
           >
             <NextImage
-              sizes="20vw"
+              priority
+              sizes="15vw"
               src={'/header-logo.webp'}
               alt={'headerLogo'}
               fill
               style={{
                 position: 'absolute',
-
                 objectFit: 'cover',
               }}
             />
@@ -135,62 +121,7 @@ export function Header({}: HeaderProps) {
           </HStack>
         </HStack>
         {isAuth ? (
-          <Menu>
-            <MenuButton
-              as={Button}
-              display={'flex'}
-              alignItems={'center'}
-              variant={'unstyled'}
-              rightIcon={<CgChevronDown />}
-            >
-              <CustomAvatar />
-            </MenuButton>
-            <MenuList fontSize={'sm'}>
-              <MenuItem>
-                <Text>
-                  Olá{'  '}
-                  <Text as="span" fontWeight={'semibold'}>
-                    {session?.user?.name?.split(' ')[0]}
-                  </Text>
-                  !
-                </Text>
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem>
-                <Box w="full" textAlign="center">
-                  {isMember ? (
-                    <Badge colorScheme={'green'}>SÓCIO FÚRIA</Badge>
-                  ) : (
-                    <Badge colorScheme={'gray'}>NÃO SÓCIO</Badge>
-                  )}
-                </Box>
-              </MenuItem>
-              <MenuDivider />
-
-              <MenuItem as={NextLink} href="/store">
-                Loja
-              </MenuItem>
-              <MenuItem as={NextLink} href="/store/cart">
-                Meu carrinho
-              </MenuItem>
-              <MenuItem as={NextLink} href="/dashboard/my-orders">
-                Meus pedidos
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem as={NextLink} href="/activities">
-                Atividades
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem as={NextLink} href="/dashboard">
-                Área do Membro
-              </MenuItem>
-              <MenuItem as={NextLink} href="/admin">
-                Área do Diretor
-              </MenuItem>
-              <MenuDivider />
-              <MenuItem onClick={() => signOut()}>Sair</MenuItem>
-            </MenuList>
-          </Menu>
+          <AvatarMenu />
         ) : (
           <Button colorScheme={'green'} as={NextLink} href="/login">
             Entrar

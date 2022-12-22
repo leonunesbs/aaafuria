@@ -159,16 +159,16 @@ function MyOrders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await unstable_getServerSession(
-    context.req,
-    context.res,
+    ctx.req,
+    ctx.res,
     authOptions,
   );
   if (!session) {
     return {
       redirect: {
-        destination: '/login',
+        destination: `/login?after=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };

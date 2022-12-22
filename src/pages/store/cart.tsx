@@ -1,7 +1,7 @@
 import { Box, Flex, HStack, Heading, Link, Stack } from '@chakra-ui/react';
 
-import { CartItem } from '@/components/atoms';
-import { CartOrderSummary } from '@/components/molecules';
+import { CartItem } from '@/components/molecules';
+import { CartOrderSummary } from '@/components/organisms';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
@@ -93,7 +93,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session) {
     return {
       redirect: {
-        destination: '/login',
+        destination: `/login?after=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };

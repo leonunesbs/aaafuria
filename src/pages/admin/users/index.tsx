@@ -1,12 +1,16 @@
 import { GetServerSideProps } from 'next';
-import { Layout } from '@/components/templates';
-import { authOptions } from './api/auth/[...nextauth]';
+import { User } from '@prisma/client';
+import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { prisma } from '@/server/prisma';
 import { unstable_getServerSession } from 'next-auth';
 
-export default function Home() {
-  return <Layout title="Início">Teste</Layout>;
+function Users({ users }: { users: User[] }) {
+  return (
+    <>
+      <h1>Users</h1>
+    </>
+  );
 }
-
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await unstable_getServerSession(
     ctx.req,
@@ -22,9 +26,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  return {
-    props: {
-      session,
-    },
-  };
+  const users = await prisma.user.findMany();
+
+  return { props: { session, users: JSON.parse(JSON.stringify(users)) } };
 };
+
+export default Users;
