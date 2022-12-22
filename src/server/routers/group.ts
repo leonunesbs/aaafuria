@@ -1,9 +1,48 @@
 import { router, staffProcedure } from '../trpc';
 
+import { TRPCError } from '@trpc/server';
 import { prisma } from '../prisma';
 import { z } from 'zod';
 
 export const group = router({
+  create: staffProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        type: z.string(),
+        usersId: z.array(z.string()).optional(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { name, type, usersId } = input;
+      return prisma.group.create({
+        data: {
+          name: name.toUpperCase(),
+          type: type.toUpperCase(),
+          users: {
+            connect: usersId?.map((id) => ({ id })),
+          },
+        },
+      });
+    }),
+  delete: staffProcedure.input(z.string()).mutation(async ({ input }) => {
+    const group = await prisma.group.findUnique({
+      where: {
+        id: input,
+      },
+    });
+    if (group?.type === 'DEFAULT') {
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Não é possível deletar um grupo DEFAULT',
+      });
+    }
+    return prisma.group.delete({
+      where: {
+        id: input,
+      },
+    });
+  }),
   update: staffProcedure
     .input(
       z.object({

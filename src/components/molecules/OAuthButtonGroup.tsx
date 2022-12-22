@@ -11,7 +11,7 @@ interface OAuthButtonGroupProps {
 
 export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
   const router = useRouter();
-  const { after } = router.query;
+  const { callbackUrl } = router.query;
   const providers = [
     { name: 'Google', icon: <GoogleIcon boxSize="5" /> },
     { name: 'GitHub', icon: <GitHubIcon boxSize="5" /> },
@@ -27,7 +27,7 @@ export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
           width="full"
           onClick={() =>
             signIn(name.toLocaleLowerCase(), {
-              callbackUrl: after as string,
+              callbackUrl: callbackUrl ? (callbackUrl as string) : undefined,
             })
           }
           leftIcon={icon}

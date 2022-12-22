@@ -27,13 +27,13 @@ import { useState } from 'react';
 
 function Login() {
   const router = useRouter();
-  const { after } = router.query;
+  const { callbackUrl } = router.query;
   const { register, handleSubmit } = useForm<{ email: string }>();
   const ChakraNextImage = chakra(Image);
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit: SubmitHandler<{ email: string }> = async ({ email }) => {
     setIsLoading(true);
-    signIn('email', { email, callbackUrl: after as string }).finally(() =>
+    signIn('email', { email, callbackUrl: callbackUrl as string }).finally(() =>
       setIsLoading(false),
     );
   };
@@ -130,7 +130,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (session) {
     return {
       redirect: {
-        destination: `/login?after=${ctx.resolvedUrl}`,
+        destination: '/',
         permanent: false,
       },
     };

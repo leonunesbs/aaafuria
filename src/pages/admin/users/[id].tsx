@@ -47,7 +47,7 @@ import { MdAdd, MdClose } from 'react-icons/md';
 type UserWithMembershipsGroupsAndProfile = User & {
   memberships: Membership[];
   groups: Group[];
-  profile: Omit<Profile, 'birth'> & { birth: string };
+  profile?: Omit<Profile, 'birth'> & { birth: string };
 };
 
 type InputType = Omit<User & Profile, 'birth'> & { birth: string };
@@ -79,14 +79,15 @@ function User({
     defaultValues: {
       email: user.email,
       name: user.name,
-      phone: user.profile.phone,
-      cpf: user.profile.cpf,
-      rg: user.profile.rg,
+      studyClass: user.profile?.studyClass,
+      registration: user.profile?.registration,
+      phone: user.profile?.phone,
+      cpf: user.profile?.cpf,
+      rg: user.profile?.rg,
     },
   });
   const updateUser = trpc.user.update.useMutation({
     onSuccess: () => {
-      router.replace(router.asPath, undefined, { scroll: false });
       toast({
         title: 'Usuário atualizado',
         status: 'success',
@@ -98,14 +99,18 @@ function User({
   const onSubmit: SubmitHandler<InputType> = ({
     name,
     birth,
+    registration,
+    studyClass,
     phone,
     cpf,
     rg,
   }) => {
     updateUser.mutate({
       id: user.id,
-      birth: new Date(birth),
       name: name || '',
+      birth: birth ? new Date(birth) : undefined,
+      registration: registration || '',
+      studyClass: studyClass || '',
       phone: phone || '',
       cpf: cpf || '',
       rg: rg || '',
@@ -144,10 +149,22 @@ function User({
                   <Input
                     type={'date'}
                     {...register('birth')}
-                    defaultValue={new Date(user.profile.birth)
-                      ?.toISOString()
-                      .slice(0, 10)}
+                    defaultValue={
+                      user.profile?.birth
+                        ? new Date(user.profile?.birth as string)
+                            ?.toISOString()
+                            .slice(0, 10)
+                        : ''
+                    }
                   />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Matrícula</FormLabel>
+                  <Input {...register('registration')} />
+                </FormControl>
+                <FormControl>
+                  <FormLabel>Turma</FormLabel>
+                  <Input {...register('studyClass')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Telefone</FormLabel>
@@ -222,7 +239,7 @@ function User({
                         >
                           {groups.map((group) => (
                             <option key={group.id} value={group.id}>
-                              {group.name}
+                              {`${group.name} (${group.type})`}
                             </option>
                           ))}
                         </Select>
@@ -266,7 +283,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session) {
     return {
       redirect: {
-        destination: `/login?after=${ctx.resolvedUrl}`,
+        destination: `/login?callbackUrl=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };

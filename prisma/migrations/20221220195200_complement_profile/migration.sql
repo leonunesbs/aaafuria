@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE "Profile" ADD COLUMN "birth" DATETIME;
-ALTER TABLE "Profile" ADD COLUMN "cpf" TEXT;
-ALTER TABLE "Profile" ADD COLUMN "phone" TEXT;
-ALTER TABLE "Profile" ADD COLUMN "rg" TEXT;

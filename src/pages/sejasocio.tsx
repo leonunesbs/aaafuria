@@ -112,7 +112,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session) {
     return {
       redirect: {
-        destination: `/login?after=${ctx.resolvedUrl}`,
+        destination: `/login?callbackUrl=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };

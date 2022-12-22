@@ -10,13 +10,16 @@ export const user = router({
         id: z.string(),
         name: z.string().optional(),
         birth: z.date().optional(),
+        registration: z.string().optional(),
+        studyClass: z.string().optional(),
         phone: z.string().optional(),
         cpf: z.string().optional(),
         rg: z.string().optional(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { id, name, birth, phone, cpf, rg } = input;
+      const { id, name, birth, phone, cpf, rg, studyClass, registration } =
+        input;
 
       const loggedUser = await prisma.user.findUniqueOrThrow({
         where: {
@@ -53,6 +56,8 @@ export const user = router({
             name,
             profile: {
               update: {
+                registration,
+                studyClass,
                 birth,
                 phone,
                 cpf,

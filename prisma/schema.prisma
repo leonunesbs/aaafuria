@@ -56,13 +56,15 @@ model User {
 }
 
 model Profile {
-  id     String    @id @default(cuid())
-  userId String    @unique
-  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rg     String?
-  cpf    String?
-  phone  String?
-  birth  DateTime?
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  registration String?
+  studyClass   String?
+  birth        DateTime?
+  rg           String?
+  cpf          String?
+  phone        String?
 }
 
 model Group {

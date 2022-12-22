@@ -37,6 +37,10 @@ CREATE TABLE "User" (
 CREATE TABLE "Profile" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
+    "rg" TEXT,
+    "cpf" TEXT,
+    "phone" TEXT,
+    "birth" DATETIME,
     CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -48,23 +52,36 @@ CREATE TABLE "Group" (
 );
 
 -- CreateTable
+CREATE TABLE "Schedule" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "groupId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "location" TEXT NOT NULL,
+    "start" DATETIME NOT NULL,
+    "end" DATETIME,
+    CONSTRAINT "Schedule_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "Group" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "Plan" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "price" REAL NOT NULL,
-    "periodInDays" INTEGER NOT NULL
+    "periodInDays" INTEGER NOT NULL,
+    "isActive" BOOLEAN NOT NULL DEFAULT true
 );
 
 -- CreateTable
 CREATE TABLE "Membership" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "planId" TEXT NOT NULL,
+    "planId" TEXT,
     "userId" TEXT NOT NULL,
     "startDate" DATETIME NOT NULL,
     "endDate" DATETIME NOT NULL,
     "paymentId" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT "Membership_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Membership_planId_fkey" FOREIGN KEY ("planId") REFERENCES "Plan" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
     CONSTRAINT "Membership_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "Membership_paymentId_fkey" FOREIGN KEY ("paymentId") REFERENCES "Payment" ("id") ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -151,6 +168,22 @@ CREATE TABLE "_GroupToUser" (
     CONSTRAINT "_GroupToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- CreateTable
+CREATE TABLE "_Interested" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+    CONSTRAINT "_Interested_A_fkey" FOREIGN KEY ("A") REFERENCES "Schedule" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "_Interested_B_fkey" FOREIGN KEY ("B") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "_Present" (
+    "A" TEXT NOT NULL,
+    "B" TEXT NOT NULL,
+    CONSTRAINT "_Present_A_fkey" FOREIGN KEY ("A") REFERENCES "Schedule" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "_Present_B_fkey" FOREIGN KEY ("B") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
 
@@ -183,3 +216,15 @@ CREATE UNIQUE INDEX "_GroupToUser_AB_unique" ON "_GroupToUser"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_GroupToUser_B_index" ON "_GroupToUser"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_Interested_AB_unique" ON "_Interested"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_Interested_B_index" ON "_Interested"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_Present_AB_unique" ON "_Present"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_Present_B_index" ON "_Present"("B");
