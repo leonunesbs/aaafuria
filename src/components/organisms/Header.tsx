@@ -7,9 +7,9 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react';
+import { ColorModeButton, HeaderAlert } from '../atoms';
 
 import { AvatarMenu } from '../molecules';
-import { HeaderAlert } from '../atoms';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
@@ -118,13 +118,16 @@ export function Header({}: HeaderProps) {
             ))}
           </HStack>
         </HStack>
-        {isAuth ? (
-          <AvatarMenu />
-        ) : (
-          <Button colorScheme={'green'} as={NextLink} href="/auth/login">
-            Entrar
-          </Button>
-        )}
+        <HStack>
+          <ColorModeButton />
+          {isAuth ? (
+            <AvatarMenu />
+          ) : (
+            <Button colorScheme={'green'} as={NextLink} href="/auth/login">
+              Entrar
+            </Button>
+          )}
+        </HStack>
       </Container>
     </Box>
   );
