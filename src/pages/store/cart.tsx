@@ -2,12 +2,14 @@ import { Box, Flex, HStack, Heading, Link, Stack } from '@chakra-ui/react';
 
 import { CartItem } from '@/components/molecules';
 import { CartOrderSummary } from '@/components/organisms';
+import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { trpc } from '@/utils/trpc';
 import { unstable_getServerSession } from 'next-auth';
+import { useContext } from 'react';
 import { useSession } from 'next-auth/react';
 
 function Cart() {
@@ -24,6 +26,8 @@ function Cart() {
     (acc, orderItem) => acc + orderItem.price,
     0,
   );
+
+  const { green } = useContext(ColorContext);
   return (
     <Layout title="Meu carrinho">
       <Stack
@@ -56,7 +60,7 @@ function Cart() {
             {orderItems && orderItems.length === 0 && (
               <Box textAlign="center">
                 <p>Seu carrinho está vazio.</p>
-                <Link as={NextLink} color={'green.500'} href="/store">
+                <Link as={NextLink} color={green} href="/store">
                   Ir para a Loja
                 </Link>
               </Box>
@@ -73,7 +77,7 @@ function Cart() {
             />
             <HStack mt="6" fontWeight="semibold">
               <p>ou</p>
-              <Link as={NextLink} color={'green.500'} href="/store">
+              <Link as={NextLink} color={green} href="/store">
                 continuar comprando
               </Link>
             </HStack>

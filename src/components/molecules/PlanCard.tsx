@@ -12,9 +12,10 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { ReactElement, useContext } from 'react';
 
+import { ColorContext } from '@/contexts';
 import { HiCheckCircle } from 'react-icons/hi';
-import { ReactElement } from 'react';
 
 export interface PricingCardData {
   features: string[];
@@ -30,9 +31,10 @@ interface PricingCardProps extends CardProps {
 
 const CardBadge = (props: FlexProps) => {
   const { children, ...flexProps } = props;
+  const { green } = useContext(ColorContext);
   return (
     <Flex
-      bg={useColorModeValue('green.500', 'green.200')}
+      bg={green}
       position="absolute"
       right={-20}
       top={6}

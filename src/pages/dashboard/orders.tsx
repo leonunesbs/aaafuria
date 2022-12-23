@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { Item, Order, OrderItem, Payment } from '@prisma/client';
 
+import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
@@ -25,6 +26,7 @@ import { authOptions } from '../api/auth/[...nextauth]';
 import { formatPrice } from '@/components/atoms';
 import { prisma } from '@/server/prisma';
 import { unstable_getServerSession } from 'next-auth';
+import { useContext } from 'react';
 
 type OrderItemWithItem = OrderItem & {
   item: Item & {
@@ -50,7 +52,8 @@ export const status = (order: OrderWithPaymentAndItems) => {
   return 'AGUARDANDO PAGAMENTO';
 };
 
-function MyOrders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
+function Orders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
+  const { green } = useContext(ColorContext);
   return (
     <Layout title="Meus pedidos">
       <Card variant={'responsive'}>
@@ -88,7 +91,7 @@ function MyOrders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
                       <Link
                         as={NextLink}
                         href={`/payments/${order.paymentId}`}
-                        color="green.500"
+                        color={green}
                         fontWeight={'bold'}
                       >
                         <Text
@@ -141,7 +144,7 @@ function MyOrders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
                       <Text as={'i'}>
                         Nenhum pedido encontrado, ir para a{' '}
                         <Link href="/store" as={NextLink}>
-                          <Text as="span" color="green.500" fontWeight={'bold'}>
+                          <Text as="span" color={green} fontWeight={'bold'}>
                             loja
                           </Text>
                         </Link>
@@ -206,4 +209,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 };
 
-export default MyOrders;
+export default Orders;

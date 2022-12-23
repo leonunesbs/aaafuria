@@ -5,7 +5,7 @@ import styles from './styles';
 
 const config: ThemeConfig = {
   initialColorMode: 'light',
-  useSystemColorMode: false,
+  useSystemColorMode: true,
 };
 
 const overrides: ThemeOverride = {

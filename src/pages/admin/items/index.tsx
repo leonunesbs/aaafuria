@@ -18,12 +18,14 @@ import {
   Tr,
 } from '@chakra-ui/react';
 
+import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { Item } from '@prisma/client';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { formatPrice } from '@/components/atoms';
 import { prisma } from '@/server/prisma';
+import { useContext } from 'react';
 
 export type ItemsWithParentAndChilds = Item & {
   parent: Item;
@@ -31,6 +33,7 @@ export type ItemsWithParentAndChilds = Item & {
 };
 
 function Items({ items }: { items: ItemsWithParentAndChilds[] }) {
+  const { green } = useContext(ColorContext);
   return (
     <Layout title="Lista de itens">
       <Card>
@@ -53,7 +56,7 @@ function Items({ items }: { items: ItemsWithParentAndChilds[] }) {
                   <Tr key={item.id}>
                     <Td>
                       <Link
-                        color={'green.500'}
+                        color={green}
                         fontWeight="bold"
                         as={NextLink}
                         href={`/admin/items/${item.id}`}
@@ -69,7 +72,7 @@ function Items({ items }: { items: ItemsWithParentAndChilds[] }) {
                           <Box key={children.id}>
                             <Link
                               as={NextLink}
-                              color="green.500"
+                              color={green}
                               href={`/admin/items/${children.id}`}
                             >
                               {children.name}

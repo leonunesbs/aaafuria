@@ -7,22 +7,24 @@ import {
   FormControl,
   HStack,
   Heading,
-  Input,
   Link,
   Stack,
   Text,
   chakra,
+  useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
+import { cleanString, extractDomainFromEmail } from '@/libs/functions';
+import { useContext, useEffect, useState } from 'react';
 
+import { ColorContext } from '@/contexts';
+import { CustomInput } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import Image from 'next/legacy/image';
 import NextLink from 'next/link';
 import { OAuthButtonGroup } from '@/components/molecules';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { extractDomainFromEmail } from '@/libs/functions';
 import { signIn } from 'next-auth/react';
 import { unstable_getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
@@ -30,6 +32,8 @@ import { useRouter } from 'next/router';
 function Login() {
   const router = useRouter();
   const toast = useToast();
+  const { green } = useContext(ColorContext);
+  const calango = useColorModeValue('/calango-light.png', '/calango-dark.png');
   const { callbackUrl, error } = router.query;
   const { register, handleSubmit } = useForm<{ email: string }>();
   const ChakraNextImage = chakra(Image);
@@ -38,10 +42,10 @@ function Login() {
     setIsLoading(true);
     localStorage.setItem(
       '@aaafuria:emailDomain',
-      extractDomainFromEmail(email),
+      extractDomainFromEmail(cleanString(email)),
     );
     signIn('email', {
-      email,
+      email: cleanString(email),
       callbackUrl: callbackUrl && (callbackUrl as string),
       redirect: true,
     }).finally(() => setIsLoading(false));
@@ -72,8 +76,8 @@ function Login() {
                 placeholder="blur"
                 layout="fill"
                 objectFit="cover"
-                src={'/calango-verde.png'}
-                blurDataURL={'/calango-verde.png'}
+                src={calango}
+                blurDataURL={calango}
                 quality={1}
                 alt="logo"
                 mx="auto"
@@ -101,7 +105,7 @@ function Login() {
           >
             <Stack spacing="4">
               <FormControl>
-                <Input
+                <CustomInput
                   type="email"
                   placeholder="Digite seu email"
                   {...register('email')}
@@ -131,7 +135,7 @@ function Login() {
           Não consegue entrar?{' '}
           <Link as={NextLink} href="/contact">
             {' '}
-            <Text as="span" color={'green.500'}>
+            <Text as="span" color={green}>
               Fale conosco
             </Text>
           </Link>

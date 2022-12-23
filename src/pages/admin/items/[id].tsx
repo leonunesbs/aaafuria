@@ -8,7 +8,6 @@ import {
   FormLabel,
   Heading,
   HStack,
-  Input,
   InputGroup,
   InputLeftAddon,
   Select,
@@ -17,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { cleanString } from '@/libs/functions';
 import { prisma } from '@/server/prisma';
@@ -111,17 +111,21 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Nome</FormLabel>
-                <Input isRequired {...register('name')} />
+                <CustomInput isRequired {...register('name')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Descrição</FormLabel>
-                <Input isRequired {...register('description')} />
+                <CustomInput isRequired {...register('description')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Preço</FormLabel>
                 <InputGroup>
                   <InputLeftAddon>R$</InputLeftAddon>
-                  <Input isRequired type="number" {...register('price')} />
+                  <CustomInput
+                    isRequired
+                    type="number"
+                    {...register('price')}
+                  />
                 </InputGroup>
               </FormControl>
               <HStack>
@@ -129,14 +133,14 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
                   <FormLabel>Sócios</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>R$</InputLeftAddon>
-                    <Input type="number" {...register('memberPrice')} />
+                    <CustomInput type="number" {...register('memberPrice')} />
                   </InputGroup>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Atletas</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>R$</InputLeftAddon>
-                    <Input type="number" {...register('athletePrice')} />
+                    <CustomInput type="number" {...register('athletePrice')} />
                   </InputGroup>
                 </FormControl>
               </HStack>
@@ -145,21 +149,28 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
                   <FormLabel>Coord.</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>R$</InputLeftAddon>
-                    <Input type="number" {...register('coordinatorPrice')} />
+                    <CustomInput
+                      type="number"
+                      {...register('coordinatorPrice')}
+                    />
                   </InputGroup>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Diretoria</FormLabel>
                   <InputGroup>
                     <InputLeftAddon>R$</InputLeftAddon>
-                    <Input type="number" {...register('staffPrice')} />
+                    <CustomInput type="number" {...register('staffPrice')} />
                   </InputGroup>
                 </FormControl>
               </HStack>
               <HStack>
                 <FormControl isRequired>
                   <FormLabel>Estoque</FormLabel>
-                  <Input isRequired type="number" {...register('stock')} />
+                  <CustomInput
+                    isRequired
+                    type="number"
+                    {...register('stock')}
+                  />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Estrelas</FormLabel>

@@ -7,7 +7,6 @@ import {
   FormControl,
   HStack,
   Heading,
-  Input,
   InputGroup,
   InputLeftAddon,
   Link,
@@ -21,17 +20,19 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { CustomInput, formatPrice } from '@/components/atoms';
 import { Membership, Plan, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { formatPrice } from '@/components/atoms';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { unstable_getServerSession } from 'next-auth';
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 interface AddPlanInput extends Omit<Plan, 'price' | 'periodInDays'> {
@@ -56,6 +57,7 @@ function Memberships({
   memberships: MembershipWithPlanAndUser[];
 }) {
   const router = useRouter();
+  const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<AddPlanInput>();
 
   const addPlan = trpc.plan.create.useMutation({
@@ -157,11 +159,14 @@ function Memberships({
               <Stack maxW="xs" mx="auto" w="full">
                 <Heading size="sm">Adicionar plano</Heading>
                 <FormControl>
-                  <Input placeholder="Nome do plano" {...register('name')} />
+                  <CustomInput
+                    placeholder="Nome do plano"
+                    {...register('name')}
+                  />
                 </FormControl>
                 <FormControl>
                   <InputGroup>
-                    <Input
+                    <CustomInput
                       type={'number'}
                       placeholder="Duração em dias"
                       {...register('periodInDays')}
@@ -171,7 +176,7 @@ function Memberships({
                 <FormControl>
                   <InputGroup>
                     <InputLeftAddon>R$</InputLeftAddon>
-                    <Input
+                    <CustomInput
                       type={'number'}
                       placeholder="Preço do plano"
                       {...register('price')}
@@ -205,7 +210,7 @@ function Memberships({
                         <Link
                           as={NextLink}
                           href={`/admin/users/${membership.userId}`}
-                          color="green.500"
+                          color={green}
                           fontWeight={'bold'}
                         >
                           <Text>{membership.user.name}</Text>

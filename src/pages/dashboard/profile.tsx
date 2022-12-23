@@ -1,4 +1,4 @@
-import { CustomAvatar } from '@/components/atoms';
+import { CustomAvatar, CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
@@ -14,7 +14,6 @@ import {
   FormControl,
   FormLabel,
   Heading,
-  Input,
   Stack,
   Text,
   useToast,
@@ -98,35 +97,35 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
             <Stack>
               <FormControl isRequired>
                 <FormLabel>Email</FormLabel>
-                <Input isRequired isDisabled {...register('email')} />
+                <CustomInput isRequired isDisabled {...register('email')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Nome</FormLabel>
-                <Input isRequired {...register('name')} />
+                <CustomInput isRequired {...register('name')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Data de nascimento</FormLabel>
-                <Input isRequired type={'date'} {...register('birth')} />
+                <CustomInput isRequired type={'date'} {...register('birth')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Matrícula</FormLabel>
-                <Input isRequired {...register('registration')} />
+                <CustomInput isRequired {...register('registration')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Turma</FormLabel>
-                <Input isRequired {...register('studyClass')} />
+                <CustomInput isRequired {...register('studyClass')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Telefone</FormLabel>
-                <Input isRequired {...register('phone')} />
+                <CustomInput isRequired {...register('phone')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>RG</FormLabel>
-                <Input isRequired {...register('rg')} />
+                <CustomInput isRequired {...register('rg')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>CPF</FormLabel>
-                <Input isRequired {...register('cpf')} />
+                <CustomInput isRequired {...register('cpf')} />
               </FormControl>
             </Stack>
           </CardBody>

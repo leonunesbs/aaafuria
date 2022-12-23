@@ -1,4 +1,4 @@
-import { formatPrice } from '@/components/atoms';
+import { CustomInput, formatPrice } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
@@ -19,7 +19,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  Input,
   Link,
   Select,
   Stack,
@@ -230,7 +229,7 @@ function Payment({
                 <Tr>
                   <Th>Anexo</Th>
                   <Td>
-                    <Input
+                    <CustomInput
                       hidden
                       ref={fileInputRef}
                       type="file"

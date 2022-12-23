@@ -1,8 +1,14 @@
 import type { AppProps } from 'next/app';
 import { ChakraProvider } from '@chakra-ui/react';
+import { ColorProvider } from '@/contexts';
+import { ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import theme from '@/styles/theme';
 import { trpc } from '@/utils/trpc';
+
+const ContextProviders = ({ children }: { children: ReactNode }) => {
+  return <ColorProvider>{children}</ColorProvider>;
+};
 
 const MyApp = ({
   Component,
@@ -11,7 +17,9 @@ const MyApp = ({
   return (
     <SessionProvider session={session}>
       <ChakraProvider theme={theme}>
-        <Component {...pageProps} />
+        <ContextProviders>
+          <Component {...pageProps} />
+        </ContextProviders>
       </ChakraProvider>
     </SessionProvider>
   );

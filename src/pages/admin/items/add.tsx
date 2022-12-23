@@ -8,13 +8,13 @@ import {
   FormLabel,
   HStack,
   Heading,
-  Input,
   Select,
   Stack,
   useToast,
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { CustomInput } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { Item } from '@prisma/client';
 import { ItemsWithParentAndChilds } from '.';
@@ -103,40 +103,47 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Nome</FormLabel>
-                <Input isRequired {...register('name')} />
+                <CustomInput isRequired {...register('name')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Descrição</FormLabel>
-                <Input isRequired {...register('description')} />
+                <CustomInput isRequired {...register('description')} />
               </FormControl>
               <FormControl isRequired>
                 <FormLabel>Preço</FormLabel>
-                <Input isRequired type="number" {...register('price')} />
+                <CustomInput isRequired type="number" {...register('price')} />
               </FormControl>
               <HStack>
                 <FormControl>
                   <FormLabel>Sócios</FormLabel>
-                  <Input type="number" {...register('memberPrice')} />
+                  <CustomInput type="number" {...register('memberPrice')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Atletas</FormLabel>
-                  <Input type="number" {...register('athletePrice')} />
+                  <CustomInput type="number" {...register('athletePrice')} />
                 </FormControl>
               </HStack>
               <HStack>
                 <FormControl>
                   <FormLabel>Coord.</FormLabel>
-                  <Input type="number" {...register('coordinatorPrice')} />
+                  <CustomInput
+                    type="number"
+                    {...register('coordinatorPrice')}
+                  />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Diretoria</FormLabel>
-                  <Input type="number" {...register('staffPrice')} />
+                  <CustomInput type="number" {...register('staffPrice')} />
                 </FormControl>
               </HStack>
               <Stack>
                 <FormControl isRequired>
                   <FormLabel>Estoque</FormLabel>
-                  <Input isRequired type="number" {...register('stock')} />
+                  <CustomInput
+                    isRequired
+                    type="number"
+                    {...register('stock')}
+                  />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Estrelas</FormLabel>

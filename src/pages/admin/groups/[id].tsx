@@ -1,4 +1,5 @@
 import { Layout } from '@/components/templates';
+import { ColorContext } from '@/contexts';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import {
@@ -19,12 +20,14 @@ import { Group, Profile, User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import NextLink from 'next/link';
+import { useContext } from 'react';
 
 type UserWithProfile = User & {
   profile?: Profile;
 };
 
 function Group({ group }: { group: Group & { users: UserWithProfile[] } }) {
+  const { green } = useContext(ColorContext);
   return (
     <Layout title={group.name}>
       <Card>
@@ -48,7 +51,7 @@ function Group({ group }: { group: Group & { users: UserWithProfile[] } }) {
                       <Link
                         as={NextLink}
                         href={`/admin/users/${user.id}`}
-                        color="green.500"
+                        color={green}
                       >
                         {user.name}
                       </Link>

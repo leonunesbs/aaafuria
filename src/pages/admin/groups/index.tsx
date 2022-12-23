@@ -6,7 +6,6 @@ import {
   FormControl,
   FormHelperText,
   Heading,
-  Input,
   Link,
   Stack,
   Table,
@@ -20,6 +19,8 @@ import {
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { ColorContext } from '@/contexts';
+import { CustomInput } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { Group } from '@prisma/client';
 import { Layout } from '@/components/templates';
@@ -29,11 +30,13 @@ import { cleanString } from '@/libs/functions';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { unstable_getServerSession } from 'next-auth';
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 function Groups({ groups }: { groups: Group[] }) {
   const router = useRouter();
   const toast = useToast();
+  const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<Group>();
   const createGroup = trpc.group.create.useMutation({
     onSuccess: () => {
@@ -88,7 +91,7 @@ function Groups({ groups }: { groups: Group[] }) {
                         <Link
                           as={NextLink}
                           href={`/admin/groups/${group.id}`}
-                          color="green.500"
+                          color={green}
                           fontWeight={'semibold'}
                         >
                           {group.name}
@@ -117,13 +120,13 @@ function Groups({ groups }: { groups: Group[] }) {
           <CardBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Stack>
-                <Input
+                <CustomInput
                   isRequired
                   placeholder="Nome do grupo"
                   {...register('name')}
                 />
                 <FormControl>
-                  <Input
+                  <CustomInput
                     isRequired
                     placeholder="Tipo do grupo"
                     {...register('type')}

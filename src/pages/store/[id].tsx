@@ -9,7 +9,6 @@ import {
   HStack,
   Heading,
   IconButton,
-  Input,
   Stack,
   Text,
   chakra,
@@ -18,8 +17,9 @@ import {
   useRadioGroup,
   useToast,
 } from '@chakra-ui/react';
-import { PriceTag, Rating } from '@/components/atoms';
+import { CustomInput, PriceTag, Rating } from '@/components/atoms';
 
+import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { ItemsWithParentAndChildrens } from '.';
 import { Layout } from '@/components/templates';
@@ -27,6 +27,7 @@ import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
+import { useContext } from 'react';
 
 function Item({ item }: { item: ItemsWithParentAndChildrens }) {
   const { price, memberPrice, description, rating, childrens } = item;
@@ -35,13 +36,14 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
     const { name, ...radioProps } = props;
     const { state, getInputProps, getCheckboxProps, htmlProps } =
       useRadio(radioProps);
+    const { green } = useContext(ColorContext);
 
     const checkedProps = () => {
       if (state.isChecked) {
         return {
           bg: 'green.50',
-          color: 'green.500',
-          borderColor: 'green.500',
+          color: { green },
+          borderColor: { green },
           borderWidth: '2px',
         };
       }
@@ -176,7 +178,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                   </FormLabel>
                   <HStack maxW="3xs">
                     <Button {...dec}>-</Button>
-                    <Input textAlign={'center'} {...input} />
+                    <CustomInput textAlign={'center'} {...input} />
                     <Button {...inc}>+</Button>
                   </HStack>
                 </FormControl>

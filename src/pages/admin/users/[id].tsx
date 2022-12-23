@@ -16,7 +16,6 @@ import {
   FormLabel,
   Heading,
   IconButton,
-  Input,
   Link,
   Select,
   Stack,
@@ -31,7 +30,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-import { CustomAvatar } from '@/components/atoms';
+import { CustomAvatar, CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
@@ -139,15 +138,15 @@ function User({
               <Stack>
                 <FormControl isDisabled>
                   <FormLabel>Email</FormLabel>
-                  <Input {...register('email')} />
+                  <CustomInput {...register('email')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Nome</FormLabel>
-                  <Input {...register('name')} />
+                  <CustomInput {...register('name')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Data de nascimento</FormLabel>
-                  <Input
+                  <CustomInput
                     type={'date'}
                     {...register('birth')}
                     defaultValue={
@@ -161,23 +160,23 @@ function User({
                 </FormControl>
                 <FormControl>
                   <FormLabel>Matrícula</FormLabel>
-                  <Input {...register('registration')} />
+                  <CustomInput {...register('registration')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Turma</FormLabel>
-                  <Input {...register('studyClass')} />
+                  <CustomInput {...register('studyClass')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>Telefone</FormLabel>
-                  <Input type={'tel'} {...register('phone')} />
+                  <CustomInput type={'tel'} {...register('phone')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>CPF</FormLabel>
-                  <Input {...register('cpf')} />
+                  <CustomInput {...register('cpf')} />
                 </FormControl>
                 <FormControl>
                   <FormLabel>RG</FormLabel>
-                  <Input {...register('rg')} />
+                  <CustomInput {...register('rg')} />
                 </FormControl>
               </Stack>
               <Table size="sm">

@@ -1,8 +1,9 @@
-import { Box, Button, HStack, Input, Text } from '@chakra-ui/react';
+import { Box, Button, HStack, Text } from '@chakra-ui/react';
 import { Group, Profile, Schedule, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ActivityGrid } from '@/components/organisms';
+import { CustomInput } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { GroupCard } from '@/components/molecules';
 import { Layout } from '@/components/templates';
@@ -42,7 +43,7 @@ function Activities({ groups }: { groups: GroupWithSchedulesAndUsers[] }) {
       <Box mb={4}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <HStack>
-            <Input
+            <CustomInput
               placeholder="Buscar atividade"
               {...register('q', {
                 onChange: (e) => {

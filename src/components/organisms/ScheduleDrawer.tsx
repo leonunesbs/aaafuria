@@ -12,7 +12,6 @@ import {
   FormLabel,
   HStack,
   IconButton,
-  Input,
   Link,
   Stack,
   Table,
@@ -32,8 +31,11 @@ import { MdCheck, MdClose } from 'react-icons/md';
 import { Profile, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { ColorContext } from '@/contexts';
+import { CustomInput } from '../atoms';
 import NextLink from 'next/link';
 import { trpc } from '@/utils/trpc';
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 interface ScheduleDrawerProps extends Omit<DrawerProps, 'children'> {
@@ -61,6 +63,7 @@ const InterestedUserRow = ({
   schedule?: ScheduleWithGroupAndInterestedAndPresentUsers;
 }) => {
   const router = useRouter();
+  const { green } = useContext(ColorContext);
   const togglePresent = trpc.schedule.togglePresent.useMutation({
     onSuccess: () => {
       router.replace(router.asPath);
@@ -72,7 +75,7 @@ const InterestedUserRow = ({
   return (
     <Tr key={user.id} bgColor={isPresent ? 'green.50' : 'initial'}>
       <Td>
-        <Link as={NextLink} href={`/admin/users/${user.id}`} color="green.500">
+        <Link as={NextLink} href={`/admin/users/${user.id}`} color={green}>
           {user.name}
         </Link>
       </Td>
@@ -146,20 +149,20 @@ export function ScheduleDrawer({
             <Stack>
               <FormControl isRequired isDisabled>
                 <FormLabel>Nome da atividade</FormLabel>
-                <Input isRequired {...register('group.name')} />
+                <CustomInput isRequired {...register('group.name')} />
               </FormControl>
               <FormControl isRequired isDisabled={!!schedule}>
                 <FormLabel>Descrição</FormLabel>
-                <Input isRequired {...register('description')} />
+                <CustomInput isRequired {...register('description')} />
               </FormControl>
               <FormControl isRequired isDisabled={!!schedule}>
                 <FormLabel>Local</FormLabel>
-                <Input isRequired {...register('location')} />
+                <CustomInput isRequired {...register('location')} />
               </FormControl>
               <Stack direction={['column', 'row', 'row']}>
                 <FormControl isRequired isDisabled={!!schedule}>
                   <FormLabel>Início</FormLabel>
-                  <Input
+                  <CustomInput
                     isRequired
                     type={schedule ? 'text' : 'datetime-local'}
                     defaultValue={
@@ -175,7 +178,7 @@ export function ScheduleDrawer({
                 </FormControl>
                 <FormControl isDisabled={!!schedule}>
                   <FormLabel>Fim</FormLabel>
-                  <Input
+                  <CustomInput
                     {...register('end')}
                     type={schedule ? 'text' : 'datetime-local'}
                     defaultValue={

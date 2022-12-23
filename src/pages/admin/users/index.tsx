@@ -7,7 +7,6 @@ import {
   FormControl,
   HStack,
   Heading,
-  Input,
   Link,
   List,
   ListItem,
@@ -22,12 +21,15 @@ import {
 import { Group, Membership, Profile, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { ColorContext } from '@/contexts';
+import { CustomInput } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import { unstable_getServerSession } from 'next-auth';
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 type UserWithProfileMembershipsAndGroups = User & {
@@ -38,6 +40,7 @@ type UserWithProfileMembershipsAndGroups = User & {
 
 function Users({ users }: { users: UserWithProfileMembershipsAndGroups[] }) {
   const router = useRouter();
+  const { green } = useContext(ColorContext);
   const { handleSubmit, register } = useForm<{ q: string }>();
   const onSubmit: SubmitHandler<{ q: string }> = (data) => {
     router.replace(`/admin/users?q=${data.q}`);
@@ -55,7 +58,7 @@ function Users({ users }: { users: UserWithProfileMembershipsAndGroups[] }) {
             <form onSubmit={handleSubmit(onSubmit)}>
               <HStack>
                 <FormControl>
-                  <Input
+                  <CustomInput
                     placeholder="Buscar usuário (nome, rg, cpf, email, turma, telefone etc.)"
                     {...register('q')}
                   />
@@ -87,7 +90,7 @@ function Users({ users }: { users: UserWithProfileMembershipsAndGroups[] }) {
                       <Link
                         as={NextLink}
                         href={`/admin/users/${user.id}`}
-                        color="green.500"
+                        color={green}
                         fontWeight={'semibold'}
                       >
                         {user.name}
