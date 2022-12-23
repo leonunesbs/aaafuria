@@ -67,7 +67,7 @@ export function Header({}: HeaderProps) {
 
   const isAuth = status === 'authenticated';
 
-  const { data: isMember } = trpc.auth.isMember.useQuery();
+  const isMember = session?.user.isMember;
   const { data: hasPendingOrders } = trpc.store.hasPendingOrders.useQuery();
 
   return (

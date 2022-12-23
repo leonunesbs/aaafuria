@@ -153,7 +153,7 @@ export function CartItem({ ...rest }: CartItemProps) {
         <CloseButton
           aria-label={`Delete ${item.name} from cart`}
           onClick={() => {
-            removeFromCart.mutateAsync({
+            removeFromCart.mutate({
               orderItemId: id,
               quantity: quantity,
             });
@@ -174,7 +174,7 @@ export function CartItem({ ...rest }: CartItemProps) {
           textDecor="underline"
           variant={'link'}
           onClick={() => {
-            removeFromCart.mutateAsync({
+            removeFromCart.mutate({
               orderItemId: id,
               quantity: quantity,
             });

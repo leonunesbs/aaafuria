@@ -71,33 +71,6 @@ export const store = router({
         },
       });
     }),
-  hasPendingOrders: authedProcedure.query(async ({ ctx }) => {
-    const user = await prisma.user.findUniqueOrThrow({
-      where: {
-        email: ctx.user.email,
-      },
-    });
-
-    const order = await prisma.order.findFirst({
-      where: {
-        user: {
-          id: user.id,
-        },
-        ordered: false,
-        checkedOut: true,
-        payment: {
-          is: {
-            paid: false,
-            canceled: false,
-            expired: false,
-          },
-        },
-      },
-    });
-
-    return !!order;
-  }),
-
   cart: router({
     add: authedProcedure
       .input(
@@ -118,7 +91,7 @@ export const store = router({
           },
         });
 
-        const isMember = user.groups.some((group) => group.name === 'SÓCIOS');
+        const isMember = ctx.user.isMember;
 
         const item = await prisma.item.findUniqueOrThrow({
           where: {

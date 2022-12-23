@@ -1,6 +1,5 @@
 import { Box, Button, HStack, Text } from '@chakra-ui/react';
 import { Group, Profile, Schedule, User } from '@prisma/client';
-import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ActivityGrid } from '@/components/organisms';
 import { CustomInput } from '@/components/atoms';
@@ -10,7 +9,7 @@ import { Layout } from '@/components/templates';
 import { authOptions } from './api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import { unstable_getServerSession } from 'next-auth';
-import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 type UserWithProfile = User & {
   profile: Profile;
@@ -28,44 +27,37 @@ export type GroupWithSchedulesAndUsers = Group & {
 };
 
 function Activities({ groups }: { groups: GroupWithSchedulesAndUsers[] }) {
-  const router = useRouter();
+  const [q, setQ] = useState<string>();
 
-  const { handleSubmit, register } = useForm<{ q: string }>();
-  const onSubmit: SubmitHandler<{ q: string }> = ({ q }) => {
-    router.replace({
-      href: router.asPath,
-      query: { q },
-    });
-  };
+  const filteredGroups = groups.filter((group) => {
+    if (!q) return group;
+    const query = (q as string).toLowerCase();
+
+    if (
+      group.name.toLowerCase().includes(query) ||
+      group.type.toLowerCase().includes(query)
+    ) {
+      return group;
+    }
+  });
 
   return (
     <Layout title="Atividades">
       <Box mb={4}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <HStack>
-            <CustomInput
-              placeholder="Buscar atividade"
-              {...register('q', {
-                onChange: (e) => {
-                  router.replace({
-                    href: router.asPath,
-                    query: { q: e.target.value },
-                  });
-                },
-              })}
-            />
-            <Button colorScheme="green" type="submit">
-              Buscar
-            </Button>
-          </HStack>
-        </form>
+        <HStack>
+          <CustomInput
+            placeholder="Buscar atividade"
+            onChange={(e) => setQ(e.target.value)}
+          />
+          <Button colorScheme="green">Buscar</Button>
+        </HStack>
       </Box>
       <ActivityGrid>
-        {groups.map((group) => (
+        {filteredGroups.map((group) => (
           <GroupCard key={group.id} group={group} />
         ))}
       </ActivityGrid>
-      {groups.length === 0 && (
+      {filteredGroups.length === 0 && (
         <Text textAlign={'center'}>Nenhum grupo encontrado.</Text>
       )}
     </Layout>
@@ -87,37 +79,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     };
   }
 
-  const getWhere = () => {
-    const { q } = ctx.query;
-    if (q)
-      return {
-        AND: [
-          {
-            OR: [
-              { name: { contains: q as string } },
-              { type: { contains: q as string } },
-            ],
-          },
-          {
-            OR: [
-              { type: { contains: 'Esporte' } },
-              { type: { contains: 'Bateria' } },
-            ],
-          },
-        ],
-      };
-    else {
-      return {
-        OR: [
-          { type: { contains: 'Esporte' } },
-          { type: { contains: 'Bateria' } },
-        ],
-      };
-    }
-  };
-
   const groups = await prisma.group.findMany({
-    where: getWhere(),
+    where: {
+      OR: [
+        { type: { contains: 'Esporte' } },
+        { type: { contains: 'Bateria' } },
+      ],
+    },
     include: {
       users: true,
       schedules: {

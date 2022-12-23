@@ -15,7 +15,6 @@ import { CgChevronDown } from 'react-icons/cg';
 import { CustomAvatar } from '../atoms';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
-import { trpc } from '@/utils/trpc';
 
 interface AvatarMenuProps {
   children?: ReactNode;
@@ -23,7 +22,8 @@ interface AvatarMenuProps {
 
 export function AvatarMenu({}: AvatarMenuProps) {
   const { data: session } = useSession();
-  const { data: isMember } = trpc.auth.isMember.useQuery();
+
+  const isMember = session?.user.isMember;
 
   return (
     <Menu>

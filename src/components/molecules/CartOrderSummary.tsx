@@ -19,6 +19,7 @@ import { FaArrowRight } from 'react-icons/fa';
 import { formatPrice } from '../atoms';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 interface CartOrderSummaryProps {
@@ -51,7 +52,8 @@ export function CartOrderSummary({
   const router = useRouter();
   const [method, setMethod] = useState('');
   const checkout = trpc.store.cart.checkout.useMutation();
-  const { data: isMember } = trpc.auth.isMember.useQuery();
+  const { data: session } = useSession();
+  const isMember = session?.user.isMember;
   const handleCheckout = async () => {
     await checkout.mutateAsync({ orderId, method }).then((data) => {
       router.push(`/payments/${data?.paymentId}`);

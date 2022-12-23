@@ -33,6 +33,89 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/login',
     verifyRequest: '/auth/verify-request',
   },
+  callbacks: {
+    async session({ session, user }) {
+      const hasPendingOrder = async () => {
+        const user = await prisma.user.findUniqueOrThrow({
+          where: {
+            email: session.user.email as string,
+          },
+        });
+
+        const order = await prisma.order.findFirst({
+          where: {
+            user: {
+              id: user.id,
+            },
+            ordered: false,
+            checkedOut: true,
+            payment: {
+              is: {
+                paid: false,
+                canceled: false,
+                expired: false,
+              },
+            },
+          },
+        });
+
+        return !!order;
+      };
+      const isMember = async () => {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: session?.user?.email as string,
+          },
+          include: {
+            memberships: {
+              where: {
+                endDate: {
+                  gte: new Date(),
+                },
+                payment: {
+                  paid: true,
+                  canceled: false,
+                  expired: false,
+                },
+              },
+            },
+          },
+        });
+        if (!user?.memberships.length) {
+          return false;
+        }
+        return true;
+      };
+      const isStaff = async () => {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: session?.user?.email as string,
+          },
+          include: {
+            groups: {
+              where: {
+                name: 'DIRETORIA',
+              },
+            },
+          },
+        });
+        if (!user?.groups.length) {
+          return false;
+        }
+        return true;
+      };
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          hasPendingOrder: await hasPendingOrder(),
+          isMember: await isMember(),
+          isStaff: await isStaff(),
+        },
+      };
+    },
+  },
 };
 
 export default NextAuth(authOptions);

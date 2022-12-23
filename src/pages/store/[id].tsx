@@ -28,6 +28,7 @@ import { MdEdit } from 'react-icons/md';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
+import { useSession } from 'next-auth/react';
 
 function Item({ item }: { item: ItemsWithParentAndChildrens }) {
   const { price, memberPrice, description, rating, childrens } = item;
@@ -111,7 +112,8 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
     });
   };
 
-  const { data: isStaff } = trpc.auth.isStaff.useQuery();
+  const { data: session } = useSession();
+  const isStaff = session?.user.isStaff;
 
   return (
     <Layout

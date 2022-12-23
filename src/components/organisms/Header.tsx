@@ -13,7 +13,6 @@ import { HeaderAlert } from '../atoms';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
-import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
@@ -56,14 +55,13 @@ export function Header({}: HeaderProps) {
     { href: '/sejasocio', label: 'Seja Sócio', cta: true },
   ];
 
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const isAuth = status === 'authenticated';
-
-  const { data: hasPendingOrders } = trpc.store.hasPendingOrders.useQuery();
+  const hasPendingOrder = session?.user.hasPendingOrder;
 
   return (
     <Box borderBottomWidth={1}>
-      {hasPendingOrders && (
+      {hasPendingOrder && (
         <HeaderAlert>
           <Text>
             Você possui pedidos pendentes, para ver acesse{' '}

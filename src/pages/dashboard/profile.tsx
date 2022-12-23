@@ -44,13 +44,13 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
   });
   const updateUser = trpc.user.update.useMutation({
     onSuccess: () => {
+      router.reload();
       toast({
         title: 'Perfil atualizado',
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
-      router.replace(router.asPath);
     },
   });
   const onSubmit: SubmitHandler<any> = (formValues) => {
@@ -84,13 +84,11 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card variant={'responsive'} maxW="xl" mx="auto">
           <CardHeader>
-            <Center>
-              <Stack spacing={4}>
-                <CustomAvatar size="2xl" />
-                <Heading size="sm" textAlign={'center'}>
-                  {user.name}
-                </Heading>
-              </Stack>
+            <Center flexDir={'column'}>
+              <CustomAvatar size="2xl" mb={6} />
+              <Heading size="md" textAlign={'center'}>
+                {user.name}
+              </Heading>
             </Center>
           </CardHeader>
           <CardBody>

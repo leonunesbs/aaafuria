@@ -6,7 +6,7 @@ import {
   useColorModeValue as mode,
 } from '@chakra-ui/react';
 
-import { trpc } from '@/utils/trpc';
+import { useSession } from 'next-auth/react';
 
 interface PriceTagProps {
   currency: string;
@@ -69,7 +69,8 @@ export function PriceTag(props: PriceTagProps) {
   const { price, currency, salePrice, rootProps, priceProps, salePriceProps } =
     props;
 
-  const { data: isMember } = trpc.auth.isMember.useQuery();
+  const { data: session } = useSession();
+  const isMember = session?.user.isMember;
 
   return (
     <HStack spacing="1" {...rootProps}>
