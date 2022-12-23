@@ -33,7 +33,9 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
     defaultValues: {
       email: user.email,
       name: user.name,
-      birth: new Date(user.profile?.birth as any).toISOString().split('T')[0],
+      birth:
+        user.profile?.birth &&
+        new Date(user.profile?.birth as any).toISOString().split('T')[0],
       registration: user.profile?.registration,
       studyClass: user.profile?.studyClass,
       phone: user.profile?.phone,
@@ -129,7 +131,7 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
             </Stack>
           </CardBody>
           <CardFooter>
-            <Stack>
+            <Stack w="full">
               <Button type="submit" colorScheme={'green'}>
                 Salvar
               </Button>
@@ -150,7 +152,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!session) {
     return {
       redirect: {
-        destination: `/login?after=${ctx.resolvedUrl}`,
+        destination: `/auth/login?after=${ctx.resolvedUrl}`,
         permanent: false,
       },
     };

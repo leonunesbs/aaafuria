@@ -3,7 +3,7 @@
   "description": "A TypeScript starter for Next.js that includes all you need to build amazing projects",
   "version": "1.0.0",
   "private": true,
-  "author": "João Pedro Schmitz <hey@joaopedro.dev> (@jpedroschmitz)",
+  "author": "Leonardo Nunes <leonunesbs@gmail.com> (@leonunesbs)",
   "license": "MIT",
   "keywords": [
     "nextjs",
@@ -42,6 +42,7 @@
     "next-auth": "4.18.6",
     "nodemailer": "6.8.0",
     "react": "18.2.0",
+    "react-device-detect": "2.2.2",
     "react-dom": "18.2.0",
     "react-hook-form": "7.41.0",
     "react-icons": "4.7.1",

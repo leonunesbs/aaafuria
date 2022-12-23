@@ -12,31 +12,52 @@ import {
   Stack,
   Text,
   chakra,
+  useToast,
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 
 import { GetServerSideProps } from 'next';
 import Image from 'next/legacy/image';
 import NextLink from 'next/link';
 import { OAuthButtonGroup } from '@/components/molecules';
-import { authOptions } from './api/auth/[...nextauth]';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { extractDomainFromEmail } from '@/libs/functions';
 import { signIn } from 'next-auth/react';
 import { unstable_getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 
 function Login() {
   const router = useRouter();
-  const { callbackUrl } = router.query;
+  const toast = useToast();
+  const { callbackUrl, error } = router.query;
   const { register, handleSubmit } = useForm<{ email: string }>();
   const ChakraNextImage = chakra(Image);
   const [isLoading, setIsLoading] = useState(false);
-  const onSubmit: SubmitHandler<{ email: string }> = async ({ email }) => {
+  const onSubmit: SubmitHandler<{ email: string }> = ({ email }) => {
     setIsLoading(true);
-    signIn('email', { email, callbackUrl: callbackUrl as string }).finally(() =>
-      setIsLoading(false),
+    localStorage.setItem(
+      '@aaafuria:emailDomain',
+      extractDomainFromEmail(email),
     );
+    signIn('email', {
+      email,
+      callbackUrl: callbackUrl && (callbackUrl as string),
+      redirect: true,
+    }).finally(() => setIsLoading(false));
   };
+
+  useEffect(() => {
+    if (error === 'OAuthAccountNotLinked') {
+      toast({
+        title: 'Conta não vinculada',
+        description: 'Você deve usar a mesma conta que usou para se cadastrar',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [error, toast]);
   return (
     <Container
       maxW="lg"

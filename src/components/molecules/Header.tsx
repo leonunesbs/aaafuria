@@ -192,7 +192,7 @@ export function Header({}: HeaderProps) {
             </MenuList>
           </Menu>
         ) : (
-          <Button colorScheme={'green'} as={NextLink} href="/login">
+          <Button colorScheme={'green'} as={NextLink} href="/auth/login">
             Entrar
           </Button>
         )}

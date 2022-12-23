@@ -5,3 +5,7 @@ export function cleanString(str: string): string {
     .replace(/\s+/g, ' ')
     .trim();
 }
+
+export function extractDomainFromEmail(email: string): string {
+  return email.split('@')[1];
+}
