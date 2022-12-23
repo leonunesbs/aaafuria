@@ -1,13 +1,14 @@
 import { authedProcedure, router } from '../trpc';
 
-import { prisma } from '../prisma';
 import { z } from 'zod';
+import { prisma } from '../prisma';
 
 export const user = router({
   update: authedProcedure
     .input(
       z.object({
         id: z.string(),
+        editable: z.boolean().optional(),
         name: z.string().optional(),
         birth: z.date().optional(),
         registration: z.string().optional(),
@@ -18,8 +19,17 @@ export const user = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const { id, name, birth, phone, cpf, rg, studyClass, registration } =
-        input;
+      const {
+        id,
+        editable,
+        name,
+        birth,
+        phone,
+        cpf,
+        rg,
+        studyClass,
+        registration,
+      } = input;
 
       const loggedUser = await prisma.user.findUniqueOrThrow({
         where: {
@@ -56,6 +66,7 @@ export const user = router({
             name,
             profile: {
               update: {
+                editable,
                 registration,
                 studyClass,
                 birth,

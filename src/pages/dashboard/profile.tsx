@@ -93,35 +93,35 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
           </CardHeader>
           <CardBody>
             <Stack>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Email</FormLabel>
                 <CustomInput isRequired isDisabled {...register('email')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Nome</FormLabel>
                 <CustomInput isRequired {...register('name')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Data de nascimento</FormLabel>
                 <CustomInput isRequired type={'date'} {...register('birth')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Matrícula</FormLabel>
                 <CustomInput isRequired {...register('registration')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Turma</FormLabel>
                 <CustomInput isRequired {...register('studyClass')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Telefone</FormLabel>
                 <CustomInput isRequired {...register('phone')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>RG</FormLabel>
                 <CustomInput isRequired {...register('rg')} />
               </FormControl>
-              <FormControl isRequired>
+              <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>CPF</FormLabel>
                 <CustomInput isRequired {...register('cpf')} />
               </FormControl>

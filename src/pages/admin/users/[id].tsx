@@ -19,6 +19,7 @@ import {
   Link,
   Select,
   Stack,
+  Switch,
   Table,
   TableCaption,
   Tbody,
@@ -79,6 +80,7 @@ function User({
     defaultValues: {
       email: user.email,
       name: user.name,
+      editable: user.profile?.editable,
       studyClass: user.profile?.studyClass,
       registration: user.profile?.registration,
       phone: user.profile?.phone,
@@ -97,6 +99,7 @@ function User({
     },
   });
   const onSubmit: SubmitHandler<InputType> = ({
+    editable,
     name,
     birth,
     registration,
@@ -107,6 +110,7 @@ function User({
   }) => {
     updateUser.mutate({
       id: user.id,
+      editable,
       name: name || '',
       birth: birth ? new Date(birth) : undefined,
       registration: registration || '',
@@ -126,16 +130,14 @@ function User({
           </CardHeader>
           <CardBody>
             <Stack spacing={6}>
-              <Center>
-                <Stack spacing={4}>
-                  <CustomAvatar size="2xl" />
-                  <Heading size="sm" textAlign={'center'}>
-                    {user.name}
-                  </Heading>
-                </Stack>
+              <Center flexDir={'column'}>
+                <CustomAvatar size="2xl" mb={6} />
+                <Heading size="md" textAlign={'center'}>
+                  {user.name}
+                </Heading>
               </Center>
 
-              <Stack>
+              <Stack spacing={4}>
                 <FormControl isDisabled>
                   <FormLabel>Email</FormLabel>
                   <CustomInput {...register('email')} />
@@ -178,6 +180,14 @@ function User({
                   <FormLabel>RG</FormLabel>
                   <CustomInput {...register('rg')} />
                 </FormControl>
+                <Stack w="full" align={'center'}>
+                  <FormLabel>Edição pelo usuário</FormLabel>
+                  <Switch
+                    size="lg"
+                    colorScheme={'green'}
+                    {...register('editable')}
+                  />
+                </Stack>
               </Stack>
               <Table size="sm">
                 <Thead>

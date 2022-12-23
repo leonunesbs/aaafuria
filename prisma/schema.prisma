@@ -53,6 +53,7 @@ model User {
 model Profile {
   id           String    @id @default(cuid())
   userId       String    @unique
+  editable     Boolean   @default(true)
   registration String?
   studyClass   String?
   birth        DateTime?
