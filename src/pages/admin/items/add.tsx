@@ -50,7 +50,7 @@ export interface ItemInput
 function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
   const router = useRouter();
   const toast = useToast();
-  const { register, handleSubmit } = useForm<ItemInput>();
+  const { register, handleSubmit, reset } = useForm<ItemInput>();
   const createItem = trpc.store.item.create.useMutation({
     onSuccess: () => {
       toast({
@@ -58,7 +58,7 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
         status: 'success',
         isClosable: true,
       });
-      router.push('/admin/items');
+      router.reload();
     },
   });
   const onSubmit: SubmitHandler<ItemInput> = async (data) => {
@@ -161,7 +161,11 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
           </CardBody>
           <CardFooter>
             <Stack w="full">
-              <Button colorScheme={'green'} type="submit">
+              <Button
+                colorScheme={'green'}
+                type="submit"
+                isLoading={createItem.isLoading}
+              >
                 Adicionar
               </Button>
               <Button as={Link} href="/admin/items">

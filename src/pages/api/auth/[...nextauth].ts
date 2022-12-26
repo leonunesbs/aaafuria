@@ -35,32 +35,6 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, user }) {
-      const hasPendingOrder = async () => {
-        const user = await prisma.user.findUniqueOrThrow({
-          where: {
-            email: session.user.email as string,
-          },
-        });
-
-        const order = await prisma.order.findFirst({
-          where: {
-            user: {
-              id: user.id,
-            },
-            ordered: false,
-            checkedOut: true,
-            payment: {
-              is: {
-                paid: false,
-                canceled: false,
-                expired: false,
-              },
-            },
-          },
-        });
-
-        return !!order;
-      };
       const isMember = async () => {
         const user = await prisma.user.findUnique({
           where: {
@@ -109,7 +83,6 @@ export const authOptions: NextAuthOptions = {
         user: {
           ...session.user,
           id: user.id,
-          hasPendingOrder: await hasPendingOrder(),
           isMember: await isMember(),
           isStaff: await isStaff(),
         },

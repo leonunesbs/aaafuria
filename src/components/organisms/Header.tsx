@@ -1,15 +1,14 @@
 import {
   Box,
+  BoxProps,
   Button,
   Container,
   Flex,
   HStack,
-  Link,
-  Text,
 } from '@chakra-ui/react';
-import { ColorModeButton, HeaderAlert } from '../atoms';
 
 import { AvatarMenu } from '../molecules';
+import { ColorModeButton } from '../atoms';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
@@ -47,7 +46,7 @@ const CustomMenuItem = ({
   );
 };
 
-export function Header({}: HeaderProps) {
+export function Header({ ...rest }: BoxProps) {
   const menuItems = [
     { href: '/', label: 'Início' },
     { href: '/store', label: 'Loja' },
@@ -55,25 +54,11 @@ export function Header({}: HeaderProps) {
     { href: '/sejasocio', label: 'Seja Sócio', cta: true },
   ];
 
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const isAuth = status === 'authenticated';
-  const hasPendingOrder = session?.user.hasPendingOrder;
 
   return (
-    <Box borderBottomWidth={1}>
-      {hasPendingOrder && (
-        <HeaderAlert>
-          <Text>
-            Você possui pedidos pendentes, para ver acesse{' '}
-            <Link as={NextLink} href="/dashboard/orders">
-              <Text as="span" fontWeight="bold">
-                meus pedidos
-              </Text>
-            </Link>
-            .
-          </Text>
-        </HeaderAlert>
-      )}
+    <Box borderBottomWidth={1} {...rest}>
       <Container
         as="nav"
         display={'flex'}

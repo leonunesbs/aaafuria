@@ -39,15 +39,18 @@ type OrderWithPaymentAndItems = Order & {
   items: OrderItemWithItem[];
 };
 
-export const status = (order: OrderWithPaymentAndItems) => {
-  if (order.payment.canceled) {
+export const paymentStatus = (payment: Payment) => {
+  if (payment.canceled) {
     return 'CANCELADO';
   }
-  if (order.payment.paid) {
+  if (payment.paid) {
     return 'PAGO';
   }
-  if (order.payment.expired) {
+  if (payment.expired) {
     return 'EXPIRADO';
+  }
+  if (payment.attachment) {
+    return 'AGUARDANDO CONFIRMAÇÃO';
   }
   return 'AGUARDANDO PAGAMENTO';
 };
@@ -105,7 +108,7 @@ function Orders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
                       </Link>
                     </Td>
                     <Td>
-                      <Badge>{status(order)}</Badge>
+                      <Badge>{paymentStatus(order.payment)}</Badge>
                     </Td>
                     <Td>
                       <Text>{formatPrice(order.payment?.amount)}</Text>

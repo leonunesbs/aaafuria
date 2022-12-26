@@ -82,8 +82,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const groups = await prisma.group.findMany({
     where: {
       OR: [
-        { type: { contains: 'Esporte' } },
-        { type: { contains: 'Bateria' } },
+        { type: { contains: 'ESPORTE' } },
+        { type: { contains: 'BATERIA' } },
       ],
     },
     include: {
@@ -110,7 +110,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       name: 'asc',
     },
   });
-
   return {
     props: {
       groups: JSON.parse(JSON.stringify(groups)),

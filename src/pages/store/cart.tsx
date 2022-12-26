@@ -1,4 +1,12 @@
-import { Box, Flex, HStack, Heading, Link, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  HStack,
+  Heading,
+  Link,
+  Skeleton,
+  Stack,
+} from '@chakra-ui/react';
 
 import { CartItem } from '@/components/molecules';
 import { CartOrderSummary } from '@/components/organisms';
@@ -14,10 +22,11 @@ import { useSession } from 'next-auth/react';
 
 function Cart() {
   const { data: session } = useSession();
-  const { data: orderItems, refetch } = trpc.store.orderItems.useQuery(
-    session?.user?.email as string,
-    {},
-  );
+  const {
+    data: orderItems,
+    refetch,
+    isLoading,
+  } = trpc.store.orderItems.useQuery(session?.user?.email as string, {});
   const subTotal = orderItems?.reduce(
     (acc, orderItem) => acc + orderItem.item.price * orderItem.quantity,
     0,
@@ -43,29 +52,30 @@ function Cart() {
             Meu carrinho ({orderItems?.length} ite
             {orderItems && orderItems.length > 1 ? 'ns' : 'm'})
           </Heading>
-
-          <Stack spacing="6">
-            {orderItems?.map((orderItem) => (
-              <CartItem
-                key={orderItem.id}
-                {...orderItem}
-                refetch={refetch}
-                order={{
-                  ...orderItem.order,
-                  createdAt: new Date(orderItem.order.createdAt),
-                  updatedAt: new Date(orderItem.order.updatedAt),
-                }}
-              />
-            ))}
-            {orderItems && orderItems.length === 0 && (
-              <Box textAlign="center">
-                <p>Seu carrinho está vazio.</p>
-                <Link as={NextLink} color={green} href="/store">
-                  Ir para a Loja
-                </Link>
-              </Box>
-            )}
-          </Stack>
+          <Skeleton isLoaded={!isLoading}>
+            <Stack spacing="6">
+              {orderItems?.map((orderItem) => (
+                <CartItem
+                  key={orderItem.id}
+                  {...orderItem}
+                  refetch={refetch}
+                  order={{
+                    ...orderItem.order,
+                    createdAt: new Date(orderItem.order.createdAt),
+                    updatedAt: new Date(orderItem.order.updatedAt),
+                  }}
+                />
+              ))}
+              {orderItems && orderItems.length === 0 && (
+                <Box textAlign="center">
+                  <p>Seu carrinho está vazio.</p>
+                  <Link as={NextLink} color={green} href="/store">
+                    Ir para a Loja
+                  </Link>
+                </Box>
+              )}
+            </Stack>
+          </Skeleton>
         </Stack>
 
         {orderItems && orderItems.length > 0 && (

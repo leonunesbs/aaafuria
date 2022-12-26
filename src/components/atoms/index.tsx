@@ -7,3 +7,4 @@ export * from './Rating';
 export * from './HeaderAlert';
 export * from './CustomInput';
 export * from './ColorModeButton';
+export * from './Pagination';

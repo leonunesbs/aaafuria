@@ -102,6 +102,7 @@ function Groups({ groups }: { groups: Group[] }) {
                           size={'sm'}
                           colorScheme="red"
                           onClick={() => deleteGroup.mutate(group.id)}
+                          isLoading={deleteGroup.isLoading}
                         >
                           Excluir
                         </Button>
@@ -135,7 +136,9 @@ function Groups({ groups }: { groups: Group[] }) {
                     Ex.: Administrativo, Esportes, Bateria
                   </FormHelperText>
                 </FormControl>
-                <Button type="submit">Adicionar</Button>
+                <Button type="submit" isLoading={createGroup.isLoading}>
+                  Adicionar
+                </Button>
               </Stack>
             </form>
           </CardBody>

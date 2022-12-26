@@ -6,7 +6,6 @@ declare module 'next-auth' {
    */
   interface Session {
     user: User & {
-      hasPendingOrder: boolean;
       isMember: boolean;
       isStaff: boolean;
     };

@@ -11,6 +11,7 @@ import {
   ListItem,
   Stack,
   Table,
+  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -19,7 +20,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { CustomInput, formatPrice } from '@/components/atoms';
+import { CustomInput, Pagination, formatPrice } from '@/components/atoms';
 import { Item, Order, OrderItem, Payment, User } from '@prisma/client';
 import { useContext, useState } from 'react';
 
@@ -28,8 +29,10 @@ import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { paymentStatus } from '@/pages/dashboard/orders';
 import { prisma } from '@/server/prisma';
 import { unstable_getServerSession } from 'next-auth';
+import { useRouter } from 'next/router';
 
 type OrderItemWithItem = OrderItem & {
   item: Item & {
@@ -45,8 +48,12 @@ type OrderWithUserPaymentAndItems = Order & {
 
 function Orders({
   orders: initalOrders,
+  page,
+  totalPages,
 }: {
   orders: OrderWithUserPaymentAndItems[];
+  page: number;
+  totalPages: number;
 }) {
   const { green } = useContext(ColorContext);
 
@@ -55,15 +62,7 @@ function Orders({
       return acc + item.price * item.quantity;
     }, 0);
 
-    const status = order.payment.canceled
-      ? 'CANCELADO'
-      : order.payment.paid
-      ? 'PAGO'
-      : order.payment.expired
-      ? 'EXPIRADO'
-      : order.payment.attachment
-      ? 'AGUARDANDO CONFIRMAÇÃO'
-      : 'AGUARDANDO PAGAMENTO';
+    const status = paymentStatus(order.payment);
 
     return {
       ...order,
@@ -71,7 +70,7 @@ function Orders({
       status,
     };
   });
-
+  const router = useRouter();
   const [q, setQ] = useState<string>();
   const filteredOrders = orders.filter((order) => {
     if (!q) {
@@ -94,50 +93,51 @@ function Orders({
     }
   });
 
-  const handleExportFilteredData = () => {
-    const data = filteredOrders.map((order) => {
-      const items = order.items.map((item) => {
-        return `${item.item.name} (${item.quantity}x)`;
-      });
-
-      return {
-        id: order.id,
-        usuario: order.user.name,
-        itens: items.join(', '),
-        valor: formatPrice(order.total),
-        status: order.status,
-      };
-    });
-
-    const csv = data
-      .map((row) => {
-        return Object.values(row).join(';');
-      })
-      .join('\n');
-
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', 'pedidos.csv');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
   return (
-    <Layout title="Gerenciar pedidos">
+    <Layout
+      title="Gerenciar pedidos"
+      headerProps={{
+        sx: {
+          '@media print': {
+            display: 'none',
+          },
+        },
+      }}
+    >
       <Card>
         <CardHeader>
           <Heading size="md">Pedidos</Heading>
         </CardHeader>
         <CardBody>
           <Stack>
-            <HStack>
+            <HStack
+              sx={{
+                '@media print': {
+                  display: 'none',
+                },
+              }}
+            >
               <CustomInput
                 placeholder="Buscar pedido (ID, usuário, itens, valor, status)"
-                onChange={(e) => setQ(e.target.value)}
+                onChange={(e) => {
+                  if (e.target.value === '') {
+                    setQ(undefined);
+                  }
+
+                  if (e.target.value.length === 0) {
+                    router.replace({
+                      query: {},
+                    });
+                    setQ(undefined);
+                  } else {
+                    router.replace({
+                      query: {
+                        full: true,
+                      },
+                    });
+                    setQ(e.target.value);
+                  }
+                }}
               />
               <HStack>
                 <Button colorScheme="green">Buscar</Button>
@@ -148,9 +148,6 @@ function Orders({
               <Table>
                 <Thead>
                   <Tr>
-                    <Th>
-                      <Text>ID</Text>
-                    </Th>
                     <Th>
                       <Text>Usuário</Text>
                     </Th>
@@ -163,21 +160,14 @@ function Orders({
                     <Th>
                       <Text>Status de pagamento</Text>
                     </Th>
+                    <Th>
+                      <Text>Data do pedido</Text>
+                    </Th>
                   </Tr>
                 </Thead>
                 <Tbody>
                   {filteredOrders.map((order) => (
                     <Tr key={order.id}>
-                      <Td>
-                        <Text
-                          maxW={24}
-                          whiteSpace="nowrap"
-                          overflow={'hidden'}
-                          textOverflow={'ellipsis'}
-                        >
-                          {order.id}
-                        </Text>
-                      </Td>
                       <Td>
                         <Text>{order.user.name}</Text>
                       </Td>
@@ -213,15 +203,48 @@ function Orders({
                           {order.status}
                         </Link>
                       </Td>
+                      <Td>
+                        <Text>
+                          {new Date(order.createdAt).toLocaleString('pt-BR', {
+                            timeZone: 'America/Sao_Paulo',
+                            dateStyle: 'short',
+                            timeStyle: 'short',
+                          })}
+                        </Text>
+                      </Td>
                     </Tr>
                   ))}
                 </Tbody>
+                <TableCaption>
+                  <Pagination
+                    sx={{
+                      '@media print': {
+                        display: 'none',
+                      },
+                    }}
+                    page={page}
+                    totalPages={totalPages}
+                  />
+                </TableCaption>
               </Table>
             </TableContainer>
           </Stack>
         </CardBody>
-        <CardFooter>
-          <Button onClick={handleExportFilteredData}>Exportar</Button>
+        <CardFooter
+          sx={{
+            '@media print': {
+              display: 'none',
+            },
+          }}
+        >
+          <HStack justify={'end'} w="full">
+            <Button onClick={() => window.print()} colorScheme="green">
+              Imprimir
+            </Button>
+            <Button onClick={() => router.push('/admin')}>
+              Área do Diretor
+            </Button>
+          </HStack>
         </CardFooter>
       </Card>
     </Layout>
@@ -242,6 +265,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+
+  const totalOrders = await prisma.order.count();
+  const pageSize = ctx.query.full ? totalOrders : 20;
+  const page = ctx.query.page ? Number(ctx.query.page) : 1;
 
   const orders = await prisma.order.findMany({
     where: {
@@ -265,12 +292,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     orderBy: {
       createdAt: 'desc',
     },
+    take: pageSize,
+    skip: (page - 1) * pageSize,
   });
 
   return {
     props: {
       session,
       orders: JSON.parse(JSON.stringify(orders)),
+      page,
+      totalPages: Math.ceil((await prisma.order.count()) / pageSize),
     },
   };
 };

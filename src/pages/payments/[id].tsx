@@ -63,6 +63,16 @@ function Payment({
     });
   };
 
+  const confirmPayment = trpc.payment.confirm.useMutation({
+    onSuccess: () => {
+      toast({
+        title: 'Pagamento confirmado',
+        status: 'success',
+        isClosable: true,
+      });
+      router.replace(router.asPath, undefined, { scroll: false });
+    },
+  });
   const checkoutPayment = trpc.payment.checkout.useMutation();
   const handleCheckout = async () => {
     await checkoutPayment.mutateAsync(payment.id).then((data) => {
@@ -73,9 +83,18 @@ function Payment({
   const cancelPayment = trpc.payment.cancel.useMutation({
     onSuccess: () =>
       router.replace(router.asPath, undefined, { scroll: false }),
+    onError: (err) => {
+      toast({
+        title: 'Erro ao cancelar pagamento',
+        description: err.message,
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    },
   });
-  const handleCancel = async () => {
-    await cancelPayment.mutateAsync(payment.id);
+  const handleCancel = () => {
+    cancelPayment.mutate(payment.id);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,6 +130,7 @@ function Payment({
                 id: payment.id,
                 attachment: url.split('?')[0],
               });
+              setUploading(false);
             });
         })
         .catch((err) => {
@@ -121,9 +141,9 @@ function Payment({
             duration: 5000,
             isClosable: true,
           });
+          setUploading(false);
         });
     }
-    setUploading(false);
   };
 
   const deleteFile = trpc.s3.deleteFile.useMutation();
@@ -324,9 +344,19 @@ function Payment({
         <CardFooter>
           {!payment.canceled && (
             <Stack w="full">
-              {payment.method === 'PIX' ? (
+              {!payment.paid && (
                 <Button
                   colorScheme={'green'}
+                  onClick={() => {
+                    confirmPayment.mutate(payment.id);
+                  }}
+                  isLoading={confirmPayment.isLoading}
+                >
+                  Confirmar pagamento
+                </Button>
+              )}
+              {payment.method === 'PIX' ? (
+                <Button
                   onClick={handleButtonClick}
                   isDisabled={!!payment.attachment}
                   isLoading={uploading}
@@ -343,7 +373,11 @@ function Payment({
                   Pagar
                 </Button>
               )}
-              <Button colorScheme={'red'} onClick={handleCancel}>
+              <Button
+                colorScheme={'red'}
+                onClick={handleCancel}
+                isLoading={cancelPayment.isLoading}
+              >
                 Cancelar pagamento
               </Button>
             </Stack>
