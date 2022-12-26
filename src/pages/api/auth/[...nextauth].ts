@@ -29,16 +29,53 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
   ],
-  // pages: {
-  //   signIn: '/auth/login',
-  //   verifyRequest: '/auth/verify-request',
-  // },
+  pages: {
+    signIn: '/auth/login',
+    verifyRequest: '/auth/verify-request',
+  },
   callbacks: {
     async session({ session, user }) {
       const isMember = async () => {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: session?.user?.email as string,
+          },
+          include: {
+            memberships: {
+              where: {
+                endDate: {
+                  gte: new Date(),
+                },
+                payment: {
+                  paid: true,
+                  canceled: false,
+                  expired: false,
+                },
+              },
+            },
+          },
+        });
+        if (!user?.memberships.length) {
+          return false;
+        }
         return true;
       };
       const isStaff = async () => {
+        const user = await prisma.user.findUnique({
+          where: {
+            email: session?.user?.email as string,
+          },
+          include: {
+            groups: {
+              where: {
+                name: 'DIRETORIA',
+              },
+            },
+          },
+        });
+        if (!user?.groups.length) {
+          return false;
+        }
         return true;
       };
       return {
@@ -52,7 +89,6 @@ export const authOptions: NextAuthOptions = {
       };
     },
   },
-  debug: true,
 };
 
 export default NextAuth(authOptions);

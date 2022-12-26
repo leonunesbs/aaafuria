@@ -25,7 +25,11 @@ export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
           variant="outline"
           fontWeight={'normal'}
           width="full"
-          onClick={() => signIn(name.toLocaleLowerCase())}
+          onClick={() =>
+            signIn(name.toLocaleLowerCase(), {
+              callbackUrl: callbackUrl ? (callbackUrl as string) : undefined,
+            })
+          }
           leftIcon={icon}
         >
           <Text>Entrar com {name}</Text>
