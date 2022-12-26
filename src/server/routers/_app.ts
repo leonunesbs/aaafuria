@@ -1,4 +1,4 @@
-import { auth, group, plan, schedule, store, user } from '.';
+import { auth, group, plan, s3, schedule, store, user } from '.';
 import { authedProcedure, router } from '../trpc';
 
 import Stripe from 'stripe';
@@ -13,13 +13,14 @@ export const appRouter = router({
   plan,
   group,
   schedule,
+  s3,
   payment: router({
     update: authedProcedure
       .input(
         z.object({
           id: z.string(),
           method: z.string().optional(),
-          attachment: z.string().optional(),
+          attachment: z.string().optional().nullable(),
         }),
       )
       .mutation(async ({ input }) => {

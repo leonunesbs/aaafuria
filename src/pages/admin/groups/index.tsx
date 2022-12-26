@@ -94,7 +94,7 @@ function Groups({ groups }: { groups: Group[] }) {
                           color={green}
                           fontWeight={'semibold'}
                         >
-                          {group.name}
+                          {group.name} ({group.type})
                         </Link>
                       </Td>
                       <Td isNumeric>

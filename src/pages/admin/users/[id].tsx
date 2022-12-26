@@ -18,6 +18,7 @@ import {
   IconButton,
   Link,
   Select,
+  Skeleton,
   Stack,
   Switch,
   Table,
@@ -29,6 +30,7 @@ import {
   Tr,
   useDisclosure,
   useToast,
+  VisuallyHiddenInput,
 } from '@chakra-ui/react';
 
 import { CustomAvatar, CustomInput } from '@/components/atoms';
@@ -37,6 +39,7 @@ import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { Group, Membership, Profile, User } from '@prisma/client';
+import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import NextLink from 'next/link';
@@ -96,6 +99,7 @@ function User({
         duration: 5000,
         isClosable: true,
       });
+      router.reload();
     },
   });
   const onSubmit: SubmitHandler<InputType> = ({
@@ -121,6 +125,39 @@ function User({
     });
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const getSignedUrl = trpc.s3.getSignedUrl.useMutation();
+  const handleOnFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await getSignedUrl
+        .mutateAsync({
+          name: file.name,
+          type: file.type,
+          path: `media/users/${user.id}`,
+          size: file.size,
+        })
+        .then(async (data) => {
+          const url = data.url;
+          await axios.put(url, file, {
+            headers: {
+              'Content-Type': file.type,
+              'Access-Control-Allow-Origin': '*',
+              'Content-Disposition': 'inline',
+            },
+          });
+          updateUser.mutate({
+            id: user.id,
+            image: url.split('?')[0],
+          });
+        });
+    }
+  };
+
   return (
     <Layout title="Editar usuário">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -131,7 +168,19 @@ function User({
           <CardBody>
             <Stack spacing={6}>
               <Center flexDir={'column'}>
-                <CustomAvatar size="2xl" mb={6} />
+                <VisuallyHiddenInput
+                  type={'file'}
+                  ref={fileInputRef}
+                  onChange={handleOnFileChange}
+                />
+                <Skeleton isLoaded={!updateUser.isLoading}>
+                  <CustomAvatar
+                    size="2xl"
+                    mb={6}
+                    onClick={handleButtonClick}
+                    cursor="pointer"
+                  />
+                </Skeleton>
                 <Heading size="md" textAlign={'center'}>
                   {user.name}
                 </Heading>
@@ -185,7 +234,12 @@ function User({
                   <Switch
                     size="lg"
                     colorScheme={'green'}
-                    {...register('editable')}
+                    onChange={(e) => {
+                      updateUser.mutate({
+                        id: user.id,
+                        editable: e.target.checked,
+                      });
+                    }}
                   />
                 </Stack>
               </Stack>

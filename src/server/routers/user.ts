@@ -1,7 +1,7 @@
 import { authedProcedure, router } from '../trpc';
 
-import { z } from 'zod';
 import { prisma } from '../prisma';
+import { z } from 'zod';
 
 export const user = router({
   update: authedProcedure
@@ -10,6 +10,7 @@ export const user = router({
         id: z.string(),
         editable: z.boolean().optional(),
         name: z.string().optional(),
+        image: z.string().optional(),
         birth: z.date().optional(),
         registration: z.string().optional(),
         studyClass: z.string().optional(),
@@ -22,6 +23,7 @@ export const user = router({
       const {
         id,
         editable,
+        image,
         name,
         birth,
         phone,
@@ -64,6 +66,7 @@ export const user = router({
           },
           data: {
             name,
+            image,
             profile: {
               update: {
                 editable,

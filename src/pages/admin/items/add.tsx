@@ -58,7 +58,7 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
         status: 'success',
         isClosable: true,
       });
-      router.reload();
+      router.push('/admin/items');
     },
   });
   const onSubmit: SubmitHandler<ItemInput> = async (data) => {
@@ -93,7 +93,7 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
             <Stack spacing={2}>
               <FormControl>
                 <FormLabel>Produto principal</FormLabel>
-                <Select {...register('parentId')}>
+                <Select placeholder={'Nenhum'} {...register('parentId')}>
                   {orphanItems.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.name}

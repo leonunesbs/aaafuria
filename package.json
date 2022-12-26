@@ -36,6 +36,8 @@
     "@trpc/next": "10.5.0",
     "@trpc/react-query": "10.5.0",
     "@trpc/server": "10.5.0",
+    "aws-sdk": "2.1282.0",
+    "axios": "1.2.1",
     "date-fns": "2.29.3",
     "framer-motion": "7.8.0",
     "next": "13.1.0",

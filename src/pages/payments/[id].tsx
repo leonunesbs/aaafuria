@@ -1,4 +1,4 @@
-import { CustomInput, formatPrice } from '@/components/atoms';
+import { formatPrice } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
@@ -30,13 +30,16 @@ import {
   Th,
   Tr,
   useDisclosure,
+  useToast,
+  VisuallyHiddenInput,
 } from '@chakra-ui/react';
 import { Membership, Order, Payment } from '@prisma/client';
+import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { unstable_getServerSession, User } from 'next-auth';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { CgArrowsExchange } from 'react-icons/cg';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
@@ -48,6 +51,7 @@ function Payment({
   payment: Payment & { user: User; membership: Membership; order: Order };
 }) {
   const router = useRouter();
+  const toast = useToast();
   const drawer = useDisclosure();
   const updatePayment = trpc.payment.update.useMutation({
     onSuccess: () =>
@@ -79,15 +83,60 @@ function Payment({
     fileInputRef.current?.click();
   };
 
+  const getSignedUrl = trpc.s3.getSignedUrl.useMutation();
+  const [uploading, setUploading] = useState(false);
   const handleOnFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUploading(true);
     const file = e.target.files?.[0];
     if (file) {
-      await updatePayment.mutateAsync({
-        id: payment.id,
-        attachment: file.name,
-      });
+      await getSignedUrl
+        .mutateAsync({
+          name: file.name,
+          type: file.type,
+          path: `media/payments/${payment.id}`,
+          size: file.size,
+        })
+        .then(async (data) => {
+          const url = data.url;
+          await axios
+            .put(url, file, {
+              headers: {
+                'Content-Type': file.type,
+                'Access-Control-Allow-Origin': '*',
+                'Content-Disposition': 'inline',
+              },
+            })
+            .then(() => {
+              updatePayment.mutate({
+                id: payment.id,
+                attachment: url.split('?')[0],
+              });
+            });
+        })
+        .catch((err) => {
+          toast({
+            title: 'Erro ao enviar arquivo',
+            description: err.message,
+            status: 'warning',
+            duration: 5000,
+            isClosable: true,
+          });
+        });
     }
+    setUploading(false);
   };
+
+  const deleteFile = trpc.s3.deleteFile.useMutation();
+  const handleDeleteFile = async () => {
+    const fileName = payment.attachment?.split('.com/')[1];
+    await deleteFile.mutateAsync(fileName as string).then(() => {
+      updatePayment.mutate({
+        id: payment.id,
+        attachment: null,
+      });
+    });
+  };
+
   const btnRef = useRef<HTMLButtonElement>(null);
 
   return (
@@ -229,8 +278,7 @@ function Payment({
                 <Tr>
                   <Th>Anexo</Th>
                   <Td>
-                    <CustomInput
-                      hidden
+                    <VisuallyHiddenInput
                       ref={fileInputRef}
                       type="file"
                       onChange={handleOnFileChange}
@@ -260,12 +308,7 @@ function Payment({
                               variant={'ghost'}
                               colorScheme="red"
                               size="sm"
-                              onClick={() => {
-                                updatePayment.mutateAsync({
-                                  id: payment.id,
-                                  attachment: '',
-                                });
-                              }}
+                              onClick={handleDeleteFile}
                             />
                           )}
                       </HStack>
@@ -286,6 +329,8 @@ function Payment({
                   colorScheme={'green'}
                   onClick={handleButtonClick}
                   isDisabled={!!payment.attachment}
+                  isLoading={uploading}
+                  loadingText="Enviando..."
                 >
                   Anexar comprovante
                 </Button>

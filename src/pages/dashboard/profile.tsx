@@ -1,5 +1,6 @@
 import { CustomAvatar, CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
+import { ColorContext } from '@/contexts';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import {
@@ -14,20 +15,25 @@ import {
   FormControl,
   FormLabel,
   Heading,
+  Skeleton,
   Stack,
   Text,
   useToast,
+  VisuallyHiddenInput,
 } from '@chakra-ui/react';
 import { Profile, User } from '@prisma/client';
+import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { unstable_getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
+import { useContext, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { authOptions } from '../api/auth/[...nextauth]';
 
 function Profile({ user }: { user: User & { profile?: Profile } }) {
   const toast = useToast();
   const router = useRouter();
+  const { green } = useContext(ColorContext);
   const { register, handleSubmit } = useForm({
     defaultValues: {
       email: user.email,
@@ -44,13 +50,13 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
   });
   const updateUser = trpc.user.update.useMutation({
     onSuccess: () => {
-      router.reload();
       toast({
         title: 'Perfil atualizado',
         status: 'success',
         duration: 3000,
         isClosable: true,
       });
+      router.reload();
     },
   });
   const onSubmit: SubmitHandler<any> = (formValues) => {
@@ -60,6 +66,40 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
       birth: new Date(birth),
       ...rest,
     });
+  };
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const handleButtonClick = () => {
+    if (!user.profile?.editable) return;
+    fileInputRef.current?.click();
+  };
+
+  const getSignedUrl = trpc.s3.getSignedUrl.useMutation();
+  const handleOnFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await getSignedUrl
+        .mutateAsync({
+          name: file.name,
+          type: file.type,
+          path: `media/users/${user.id}`,
+          size: file.size,
+        })
+        .then(async (data) => {
+          const url = data.url;
+          await axios.put(url, file, {
+            headers: {
+              'Content-Type': file.type,
+              'Access-Control-Allow-Origin': '*',
+              'Content-Disposition': 'inline',
+            },
+          });
+          updateUser.mutate({
+            id: user.id,
+            image: url.split('?')[0],
+          });
+        });
+    }
   };
 
   return (
@@ -84,8 +124,23 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card variant={'responsive'} maxW="xl" mx="auto">
           <CardHeader>
+            <Heading mb={4} size="md">
+              Meu perfil
+            </Heading>
             <Center flexDir={'column'}>
-              <CustomAvatar size="2xl" mb={6} />
+              <VisuallyHiddenInput
+                type={'file'}
+                ref={fileInputRef}
+                onChange={handleOnFileChange}
+              />
+              <Skeleton isLoaded={!updateUser.isLoading}>
+                <CustomAvatar
+                  size="2xl"
+                  mb={6}
+                  onClick={handleButtonClick}
+                  cursor="pointer"
+                />
+              </Skeleton>
               <Heading size="md" textAlign={'center'}>
                 {user.name}
               </Heading>
@@ -93,6 +148,17 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
           </CardHeader>
           <CardBody>
             <Stack>
+              {!user.profile?.editable && (
+                <Text
+                  textAlign={'center'}
+                  fontSize="xs"
+                  fontStyle="italic"
+                  color={green}
+                >
+                  Edição desabilitada, entre em contato com um diretor para
+                  habilitar a edição.
+                </Text>
+              )}
               <FormControl isRequired isDisabled={!user.profile?.editable}>
                 <FormLabel>Email</FormLabel>
                 <CustomInput isRequired isDisabled {...register('email')} />
