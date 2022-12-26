@@ -6,8 +6,8 @@ import { z } from 'zod';
 
 const s3_init = new S3({
   region: 'sa-east-1',
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_KEY,
   signatureVersion: 'v4',
 });
 
@@ -39,7 +39,7 @@ export const s3 = router({
       }
 
       const fileParams = {
-        Bucket: process.env.AWS_BUCKET,
+        Bucket: process.env.S3_BUCKET,
         Key: `${path}/${generateImageName(name)}`,
         Expires: 10 * 60, // 10 minutes
         ContentType: type,
@@ -55,7 +55,7 @@ export const s3 = router({
     .input(z.string())
     .mutation(async ({ input: path }) => {
       const fileParams = {
-        Bucket: process.env.AWS_BUCKET as string,
+        Bucket: process.env.S3_BUCKET as string,
         Key: path,
       };
 

@@ -4,8 +4,8 @@ import S3 from 'aws-sdk/clients/s3';
 
 const s3 = new S3({
   region: 'sa-east-1',
-  accessKeyId: process.env.AWS_ACCESS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_KEY,
   signatureVersion: 'v4',
 });
 
@@ -28,7 +28,7 @@ export default async function handler(
     const { path } = req.body;
 
     const fileParams = {
-      Bucket: process.env.AWS_BUCKET as string,
+      Bucket: process.env.S3_BUCKET as string,
       Key: path,
     };
 
