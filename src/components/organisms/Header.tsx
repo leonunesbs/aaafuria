@@ -15,7 +15,7 @@ import { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
-interface HeaderProps {
+interface HeaderProps extends BoxProps {
   children?: ReactNode;
 }
 
@@ -46,7 +46,7 @@ const CustomMenuItem = ({
   );
 };
 
-export function Header({ ...rest }: BoxProps) {
+export function Header({ ...rest }: HeaderProps) {
   const menuItems = [
     { href: '/', label: 'Início' },
     { href: '/store', label: 'Loja' },
