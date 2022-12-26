@@ -29,10 +29,10 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     }),
   ],
-  // pages: {
-  //   signIn: '/auth/login',
-  //   verifyRequest: '/auth/verify-request',
-  // },
+  pages: {
+    signIn: '/auth/login',
+    verifyRequest: '/auth/verify-request',
+  },
   callbacks: {
     async session({ session, user }) {
       const isMember = async () => {
@@ -89,6 +89,7 @@ export const authOptions: NextAuthOptions = {
       };
     },
   },
+  debug: true,
 };
 
 export default NextAuth(authOptions);
