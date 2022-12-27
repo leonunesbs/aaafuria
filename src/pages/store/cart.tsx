@@ -1,10 +1,11 @@
 import {
   Box,
+  Center,
   Flex,
   HStack,
   Heading,
   Link,
-  Skeleton,
+  Spinner,
   Stack,
 } from '@chakra-ui/react';
 
@@ -35,8 +36,17 @@ function Cart() {
     (acc, orderItem) => acc + orderItem.price,
     0,
   );
-
   const { green } = useContext(ColorContext);
+
+  if (isLoading)
+    return (
+      <Layout title="Meu carrinho">
+        <Center mt={20}>
+          <Spinner size="lg" color={green} />
+        </Center>
+      </Layout>
+    );
+
   return (
     <Layout title="Meu carrinho">
       <Stack
@@ -52,30 +62,28 @@ function Cart() {
             Meu carrinho ({orderItems?.length} ite
             {orderItems && orderItems.length > 1 ? 'ns' : 'm'})
           </Heading>
-          <Skeleton isLoaded={!isLoading}>
-            <Stack spacing="6">
-              {orderItems?.map((orderItem) => (
-                <CartItem
-                  key={orderItem.id}
-                  {...orderItem}
-                  refetch={refetch}
-                  order={{
-                    ...orderItem.order,
-                    createdAt: new Date(orderItem.order.createdAt),
-                    updatedAt: new Date(orderItem.order.updatedAt),
-                  }}
-                />
-              ))}
-              {orderItems && orderItems.length === 0 && (
-                <Box textAlign="center">
-                  <p>Seu carrinho está vazio.</p>
-                  <Link as={NextLink} color={green} href="/store">
-                    Ir para a Loja
-                  </Link>
-                </Box>
-              )}
-            </Stack>
-          </Skeleton>
+          <Stack spacing="6">
+            {orderItems?.map((orderItem) => (
+              <CartItem
+                key={orderItem.id}
+                {...orderItem}
+                refetch={refetch}
+                order={{
+                  ...orderItem.order,
+                  createdAt: new Date(orderItem.order.createdAt),
+                  updatedAt: new Date(orderItem.order.updatedAt),
+                }}
+              />
+            ))}
+            {orderItems && orderItems.length === 0 && (
+              <Box textAlign="center">
+                <p>Seu carrinho está vazio.</p>
+                <Link as={NextLink} color={green} href="/store">
+                  Ir para a Loja
+                </Link>
+              </Box>
+            )}
+          </Stack>
         </Stack>
 
         {orderItems && orderItems.length > 0 && (

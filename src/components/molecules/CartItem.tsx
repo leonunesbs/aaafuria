@@ -98,6 +98,7 @@ const QuantitySelect = ({
           icon={<Text>{quantity}</Text>}
           cursor="auto"
           borderWidth={1}
+          isLoading={addToCart.isLoading || removeFromCart.isLoading}
         />
       </Box>
 
