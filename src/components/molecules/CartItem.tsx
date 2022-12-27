@@ -91,6 +91,9 @@ const QuantitySelect = ({
               quantity: 1,
             });
           }}
+          isDisabled={
+            addToCart.isLoading || removeFromCart.isLoading || loadingRefetch
+          }
         />
       </Box>
       <Box>
@@ -112,11 +115,14 @@ const QuantitySelect = ({
           size={['xs', 'sm']}
           aria-label="add to cart"
           icon={<MdAdd />}
-          onClick={() =>
+          onClick={() => {
             addToCart.mutate({
               itemId,
               quantity: 1,
-            })
+            });
+          }}
+          isDisabled={
+            addToCart.isLoading || removeFromCart.isLoading || loadingRefetch
           }
         />
       </Box>
