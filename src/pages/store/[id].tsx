@@ -42,7 +42,6 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
     const checkedProps = () => {
       if (state.isChecked) {
         return {
-          bg: 'green.50',
           color: { green },
           borderColor: { green },
           borderWidth: '2px',
@@ -134,7 +133,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                   size="xs"
                 />
               )}
-              <Heading color={'gray.700'}>
+              <Heading>
                 {item.parentId
                   ? `${item.parent?.name} - ${item.name}`
                   : item.name}
@@ -150,7 +149,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                 <Rating defaultValue={rating} size="sm" />
               </HStack>
             </Stack>
-            <Text color={'gray.600'}>{description}</Text>
+            <Text>{description}</Text>
           </Stack>
           <Card>
             <CardBody>
@@ -158,7 +157,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                 {childrens.length > 0 && (
                   <FormControl>
                     <FormLabel>
-                      <Text color={'gray.600'}>Selecione uma variação</Text>
+                      <Text>Selecione uma variação</Text>
                     </FormLabel>
                     <HStack {...getRootProps()}>
                       {childrens.map((child) => {
@@ -176,7 +175,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
                 )}
                 <FormControl>
                   <FormLabel>
-                    <Text color={'gray.600'}>Quantidade</Text>
+                    <Text>Quantidade</Text>
                   </FormLabel>
                   <HStack maxW="3xs">
                     <Button {...dec}>-</Button>
