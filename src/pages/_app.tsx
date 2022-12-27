@@ -1,9 +1,8 @@
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
+import { Chakra } from '@/components/templates';
 import { ColorProvider } from '@/contexts';
 import { ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
-import theme from '@/styles/theme';
 import { trpc } from '@/utils/trpc';
 
 const ContextProviders = ({ children }: { children: ReactNode }) => {
@@ -16,13 +15,14 @@ const MyApp = ({
 }: AppProps) => {
   return (
     <SessionProvider session={session}>
-      <ChakraProvider theme={theme}>
+      <Chakra cookies={pageProps.cookies}>
         <ContextProviders>
           <Component {...pageProps} />
         </ContextProviders>
-      </ChakraProvider>
+      </Chakra>
     </SessionProvider>
   );
 };
 
+export { getServerSideProps } from '@/components/templates';
 export default trpc.withTRPC(MyApp);
