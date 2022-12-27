@@ -20,12 +20,14 @@ type CartItemProps = OrderItem & {
   order: Order;
   item: ItemsWithParentAndChildrens;
   refetch: () => void;
+  loadingRefetch: boolean;
 };
 
 type QuantitySelectProps = CartItemProps & {
   order: Order;
   item: ItemsWithParentAndChildrens;
   refetch: () => void;
+  loadingRefetch: boolean;
 };
 
 const QuantitySelect = ({
@@ -33,6 +35,7 @@ const QuantitySelect = ({
   id,
   itemId,
   refetch,
+  loadingRefetch,
 }: QuantitySelectProps) => {
   const toast = useToast();
 
@@ -98,7 +101,9 @@ const QuantitySelect = ({
           icon={<Text>{quantity}</Text>}
           cursor="auto"
           borderWidth={1}
-          isLoading={addToCart.isLoading || removeFromCart.isLoading}
+          isLoading={
+            addToCart.isLoading || removeFromCart.isLoading || loadingRefetch
+          }
         />
       </Box>
 

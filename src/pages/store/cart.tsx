@@ -68,6 +68,7 @@ function Cart() {
                 key={orderItem.id}
                 {...orderItem}
                 refetch={refetch}
+                loadingRefetch={isLoading}
                 order={{
                   ...orderItem.order,
                   createdAt: new Date(orderItem.order.createdAt),
