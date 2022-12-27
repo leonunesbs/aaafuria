@@ -35,6 +35,8 @@ export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
           width="full"
           onClick={() => handleSignIn(name.toLowerCase())}
           leftIcon={icon}
+          isLoading={loading}
+          loadingText={'Carregando...'}
         >
           <Text>Entrar com {name}</Text>
         </Button>
