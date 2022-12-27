@@ -10,18 +10,15 @@ import {
   Link,
   Stack,
   Text,
-  chakra,
-  useColorModeValue,
   useToast,
 } from '@chakra-ui/react';
+import { Calango, CustomInput } from '@/components/atoms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { cleanString, extractDomainFromEmail } from '@/libs/functions';
 import { useContext, useEffect, useState } from 'react';
 
 import { ColorContext } from '@/contexts';
-import { CustomInput } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
-import Image from 'next/legacy/image';
 import NextLink from 'next/link';
 import { OAuthButtonGroup } from '@/components/molecules';
 import { authOptions } from '../api/auth/[...nextauth]';
@@ -33,10 +30,8 @@ function Login() {
   const router = useRouter();
   const toast = useToast();
   const { green } = useContext(ColorContext);
-  const calango = useColorModeValue('/calango-light.png', '/calango-dark.png');
   const { callbackUrl, error } = router.query;
   const { register, handleSubmit } = useForm<{ email: string }>();
-  const ChakraNextImage = chakra(Image);
   const [isLoading, setIsLoading] = useState(false);
   const onSubmit: SubmitHandler<{ email: string }> = ({ email }) => {
     setIsLoading(true);
@@ -71,19 +66,8 @@ function Login() {
       <Stack spacing="8">
         <Stack spacing="6">
           <Center>
-            <Box boxSize="3xs" position="relative" as={NextLink} href="/">
-              <ChakraNextImage
-                placeholder="blur"
-                layout="fill"
-                objectFit="cover"
-                src={calango}
-                blurDataURL={calango}
-                quality={1}
-                alt="logo"
-                mx="auto"
-                mb={{ base: '8', md: '12' }}
-                draggable={false}
-              />
+            <Box as={NextLink} href="/" cursor={'pointer'}>
+              <Calango />
             </Box>
           </Center>
           <Stack spacing={1} textAlign="center">

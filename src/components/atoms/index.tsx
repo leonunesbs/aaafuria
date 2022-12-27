@@ -8,3 +8,4 @@ export * from './HeaderAlert';
 export * from './CustomInput';
 export * from './ColorModeButton';
 export * from './Pagination';
+export * from './Calango';
