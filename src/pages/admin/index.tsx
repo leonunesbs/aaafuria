@@ -11,7 +11,7 @@ import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
-import { unstable_getServerSession } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
 
 function AdminDashboard() {
   const items = [
@@ -77,12 +77,11 @@ function AdminDashboard() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const users = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!users) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
@@ -90,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
-  return { props: { session } };
+  return { props: {} };
 };
 
 export default AdminDashboard;

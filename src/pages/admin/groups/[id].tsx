@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { Group, Profile, User } from '@prisma/client';
 import { GetServerSideProps } from 'next';
-import { unstable_getServerSession } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
 import NextLink from 'next/link';
 import { useContext } from 'react';
 
@@ -70,12 +70,11 @@ function Group({ group }: { group: Group & { users: UserWithProfile[] } }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!user) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl${ctx.resolvedUrl}}`,

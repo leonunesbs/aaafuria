@@ -7,8 +7,8 @@ import { GetServerSideProps } from 'next';
 import { GroupCard } from '@/components/molecules';
 import { Layout } from '@/components/templates';
 import { authOptions } from './api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
-import { unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 
 type UserWithProfile = User & {
@@ -65,12 +65,11 @@ function Activities({ groups }: { groups: GroupWithSchedulesAndUsers[] }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!user) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,

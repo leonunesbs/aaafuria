@@ -22,7 +22,6 @@ interface AvatarMenuProps {
 
 export function AvatarMenu({}: AvatarMenuProps) {
   const { data: session } = useSession();
-
   const isMember = session?.user.isMember;
 
   return (

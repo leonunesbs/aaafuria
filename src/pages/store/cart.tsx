@@ -16,8 +16,8 @@ import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
 import { trpc } from '@/utils/trpc';
-import { unstable_getServerSession } from 'next-auth';
 import { useContext } from 'react';
 import { useSession } from 'next-auth/react';
 
@@ -108,11 +108,10 @@ function Cart() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
+  const session = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
   if (!session) {
     return {
       redirect: {
@@ -123,9 +122,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {
-      session,
-    },
+    props: {},
   };
 };
 

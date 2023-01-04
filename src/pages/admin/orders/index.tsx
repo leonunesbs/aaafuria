@@ -29,9 +29,9 @@ import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
 import { paymentStatus } from '@/pages/dashboard/orders';
 import { prisma } from '@/server/prisma';
-import { unstable_getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
 
 type OrderItemWithItem = OrderItem & {
@@ -252,12 +252,11 @@ function Orders({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!user) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
@@ -298,7 +297,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      session,
       orders: JSON.parse(JSON.stringify(orders)),
       page,
       totalPages: Math.ceil((await prisma.order.count()) / pageSize),

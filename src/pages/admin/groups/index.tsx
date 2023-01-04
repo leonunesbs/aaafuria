@@ -27,9 +27,9 @@ import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { cleanString } from '@/libs/functions';
+import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
-import { unstable_getServerSession } from 'next-auth';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
@@ -149,12 +149,11 @@ function Groups({ groups }: { groups: Group[] }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!user) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl${ctx.resolvedUrl}}`,

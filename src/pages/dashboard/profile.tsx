@@ -24,7 +24,7 @@ import {
 import { Profile, User } from '@prisma/client';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
-import { unstable_getServerSession } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
 import { useRouter } from 'next/router';
 import { useContext, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -207,12 +207,11 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const sessionUser = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!sessionUser) {
     return {
       redirect: {
         destination: `/auth/login?after=${ctx.resolvedUrl}`,
@@ -222,7 +221,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
   const user = await prisma.user.findUnique({
     where: {
-      email: session.user?.email as string,
+      email: sessionUser.email as string,
     },
     include: {
       profile: true,

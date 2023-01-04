@@ -7,8 +7,8 @@ import { Layout } from '@/components/templates';
 import { PlanCard } from '@/components/molecules';
 import { SejaSocioDrawer } from '@/components/organisms';
 import { authOptions } from './api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
-import { unstable_getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -115,12 +115,11 @@ function Subscribe({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!user) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
@@ -135,9 +134,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     },
   });
 
-  const user = await prisma.user.findUnique({
+  const userQuery = await prisma.user.findUnique({
     where: {
-      email: session.user?.email as string,
+      email: user?.email as string,
     },
     include: {
       profile: true,
@@ -147,7 +146,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       plans,
-      user: JSON.parse(JSON.stringify(user)),
+      user: JSON.parse(JSON.stringify(userQuery)),
     },
   };
 };

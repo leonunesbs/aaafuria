@@ -24,8 +24,8 @@ import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { formatPrice } from '@/components/atoms';
+import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
-import { unstable_getServerSession } from 'next-auth';
 import { useContext } from 'react';
 
 type OrderItemWithItem = OrderItem & {
@@ -166,12 +166,11 @@ function Orders({ orders }: { orders: OrderWithPaymentAndItems[] }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const sessionUser = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!sessionUser) {
     return {
       redirect: {
         destination: `/auth/login?after=${ctx.resolvedUrl}`,
@@ -183,7 +182,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const orders = await prisma.order.findMany({
     where: {
       user: {
-        email: session?.user?.email,
+        email: sessionUser.email,
       },
     },
     include: {

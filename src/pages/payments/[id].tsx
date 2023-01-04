@@ -36,7 +36,8 @@ import {
 import { Membership, Order, Payment } from '@prisma/client';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
-import { unstable_getServerSession, User } from 'next-auth';
+import { User } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
@@ -389,12 +390,11 @@ function Payment({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const sessionUser = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!sessionUser) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
@@ -422,7 +422,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      session,
       payment: JSON.parse(JSON.stringify(payment)),
     },
   };

@@ -25,7 +25,6 @@ export function Chakra({ cookies, children }: ChakraProps) {
   );
 }
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  console.log(req);
   return {
     props: {
       // first time users will not have any cookies and you may not return

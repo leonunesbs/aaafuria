@@ -33,12 +33,19 @@ export const authOptions: NextAuthOptions = {
     signIn: '/auth/login',
     verifyRequest: '/auth/verify-request',
   },
+  session: {
+    strategy: 'jwt',
+  },
+  jwt: {
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  secret: process.env.NEXTAUTH_SECRET as string,
   callbacks: {
-    async session({ session, user }) {
+    async session({ token, session }) {
       const isMember = async () => {
         const user = await prisma.user.findUnique({
           where: {
-            email: session?.user?.email as string,
+            email: token.email as string,
           },
           include: {
             memberships: {
@@ -63,7 +70,7 @@ export const authOptions: NextAuthOptions = {
       const isStaff = async () => {
         const user = await prisma.user.findUnique({
           where: {
-            email: session?.user?.email as string,
+            email: token.email as string,
           },
           include: {
             groups: {
@@ -78,11 +85,11 @@ export const authOptions: NextAuthOptions = {
         }
         return true;
       };
+
       return {
         ...session,
         user: {
           ...session.user,
-          id: user.id,
           isMember: await isMember(),
           isStaff: await isStaff(),
         },

@@ -41,7 +41,7 @@ import { trpc } from '@/utils/trpc';
 import { Group, Membership, Profile, User } from '@prisma/client';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
-import { unstable_getServerSession } from 'next-auth';
+import { getToken } from 'next-auth/jwt';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
@@ -347,12 +347,11 @@ function User({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
-  if (!session) {
+  const sessionUser = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+  if (!sessionUser) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
@@ -389,7 +388,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   return {
     props: {
-      session,
       groups,
       user: JSON.parse(JSON.stringify(user)),
     },

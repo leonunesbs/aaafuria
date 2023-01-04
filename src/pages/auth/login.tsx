@@ -22,8 +22,8 @@ import { GetServerSideProps } from 'next';
 import NextLink from 'next/link';
 import { OAuthButtonGroup } from '@/components/molecules';
 import { authOptions } from '../api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
 import { signIn } from 'next-auth/react';
-import { unstable_getServerSession } from 'next-auth';
 import { useRouter } from 'next/router';
 
 function Login() {
@@ -130,13 +130,12 @@ function Login() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
 
-  if (session) {
+  if (user) {
     return {
       redirect: {
         destination: '/',
@@ -146,9 +145,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   return {
-    props: {
-      session,
-    },
+    props: {},
   };
 };
 
