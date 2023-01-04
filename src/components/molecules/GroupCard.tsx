@@ -21,9 +21,10 @@ import { useState } from 'react';
 
 interface GroupCardProps {
   group: GroupWithSchedulesAndUsers;
+  isStaff: boolean;
 }
 
-export function GroupCard({ group }: GroupCardProps) {
+export function GroupCard({ group, isStaff }: GroupCardProps) {
   const scheduleDrawer = useDisclosure();
   const [activeSchedule, setActiveSchedule] = useState<
     ScheduleWithGroupAndInterestedAndPresentUsers | undefined
@@ -47,6 +48,7 @@ export function GroupCard({ group }: GroupCardProps) {
         <HStack w="full" justify="space-between">
           <Heading size="md">{group.name}</Heading>
           <IconButton
+            hidden={!isStaff}
             variant={'outline'}
             size="sm"
             colorScheme="green"

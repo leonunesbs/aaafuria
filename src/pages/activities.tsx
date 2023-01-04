@@ -9,6 +9,7 @@ import { Layout } from '@/components/templates';
 import { authOptions } from './api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
+import { unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 
 type UserWithProfile = User & {
@@ -26,7 +27,13 @@ export type GroupWithSchedulesAndUsers = Group & {
   schedules: ScheduleWithGroupAndInterestedAndPresentUsers[];
 };
 
-function Activities({ groups }: { groups: GroupWithSchedulesAndUsers[] }) {
+function Activities({
+  groups,
+  isStaff,
+}: {
+  groups: GroupWithSchedulesAndUsers[];
+  isStaff: boolean;
+}) {
   const [q, setQ] = useState<string>();
 
   const filteredGroups = groups.filter((group) => {
@@ -54,7 +61,7 @@ function Activities({ groups }: { groups: GroupWithSchedulesAndUsers[] }) {
       </Box>
       <ActivityGrid>
         {filteredGroups.map((group) => (
-          <GroupCard key={group.id} group={group} />
+          <GroupCard key={group.id} group={group} isStaff={isStaff} />
         ))}
       </ActivityGrid>
       {filteredGroups.length === 0 && (
@@ -65,11 +72,11 @@ function Activities({ groups }: { groups: GroupWithSchedulesAndUsers[] }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const user = await getToken({
+  const userToken = await getToken({
     req: ctx.req,
     secret: authOptions.secret,
   });
-  if (!user) {
+  if (!userToken) {
     return {
       redirect: {
         destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
@@ -77,6 +84,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       },
     };
   }
+
+  const session = await unstable_getServerSession(
+    ctx.req,
+    ctx.res,
+    authOptions,
+  );
 
   const groups = await prisma.group.findMany({
     where: {
@@ -112,6 +125,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       groups: JSON.parse(JSON.stringify(groups)),
+      isStaff: session?.user.isStaff,
     },
   };
 };
