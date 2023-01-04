@@ -21,7 +21,7 @@ function Subscribe({
 }) {
   const sejaSocioDrawer = useDisclosure();
   const [plan, setPlan] = useState<Plan>();
-  const mensal = plans.find((plan) => plan.name.includes('MENSAl'));
+  const mensal = plans.find((plan) => plan.name.includes('MENSAL'));
   const semestral = plans.find((plan) => plan.name.includes('SEMESTRAL'));
   const anual = plans.find((plan) => plan.name.includes('ANUAL'));
 
