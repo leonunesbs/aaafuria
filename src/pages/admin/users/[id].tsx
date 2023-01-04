@@ -67,15 +67,19 @@ function User({
   const toast = useToast();
   const btnRef = useRef<HTMLButtonElement>(null);
   const drawer = useDisclosure();
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const addToGroup = trpc.group.addToGroup.useMutation({
     onSuccess: () => {
-      router.replace(router.asPath, undefined, { scroll: false });
+      refreshData();
       drawer.onClose();
     },
   });
   const removeFromGroup = trpc.group.removeFromGroup.useMutation({
     onSuccess: () => {
-      router.replace(router.asPath, undefined, { scroll: false });
+      refreshData();
     },
   });
 

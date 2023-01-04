@@ -60,9 +60,13 @@ function Memberships({
   const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<AddPlanInput>();
 
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const addPlan = trpc.plan.create.useMutation({
     onSuccess: () => {
-      router.replace(router.asPath, undefined, { scroll: false });
+      refreshData();
       reset();
     },
   });
@@ -75,13 +79,11 @@ function Memberships({
   };
 
   const updatePlan = trpc.plan.update.useMutation({
-    onSuccess: () =>
-      router.replace(router.asPath, undefined, { scroll: false }),
+    onSuccess: () => refreshData(),
   });
 
   const deletePlan = trpc.plan.delete.useMutation({
-    onSuccess: () =>
-      router.replace(router.asPath, undefined, { scroll: false }),
+    onSuccess: () => refreshData(),
   });
 
   return (

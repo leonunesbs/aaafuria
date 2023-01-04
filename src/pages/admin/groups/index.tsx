@@ -38,10 +38,15 @@ function Groups({ groups }: { groups: Group[] }) {
   const toast = useToast();
   const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<Group>();
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const createGroup = trpc.group.create.useMutation({
     onSuccess: () => {
       reset();
-      router.replace(router.asPath);
+      refreshData();
     },
   });
   const onSubmit: SubmitHandler<Group> = (data) => {
@@ -53,7 +58,7 @@ function Groups({ groups }: { groups: Group[] }) {
   const deleteGroup = trpc.group.delete.useMutation({
     onSuccess: () => {
       reset();
-      router.replace(router.asPath);
+      refreshData();
     },
     onError: (error) => {
       toast({

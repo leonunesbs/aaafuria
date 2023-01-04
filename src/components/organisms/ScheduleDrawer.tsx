@@ -64,10 +64,13 @@ const InterestedUserRow = ({
 }) => {
   const router = useRouter();
   const { green } = useContext(ColorContext);
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const togglePresent = trpc.schedule.togglePresent.useMutation({
-    onSuccess: () => {
-      router.replace(router.asPath);
-    },
+    onSuccess: () => refreshData(),
   });
   const isPresent = schedule?.presentUsers.some(
     (presentUser) => presentUser.id === user.id,
@@ -106,6 +109,9 @@ export function ScheduleDrawer({
 }: ScheduleDrawerProps) {
   const router = useRouter();
   const { onClose } = rest;
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
 
   const { handleSubmit, register, reset } = useForm<FormInputs>({
     defaultValues: {
@@ -117,9 +123,7 @@ export function ScheduleDrawer({
     },
   });
   const createSchedule = trpc.schedule.create.useMutation({
-    onSuccess: () => {
-      router.replace(router.asPath);
-    },
+    onSuccess: () => refreshData(),
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     createSchedule.mutate({
@@ -133,9 +137,7 @@ export function ScheduleDrawer({
   };
 
   const deleteSchedule = trpc.schedule.delete.useMutation({
-    onSuccess: () => {
-      router.replace(router.asPath);
-    },
+    onSuccess: () => refreshData(),
   });
 
   return (

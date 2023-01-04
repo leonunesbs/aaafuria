@@ -39,6 +39,10 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
 
   const [defaultChecked, setDefaultChecked] = useState<boolean>();
 
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const toggleInterest = trpc.schedule.toggleInterest.useMutation({
     onSuccess: () => {
       toast({
@@ -47,9 +51,7 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
         duration: 5000,
         isClosable: true,
       });
-      router.replace(router.asPath, undefined, {
-        scroll: false,
-      });
+      refreshData();
     },
   });
 

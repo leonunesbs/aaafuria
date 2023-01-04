@@ -30,6 +30,9 @@ type QuantitySelectProps = CartItemProps & {
 const QuantitySelect = ({ quantity, id, itemId }: QuantitySelectProps) => {
   const toast = useToast();
   const router = useRouter();
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
 
   const addToCart = trpc.store.cart.add.useMutation({
     onSuccess: () => {
@@ -39,7 +42,7 @@ const QuantitySelect = ({ quantity, id, itemId }: QuantitySelectProps) => {
         description: 'Produto adicionado ao carrinho',
         status: 'success',
       });
-      router.replace(router.asPath);
+      refreshData;
     },
     onError: (err) => {
       toast({
@@ -47,7 +50,7 @@ const QuantitySelect = ({ quantity, id, itemId }: QuantitySelectProps) => {
         title: err.message,
         status: 'error',
       });
-      router.replace(router.asPath);
+      refreshData;
     },
   });
   const removeFromCart = trpc.store.cart.remove.useMutation({
@@ -58,7 +61,7 @@ const QuantitySelect = ({ quantity, id, itemId }: QuantitySelectProps) => {
         description: 'Produto removido do carrinho',
         status: 'info',
       });
-      router.replace(router.asPath);
+      refreshData;
     },
     onError: (err) => {
       toast({
@@ -66,7 +69,7 @@ const QuantitySelect = ({ quantity, id, itemId }: QuantitySelectProps) => {
         title: err.message,
         status: 'error',
       });
-      router.replace(router.asPath);
+      refreshData;
     },
   });
 
@@ -121,9 +124,13 @@ export function CartItem({ ...rest }: CartItemProps) {
   const router = useRouter();
   const { id, item, quantity, price, currency } = rest;
 
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   const removeFromCart = trpc.store.cart.remove.useMutation({
     onSuccess: () => {
-      router.replace(router.asPath);
+      refreshData;
     },
   });
 
