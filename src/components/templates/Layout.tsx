@@ -1,22 +1,8 @@
-import {
-  Box,
-  BoxProps,
-  Center,
-  Container,
-  ContainerProps,
-  HStack,
-  Heading,
-  Link,
-  Spinner,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Container, ContainerProps } from '@chakra-ui/react';
 import { Footer, Header } from '@/components/organisms';
-import { ReactNode, useContext } from 'react';
 
-import { ColorContext } from '@/contexts';
 import Head from 'next/head';
-import { trpc } from '@/utils/trpc';
+import { ReactNode } from 'react';
 import { useRouter } from 'next/router';
 
 interface LayoutProps {
@@ -28,31 +14,7 @@ interface LayoutProps {
   headerProps?: BoxProps;
   containerProps?: ContainerProps;
   footerProps?: BoxProps;
-  staffCheck?: boolean;
 }
-
-const StaffGate = ({ isLoading }: { isLoading: boolean }) => {
-  const { green } = useContext(ColorContext);
-  if (isLoading)
-    return (
-      <Center mt={20}>
-        <HStack>
-          <Spinner size="lg" color={green} />
-          <Text>Checando permissões...</Text>
-        </HStack>
-      </Center>
-    );
-  return (
-    <Box>
-      <Stack textAlign={'center'} w="full" mt={10}>
-        <Heading size="md">ÁREA RESTRITA</Heading>
-        <Text as={Link} href="/" color={green}>
-          Voltar ao início
-        </Text>
-      </Stack>
-    </Box>
-  );
-};
 
 export function Layout({
   title,
@@ -63,12 +25,8 @@ export function Layout({
   headerProps,
   containerProps,
   footerProps,
-  staffCheck = false,
 }: LayoutProps) {
   const router = useRouter();
-  const { data: isStaff, isLoading } = trpc.auth.isStaff.useQuery(undefined, {
-    enabled: staffCheck,
-  });
 
   return (
     <>
@@ -139,16 +97,13 @@ export function Layout({
         {subHeader}
         <Container
           maxW="8xl"
+          minH="80vh"
           mx="auto"
           px={{ base: '4', md: '8', lg: '12' }}
           py={{ base: '6', md: '8', lg: '12' }}
           {...containerProps}
         >
-          {staffCheck && !isStaff ? (
-            <StaffGate isLoading={isLoading} />
-          ) : (
-            children
-          )}
+          {children}
         </Container>
         <Footer {...footerProps} />
       </Box>

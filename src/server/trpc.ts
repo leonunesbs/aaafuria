@@ -33,8 +33,6 @@ const isAuthed = t.middleware(({ next, ctx }) => {
       session: ctx.session,
       user: {
         ...user,
-        email: user.email,
-        isMember: ctx.session?.isMember,
       },
     },
   });

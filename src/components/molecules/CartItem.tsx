@@ -15,29 +15,21 @@ import { CartProductMeta } from '../atoms/CartProductMeta';
 import { ItemsWithParentAndChildrens } from '@/pages/store';
 import { PriceTag } from '../atoms/PriceTag';
 import { trpc } from '@/utils/trpc';
+import { useRouter } from 'next/router';
 
 type CartItemProps = OrderItem & {
   order: Order;
   item: ItemsWithParentAndChildrens;
-  refetch: () => void;
-  loadingRefetch: boolean;
 };
 
 type QuantitySelectProps = CartItemProps & {
   order: Order;
   item: ItemsWithParentAndChildrens;
-  refetch: () => void;
-  loadingRefetch: boolean;
 };
 
-const QuantitySelect = ({
-  quantity,
-  id,
-  itemId,
-  refetch,
-  loadingRefetch,
-}: QuantitySelectProps) => {
+const QuantitySelect = ({ quantity, id, itemId }: QuantitySelectProps) => {
   const toast = useToast();
+  const router = useRouter();
 
   const addToCart = trpc.store.cart.add.useMutation({
     onSuccess: () => {
@@ -47,7 +39,7 @@ const QuantitySelect = ({
         description: 'Produto adicionado ao carrinho',
         status: 'success',
       });
-      refetch();
+      router.replace(router.asPath);
     },
     onError: (err) => {
       toast({
@@ -55,7 +47,7 @@ const QuantitySelect = ({
         title: err.message,
         status: 'error',
       });
-      refetch();
+      router.replace(router.asPath);
     },
   });
   const removeFromCart = trpc.store.cart.remove.useMutation({
@@ -66,7 +58,7 @@ const QuantitySelect = ({
         description: 'Produto removido do carrinho',
         status: 'info',
       });
-      refetch();
+      router.replace(router.asPath);
     },
     onError: (err) => {
       toast({
@@ -74,7 +66,7 @@ const QuantitySelect = ({
         title: err.message,
         status: 'error',
       });
-      refetch();
+      router.replace(router.asPath);
     },
   });
 
@@ -91,9 +83,8 @@ const QuantitySelect = ({
               quantity: 1,
             });
           }}
-          isDisabled={
-            addToCart.isLoading || removeFromCart.isLoading || loadingRefetch
-          }
+          isLoading={removeFromCart.isLoading}
+          isDisabled={addToCart.isLoading || removeFromCart.isLoading}
         />
       </Box>
       <Box>
@@ -104,9 +95,6 @@ const QuantitySelect = ({
           icon={<Text>{quantity}</Text>}
           cursor="auto"
           borderWidth={1}
-          isLoading={
-            addToCart.isLoading || removeFromCart.isLoading || loadingRefetch
-          }
         />
       </Box>
 
@@ -121,9 +109,8 @@ const QuantitySelect = ({
               quantity: 1,
             });
           }}
-          isDisabled={
-            addToCart.isLoading || removeFromCart.isLoading || loadingRefetch
-          }
+          isLoading={addToCart.isLoading}
+          isDisabled={addToCart.isLoading || removeFromCart.isLoading}
         />
       </Box>
     </HStack>
@@ -131,10 +118,13 @@ const QuantitySelect = ({
 };
 
 export function CartItem({ ...rest }: CartItemProps) {
-  const { id, item, quantity, price, currency, refetch } = rest;
+  const router = useRouter();
+  const { id, item, quantity, price, currency } = rest;
 
   const removeFromCart = trpc.store.cart.remove.useMutation({
-    onSuccess: refetch,
+    onSuccess: () => {
+      router.replace(router.asPath);
+    },
   });
 
   return (

@@ -103,7 +103,6 @@ function Orders({
           },
         },
       }}
-      staffCheck
     >
       <Card>
         <CardHeader>

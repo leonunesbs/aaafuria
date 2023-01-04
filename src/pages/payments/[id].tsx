@@ -37,14 +37,12 @@ import { Membership, Order, Payment } from '@prisma/client';
 import axios from 'axios';
 import { GetServerSideProps } from 'next';
 import { User } from 'next-auth';
-import { getToken } from 'next-auth/jwt';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 import { CgArrowsExchange } from 'react-icons/cg';
 import { HiOutlineExternalLink } from 'react-icons/hi';
 import { MdDelete } from 'react-icons/md';
-import { authOptions } from '../api/auth/[...nextauth]';
 
 function Payment({
   payment,
@@ -390,19 +388,6 @@ function Payment({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const sessionUser = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-  if (!sessionUser) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-
   const payment = await prisma.payment.findUnique({
     where: {
       id: ctx.query.id as string,

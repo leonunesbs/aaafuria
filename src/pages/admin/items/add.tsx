@@ -83,7 +83,7 @@ function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
   const orphanItems = items.filter((item) => !item.parentId);
 
   return (
-    <Layout title="Adicionar produto" staffCheck>
+    <Layout title="Adicionar produto">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card maxW="xl" mx="auto" variant={'responsive'}>
           <CardHeader>

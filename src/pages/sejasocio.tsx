@@ -119,14 +119,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     req: ctx.req,
     secret: authOptions.secret,
   });
-  if (!user) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
 
   const plans = await prisma.plan.findMany({
     orderBy: {

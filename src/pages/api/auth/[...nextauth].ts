@@ -4,6 +4,7 @@ import EmailProvider from 'next-auth/providers/email';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { appRouter } from '@/server/routers/_app';
 import { prisma } from '@/server/prisma';
 
 export const authOptions: NextAuthOptions = {
@@ -93,6 +94,22 @@ export const authOptions: NextAuthOptions = {
           isMember: await isMember(),
           isStaff: await isStaff(),
         },
+      };
+    },
+    async jwt({ token }) {
+      const caller = appRouter.createCaller({
+        session: {
+          user: {
+            ...token,
+          },
+        },
+      });
+      const isStaff = await caller.auth.isStaff();
+      const isMember = await caller.auth.isMember();
+      return {
+        ...token,
+        isStaff,
+        isMember,
       };
     },
   },

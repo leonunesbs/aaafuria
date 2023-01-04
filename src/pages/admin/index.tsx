@@ -7,11 +7,8 @@ import {
 
 import { BsBoxSeam } from 'react-icons/bs';
 import { FaUsers } from 'react-icons/fa';
-import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
-import { authOptions } from '../api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
 
 function AdminDashboard() {
   const items = [
@@ -47,7 +44,7 @@ function AdminDashboard() {
     },
   ];
   return (
-    <Layout title="Área do Diretor" staffCheck>
+    <Layout title="Área do Diretor">
       <Box maxW="xl" mx="auto">
         <Heading as="h1" size="md" mb={8}>
           Área do Diretor
@@ -75,21 +72,5 @@ function AdminDashboard() {
     </Layout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const users = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-  if (!users) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-  return { props: {} };
-};
 
 export default AdminDashboard;

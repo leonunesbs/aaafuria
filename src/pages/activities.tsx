@@ -9,7 +9,6 @@ import { Layout } from '@/components/templates';
 import { authOptions } from './api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
-import { unstable_getServerSession } from 'next-auth';
 import { useState } from 'react';
 
 type UserWithProfile = User & {
@@ -72,24 +71,10 @@ function Activities({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const userToken = await getToken({
+  const token = await getToken({
     req: ctx.req,
     secret: authOptions.secret,
   });
-  if (!userToken) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-
-  const session = await unstable_getServerSession(
-    ctx.req,
-    ctx.res,
-    authOptions,
-  );
 
   const groups = await prisma.group.findMany({
     where: {
@@ -125,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   return {
     props: {
       groups: JSON.parse(JSON.stringify(groups)),
-      isStaff: session?.user.isStaff,
+      isStaff: token?.isStaff,
     },
   };
 };

@@ -46,7 +46,7 @@ function Users({ users }: { users: UserWithProfileMembershipsAndGroups[] }) {
     router.replace(`/admin/users?q=${data.q}`);
   };
   return (
-    <Layout title="Lista de usuários" staffCheck>
+    <Layout title="Lista de usuários">
       <Card variant={'responsive'}>
         <CardHeader>
           <Heading as="h1" size="md">

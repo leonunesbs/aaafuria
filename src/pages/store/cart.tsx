@@ -1,13 +1,5 @@
-import {
-  Box,
-  Center,
-  Flex,
-  HStack,
-  Heading,
-  Link,
-  Spinner,
-  Stack,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Heading, Link, Stack } from '@chakra-ui/react';
+import { Item, Order, OrderItem } from '@prisma/client';
 
 import { CartItem } from '@/components/molecules';
 import { CartOrderSummary } from '@/components/organisms';
@@ -17,17 +9,19 @@ import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
-import { trpc } from '@/utils/trpc';
+import { prisma } from '@/server/prisma';
 import { useContext } from 'react';
-import { useSession } from 'next-auth/react';
 
-function Cart() {
-  const { data: session } = useSession();
-  const {
-    data: orderItems,
-    refetch,
-    isLoading,
-  } = trpc.store.orderItems.useQuery(session?.user?.email as string, {});
+type ItemWithFamily = Item & {
+  parent: Item;
+  childrens: Item[];
+};
+type OrderItemWithItem = OrderItem & {
+  order: Order;
+  item: ItemWithFamily;
+};
+
+function Cart({ orderItems }: { orderItems: OrderItemWithItem[] }) {
   const subTotal = orderItems?.reduce(
     (acc, orderItem) => acc + orderItem.item.price * orderItem.quantity,
     0,
@@ -37,15 +31,6 @@ function Cart() {
     0,
   );
   const { green } = useContext(ColorContext);
-
-  if (isLoading)
-    return (
-      <Layout title="Meu carrinho">
-        <Center mt={20}>
-          <Spinner size="lg" color={green} />
-        </Center>
-      </Layout>
-    );
 
   return (
     <Layout title="Meu carrinho">
@@ -67,8 +52,6 @@ function Cart() {
               <CartItem
                 key={orderItem.id}
                 {...orderItem}
-                refetch={refetch}
-                loadingRefetch={isLoading}
                 order={{
                   ...orderItem.order,
                   createdAt: new Date(orderItem.order.createdAt),
@@ -108,21 +91,36 @@ function Cart() {
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const session = await getToken({
+  const token = await getToken({
     req: ctx.req,
     secret: authOptions.secret,
   });
-  if (!session) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
+
+  const orderItems = await prisma.orderItem.findMany({
+    where: {
+      order: {
+        user: {
+          email: token?.email,
+        },
       },
-    };
-  }
+      ordered: false,
+      checkedOut: false,
+    },
+    include: {
+      item: {
+        include: {
+          parent: true,
+          childrens: true,
+        },
+      },
+      order: true,
+    },
+  });
 
   return {
-    props: {},
+    props: {
+      orderItems: JSON.parse(JSON.stringify(orderItems)),
+    },
   };
 };
 
