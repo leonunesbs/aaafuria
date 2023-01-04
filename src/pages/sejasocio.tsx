@@ -21,9 +21,9 @@ function Subscribe({
 }) {
   const sejaSocioDrawer = useDisclosure();
   const [plan, setPlan] = useState<Plan>();
-  const mensal = plans.find((plan) => plan.periodInDays === 30);
-  const semestral = plans.find((plan) => plan.periodInDays === 180);
-  const anual = plans.find((plan) => plan.periodInDays === 365);
+  const mensal = plans.find((plan) => plan.name.includes('MENSAl'));
+  const semestral = plans.find((plan) => plan.name.includes('SEMESTRAL'));
+  const anual = plans.find((plan) => plan.name.includes('ANUAL'));
 
   const router = useRouter();
   const handlePlan = (plan?: Plan) => {

@@ -45,7 +45,7 @@ const StaffGate = ({ isLoading }: { isLoading: boolean }) => {
   return (
     <Box>
       <Stack textAlign={'center'} w="full" mt={10}>
-        <Heading size="md">Área restrita</Heading>
+        <Heading size="md">ÁREA RESTRITA</Heading>
         <Text as={Link} href="/" color={green}>
           Voltar ao início
         </Text>
