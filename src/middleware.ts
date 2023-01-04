@@ -9,16 +9,13 @@ export default withAuth(
       if (!token?.isStaff) {
         return NextResponse.redirect(new URL('/403', request.nextUrl.href));
       }
-      return NextResponse.next();
     }
 
     return NextResponse.next();
   },
   {
     callbacks: {
-      authorized: ({ token }) => {
-        return !!token;
-      },
+      authorized: ({ token }) => (token ? true : false),
     },
   },
 );
