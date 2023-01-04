@@ -7,6 +7,7 @@ import {
   CardFooter,
   Divider,
   HStack,
+  Spinner,
   Stack,
   Switch,
   Text,
@@ -17,7 +18,9 @@ import {
   GroupWithSchedulesAndUsers,
   ScheduleWithGroupAndInterestedAndPresentUsers,
 } from '@/pages/activities';
+import { useContext, useEffect, useState } from 'react';
 
+import { ColorContext } from '@/contexts';
 import { ScheduleDrawer } from '../organisms';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
@@ -32,6 +35,9 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
   const toast = useToast();
   const { data: session } = useSession();
   const scheduleDrawer = useDisclosure();
+  const { green } = useContext(ColorContext);
+
+  const [defaultChecked, setDefaultChecked] = useState<boolean>();
 
   const toggleInterest = trpc.schedule.toggleInterest.useMutation({
     onSuccess: () => {
@@ -46,6 +52,23 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
       });
     },
   });
+
+  const handleSwitch = async () => {
+    setDefaultChecked(!defaultChecked);
+    await toggleInterest.mutateAsync(schedule.id);
+  };
+
+  useEffect(() => {
+    if (
+      schedule.interestedUsers.some(
+        (interestUser) => interestUser.email === session?.user?.email,
+      )
+    ) {
+      setDefaultChecked(true);
+    } else {
+      setDefaultChecked(false);
+    }
+  }, [schedule, session?.user?.email]);
   return (
     <Card key={schedule.id} variant={'responsive'}>
       <ScheduleDrawer
@@ -69,26 +92,28 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
           </Stack>
           <Box>
             <Stack align={'center'}>
-              <Badge
-                colorScheme="green"
-                visibility={
-                  schedule.interestedUsers.some(
-                    (interestUser) =>
-                      interestUser.email === session?.user?.email,
-                  )
-                    ? 'visible'
-                    : 'hidden'
-                }
-              >
-                Eu vou!
-              </Badge>
+              {toggleInterest.isLoading ? (
+                <Spinner color={green} />
+              ) : (
+                <Badge
+                  colorScheme="green"
+                  visibility={
+                    schedule.interestedUsers.some(
+                      (interestUser) =>
+                        interestUser.email === session?.user?.email,
+                    )
+                      ? 'visible'
+                      : 'hidden'
+                  }
+                >
+                  Eu vou!
+                </Badge>
+              )}
               <Switch
                 colorScheme={'green'}
                 size="lg"
-                defaultChecked={schedule.interestedUsers.some(
-                  (interestUser) => interestUser.email === session?.user?.email,
-                )}
-                onChange={() => toggleInterest.mutate(schedule.id)}
+                isChecked={defaultChecked}
+                onChange={handleSwitch}
               />
             </Stack>
           </Box>
