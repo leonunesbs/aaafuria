@@ -68,6 +68,7 @@ function Login() {
         maxW="lg"
         py={{ base: '12', md: '24' }}
         px={{ base: '0', sm: '8' }}
+        minH="100vh"
       >
         <Stack spacing="8">
           <Stack spacing="6">
