@@ -71,6 +71,11 @@ function Activities({
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  ctx.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59',
+  );
+
   const token = await getToken({
     req: ctx.req,
     secret: authOptions.secret,
