@@ -27,5 +27,6 @@ export const config = {
     '/activities',
     '/sejasocio',
     '/payments/:path*',
+    '/store/cart',
   ],
 };
