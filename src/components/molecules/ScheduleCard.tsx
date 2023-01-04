@@ -85,7 +85,7 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
               <Switch
                 colorScheme={'green'}
                 size="lg"
-                isChecked={schedule.interestedUsers.some(
+                defaultChecked={schedule.interestedUsers.some(
                   (interestUser) => interestUser.email === session?.user?.email,
                 )}
                 onChange={() => toggleInterest.mutate(schedule.id)}
