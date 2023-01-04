@@ -47,7 +47,7 @@ function AdminDashboard() {
     },
   ];
   return (
-    <Layout title="Área do Diretor">
+    <Layout title="Área do Diretor" staffCheck>
       <Box maxW="xl" mx="auto">
         <Heading as="h1" size="md" mb={8}>
           Área do Diretor

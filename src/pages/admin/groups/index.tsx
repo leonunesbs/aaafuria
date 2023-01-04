@@ -66,7 +66,7 @@ function Groups({ groups }: { groups: Group[] }) {
     },
   });
   return (
-    <Layout title="Lista de grupos">
+    <Layout title="Lista de grupos" staffCheck>
       <Stack spacing={6}>
         <Card>
           <CardHeader>

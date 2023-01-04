@@ -88,7 +88,7 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
   );
 
   return (
-    <Layout title="Editar produto">
+    <Layout title="Editar produto" staffCheck>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card rounded="lg" maxW="xl" mx="auto">
           <CardHeader>

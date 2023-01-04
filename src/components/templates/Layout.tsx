@@ -1,8 +1,22 @@
-import { Box, BoxProps, Container, ContainerProps } from '@chakra-ui/react';
+import {
+  Box,
+  BoxProps,
+  Center,
+  Container,
+  ContainerProps,
+  HStack,
+  Heading,
+  Link,
+  Spinner,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
+import { ReactNode, useContext } from 'react';
 
+import { ColorContext } from '@/contexts';
 import Head from 'next/head';
 import { Header } from '../organisms';
-import { ReactNode } from 'react';
+import { trpc } from '@/utils/trpc';
 
 interface LayoutProps {
   children: ReactNode;
@@ -10,7 +24,31 @@ interface LayoutProps {
   subHeader?: ReactNode;
   headerProps?: BoxProps;
   containerProps?: ContainerProps;
+  staffCheck?: boolean;
 }
+
+const StaffGate = ({ isLoading }: { isLoading: boolean }) => {
+  const { green } = useContext(ColorContext);
+  if (isLoading)
+    return (
+      <Center mt={20}>
+        <HStack>
+          <Spinner size="lg" color={green} />
+          <Text>Checando permissões...</Text>
+        </HStack>
+      </Center>
+    );
+  return (
+    <Box>
+      <Stack textAlign={'center'} w="full" mt={10}>
+        <Heading size="md">Área restrita</Heading>
+        <Text as={Link} href="/" color={green}>
+          Voltar ao início
+        </Text>
+      </Stack>
+    </Box>
+  );
+};
 
 export function Layout({
   title,
@@ -18,7 +56,12 @@ export function Layout({
   subHeader,
   headerProps,
   containerProps,
+  staffCheck = false,
 }: LayoutProps) {
+  const { data: isStaff, isLoading } = trpc.auth.isStaff.useQuery(undefined, {
+    enabled: staffCheck,
+  });
+
   return (
     <>
       <Head>
@@ -35,7 +78,11 @@ export function Layout({
           py={{ base: '6', md: '8', lg: '12' }}
           {...containerProps}
         >
-          {children}
+          {staffCheck && !isStaff ? (
+            <StaffGate isLoading={isLoading} />
+          ) : (
+            children
+          )}
         </Container>
       </Box>
     </>

@@ -29,7 +29,7 @@ type UserWithProfile = User & {
 function Group({ group }: { group: Group & { users: UserWithProfile[] } }) {
   const { green } = useContext(ColorContext);
   return (
-    <Layout title={group.name}>
+    <Layout title={group.name} staffCheck>
       <Card>
         <CardHeader>
           <Heading size="md">{group.name}</Heading>

@@ -35,7 +35,7 @@ export type ItemsWithParentAndChilds = Item & {
 function Items({ items }: { items: ItemsWithParentAndChilds[] }) {
   const { green } = useContext(ColorContext);
   return (
-    <Layout title="Lista de itens">
+    <Layout title="Lista de itens" staffCheck>
       <Card>
         <CardHeader>
           <Heading size="md">Lista de itens</Heading>

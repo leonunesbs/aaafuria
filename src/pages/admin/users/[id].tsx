@@ -159,7 +159,7 @@ function User({
   };
 
   return (
-    <Layout title="Editar usuário">
+    <Layout title="Editar usuário" staffCheck>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Card variant={'responsive'} w="full" maxW="md" mx="auto">
           <CardHeader>

@@ -85,7 +85,7 @@ function Memberships({
   });
 
   return (
-    <Layout title="Associações">
+    <Layout title="Associações" staffCheck>
       <Stack spacing={6}>
         <Card variant={'responsive'}>
           <CardHeader>
