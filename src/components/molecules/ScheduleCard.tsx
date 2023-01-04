@@ -114,6 +114,7 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
                 size="lg"
                 isChecked={defaultChecked}
                 onChange={handleSwitch}
+                isDisabled={toggleInterest.isLoading}
               />
             </Stack>
           </Box>
