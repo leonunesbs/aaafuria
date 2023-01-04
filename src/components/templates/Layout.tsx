@@ -11,11 +11,11 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react';
+import { Footer, Header } from '@/components/organisms';
 import { ReactNode, useContext } from 'react';
 
 import { ColorContext } from '@/contexts';
 import Head from 'next/head';
-import { Header } from '../organisms';
 import { trpc } from '@/utils/trpc';
 
 interface LayoutProps {
@@ -24,6 +24,7 @@ interface LayoutProps {
   subHeader?: ReactNode;
   headerProps?: BoxProps;
   containerProps?: ContainerProps;
+  footerProps?: BoxProps;
   staffCheck?: boolean;
 }
 
@@ -56,6 +57,7 @@ export function Layout({
   subHeader,
   headerProps,
   containerProps,
+  footerProps,
   staffCheck = false,
 }: LayoutProps) {
   const { data: isStaff, isLoading } = trpc.auth.isStaff.useQuery(undefined, {
@@ -84,6 +86,7 @@ export function Layout({
             children
           )}
         </Container>
+        <Footer {...footerProps} />
       </Box>
     </>
   );

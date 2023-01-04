@@ -4,6 +4,7 @@ import {
   localStorageManager,
 } from '@chakra-ui/react';
 
+import { Fonts } from '../atoms';
 import { GetServerSideProps } from 'next';
 import { ReactNode } from 'react';
 import theme from '@/styles/theme';
@@ -21,6 +22,7 @@ export function Chakra({ cookies, children }: ChakraProps) {
   return (
     <ChakraProvider colorModeManager={colorModeManager} theme={theme}>
       {children}
+      <Fonts />
     </ChakraProvider>
   );
 }

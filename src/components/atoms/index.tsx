@@ -9,3 +9,5 @@ export * from './CustomInput';
 export * from './ColorModeButton';
 export * from './Pagination';
 export * from './Calango';
+export * from './Fonts';
+export * from './Logo';

@@ -1,0 +1,26 @@
+{
+    "name": "@aaafuria",
+    "short_name": "@aaafuria",
+    "icons": [
+        {
+            "src": "https://aaafuria-reborn.s3.sa-east-1.amazonaws.com/public/favicon/safari-pinned-tab.svg",
+            "sizes": "192x192",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "https://aaafuria-reborn.s3.sa-east-1.amazonaws.com/public/favicon/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://aaafuria-reborn.s3.sa-east-1.amazonaws.com/public/favicon/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "start_url": "https://aaafuria.site",
+    "display": "standalone",
+    "orientation": "portrait"
+}

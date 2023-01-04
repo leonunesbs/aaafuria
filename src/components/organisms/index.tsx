@@ -4,3 +4,4 @@ export * from './ProductGrid';
 export * from './SejaSocioDrawer';
 export * from './ActivityGrid';
 export * from './ScheduleDrawer';
+export * from './Footer';

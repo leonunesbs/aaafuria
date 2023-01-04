@@ -1,15 +1,7 @@
-import {
-  Box,
-  BoxProps,
-  Button,
-  Container,
-  Flex,
-  HStack,
-} from '@chakra-ui/react';
+import { Box, BoxProps, Button, Container, HStack } from '@chakra-ui/react';
+import { ColorModeButton, Logo } from '../atoms';
 
 import { AvatarMenu } from '../molecules';
-import { ColorModeButton } from '../atoms';
-import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { ReactNode } from 'react';
 import { useRouter } from 'next/router';
@@ -61,6 +53,7 @@ export function Header({ ...rest }: HeaderProps) {
     <Box borderBottomWidth={1} {...rest}>
       <Container
         as="nav"
+        role="navigation"
         display={'flex'}
         flexDir="row"
         justifyContent={'space-between'}
@@ -71,26 +64,7 @@ export function Header({ ...rest }: HeaderProps) {
         py={2}
       >
         <HStack>
-          <Flex
-            as={NextLink}
-            href="/"
-            position={'relative'}
-            h={'44px'}
-            w={'76px'}
-            mr={4}
-          >
-            <NextImage
-              priority
-              sizes="15vw"
-              src={'/header-logo.webp'}
-              alt={'headerLogo'}
-              fill
-              style={{
-                position: 'absolute',
-                objectFit: 'cover',
-              }}
-            />
-          </Flex>
+          <Logo />
           <HStack display={['none', 'none', 'flex']}>
             {menuItems.map((item) => (
               <CustomMenuItem
