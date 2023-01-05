@@ -1,16 +1,15 @@
 import { Box, Button, HStack, Text } from '@chakra-ui/react';
 import { CustomInput, Loading } from '@/components/atoms';
 import { Group, Profile, Schedule, User } from '@prisma/client';
-import { useContext, useState } from 'react';
 
 import { ActivityGrid } from '@/components/organisms';
-import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { GroupCard } from '@/components/molecules';
 import { Layout } from '@/components/templates';
 import { authOptions } from './api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
 import { trpc } from '@/utils/trpc';
+import { useState } from 'react';
 
 export type UserWithProfile = User & {
   profile: Profile | null;
@@ -29,7 +28,6 @@ export type GroupWithSchedulesAndUsers = Group & {
 
 function Activities({ isStaff }: { isStaff: boolean }) {
   const [q, setQ] = useState<string>();
-  const { green } = useContext(ColorContext);
   const { data: groups, isLoading } = trpc.group.activityGroups.useQuery();
 
   const filteredGroups = groups?.filter((group) => {
