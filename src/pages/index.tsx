@@ -67,9 +67,9 @@ export default function Home() {
               sizes="(max-width: 768px) 70vw,
               (max-width: 1200px) 35vw,
               20vw"
-              src="/image01.jpeg"
+              src="/image01.webp"
               placeholder="blur"
-              blurDataURL="/image02.jpeg"
+              blurDataURL="/image02.webp"
               alt={'image01'}
               fill
               style={{
@@ -90,9 +90,9 @@ export default function Home() {
               sizes="(max-width: 768px) 70vw,
               (max-width: 1200px) 35vw,
               20vw"
-              src="/image02.jpeg"
+              src="/image02.webp"
               placeholder="blur"
-              blurDataURL="/image02.jpeg"
+              blurDataURL="/image02.webp"
               alt={'image02'}
               fill
               style={{
