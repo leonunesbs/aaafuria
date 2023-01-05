@@ -1,5 +1,5 @@
 import { Button, Stack, Text } from '@chakra-ui/react';
-import { FacebookIcon, GitHubIcon, GoogleIcon } from '../atoms';
+import { FacebookIcon, GitHubIcon, GoogleIcon, InstagramIcon } from '../atoms';
 import { ReactNode, useState } from 'react';
 
 import { signIn } from 'next-auth/react';
@@ -39,6 +39,7 @@ export function OAuthButtonGroup({}: OAuthButtonGroupProps) {
   const providers = [
     { name: 'Google', icon: <GoogleIcon boxSize="5" /> },
     { name: 'Facebook', icon: <FacebookIcon /> },
+    { name: 'Instagram', icon: <InstagramIcon /> },
     { name: 'GitHub', icon: <GitHubIcon boxSize="5" /> },
   ];
 

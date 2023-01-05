@@ -1,6 +1,5 @@
 import { Box, createIcon } from '@chakra-ui/react';
-
-import { FaFacebook } from 'react-icons/fa';
+import { FaFacebook, FaInstagram } from 'react-icons/fa';
 
 export const GoogleIcon = createIcon({
   displayName: 'GoogleIcon',
@@ -49,3 +48,5 @@ export const TwitterIcon = createIcon({
 export const FacebookIcon = () => (
   <Box as={FaFacebook} boxSize={5} color="blue.500" />
 );
+
+export const InstagramIcon = () => <Box as={FaInstagram} boxSize={5} />;
