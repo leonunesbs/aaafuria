@@ -64,9 +64,6 @@ export default function Home() {
           <Flex position={'relative'} minW="300px" h="450px" w="full">
             <NextImage
               priority
-              sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 80vw,
-              33vw"
               src="/image01.webp"
               placeholder="blur"
               blurDataURL="/image02.webp"
@@ -87,9 +84,6 @@ export default function Home() {
           >
             <NextImage
               priority
-              sizes="(max-width: 768px) 100vw,
-              (max-width: 1200px) 80vw,
-              33vw"
               src="/image02.webp"
               placeholder="blur"
               blurDataURL="/image02.webp"
