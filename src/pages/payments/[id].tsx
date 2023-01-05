@@ -35,7 +35,7 @@ import {
 } from '@chakra-ui/react';
 import { Membership, Order, Payment } from '@prisma/client';
 import axios from 'axios';
-import { GetServerSideProps } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { User } from 'next-auth';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
@@ -387,10 +387,17 @@ function Payment({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const payment = await prisma.payment.findUnique({
     where: {
-      id: ctx.query.id as string,
+      id: ctx.params?.id as string,
     },
     include: {
       user: true,
@@ -409,6 +416,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {
       payment: JSON.parse(JSON.stringify(payment)),
     },
+    revalidate: 5,
   };
 };
 

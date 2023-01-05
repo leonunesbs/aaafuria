@@ -1,7 +1,7 @@
 import { SimpleGrid, useDisclosure } from '@chakra-ui/react';
 
 import { ActionButton } from '@/components/atoms';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { Layout } from '@/components/templates';
 import { Plan } from '@prisma/client';
 import { PlanCard } from '@/components/molecules';
@@ -110,12 +110,7 @@ function Subscribe({ plans }: { plans?: Plan[] }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  ctx.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
-  );
-
+export const getStaticProps: GetStaticProps = async () => {
   const plans = await prisma.plan.findMany({
     orderBy: {
       periodInDays: 'asc',
@@ -126,6 +121,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {
       plans,
     },
+    revalidate: 60,
   };
 };
 
