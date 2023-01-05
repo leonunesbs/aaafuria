@@ -44,7 +44,7 @@ specifiers:
   react-icons: 4.7.1
   sharp: 0.31.3
   stripe: 11.3.0
-  superjson: 1.12.0
+  superjson: 1.12.1
   typescript: 4.9.4
   zod: 3.20.2
 
@@ -74,7 +74,7 @@ dependencies:
   react-icons: 4.7.1_react@18.2.0
   sharp: 0.31.3
   stripe: 11.3.0
-  superjson: 1.12.0
+  superjson: 1.12.1
   zod: 3.20.2
 
 devDependencies:
@@ -5322,8 +5322,8 @@ packages:
     resolution: {integrity: sha512-GP6WDNWf+o403jrEp9c5jibKavrtLW+/qYGhFxFrG8maXhwTBI7gLLhiBb0o7uFccWN+EOS9aMO6cGHWAO07OA==}
     dev: false
 
-  /superjson/1.12.0:
-    resolution: {integrity: sha512-B4tefmFqj8KDShHi2br2rz0kBlUJuQHtxMCydEuHvooL+6EscROTNWRfOLMDxW1dS/daK2zZr3C3N9DU+jXATQ==}
+  /superjson/1.12.1:
+    resolution: {integrity: sha512-HMTj43zvwW5bD+JCZCvFf4DkZQCmiLTen4C+W1Xogj0SPOpnhxsriogM04QmBVGH5b3kcIIOr6FqQ/aoIDx7TQ==}
     engines: {node: '>=10'}
     dependencies:
       copy-anything: 3.0.3
