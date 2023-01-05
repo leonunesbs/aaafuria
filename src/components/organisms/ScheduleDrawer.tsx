@@ -36,7 +36,6 @@ import { CustomInput } from '../atoms';
 import NextLink from 'next/link';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
-import { useRouter } from 'next/router';
 
 interface ScheduleDrawerProps extends Omit<DrawerProps, 'children'> {
   group?: GroupWithSchedulesAndUsers;
@@ -57,15 +56,16 @@ type FormInputs = {
 const InterestedUserRow = ({
   user,
   schedule,
+  refetch,
 }: {
   user: UserWithProfile;
   schedule?: ScheduleWithGroupAndInterestedAndPresentUsers;
+  refetch: () => void;
 }) => {
-  const router = useRouter();
   const { green } = useContext(ColorContext);
 
   const refreshData = () => {
-    router.replace(router.asPath);
+    refetch();
   };
 
   const togglePresent = trpc.schedule.togglePresent.useMutation({
@@ -215,6 +215,7 @@ export function ScheduleDrawer({
                         key={user.id}
                         user={user}
                         schedule={schedule}
+                        refetch={refetch}
                       />
                     ))}
                     {schedule?.interestedUsers.length === 0 && (
