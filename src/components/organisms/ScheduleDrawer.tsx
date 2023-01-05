@@ -36,6 +36,7 @@ import { CustomInput } from '../atoms';
 import NextLink from 'next/link';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface ScheduleDrawerProps extends Omit<DrawerProps, 'children'> {
   group?: GroupWithSchedulesAndUsers;
@@ -111,6 +112,7 @@ export function ScheduleDrawer({
   refetch,
   ...rest
 }: ScheduleDrawerProps) {
+  const { data } = useSession();
   const { onClose } = rest;
   const refreshData = () => {
     refetch();
@@ -202,7 +204,7 @@ export function ScheduleDrawer({
                 </FormControl>
               </Stack>
               <TableContainer>
-                <Table size="sm">
+                <Table size="sm" variant={'striped'}>
                   <TableCaption placement="top">
                     Usuários confirmados
                   </TableCaption>
@@ -239,7 +241,7 @@ export function ScheduleDrawer({
               <Button variant="outline" onClick={onClose}>
                 Cancelar
               </Button>
-              {schedule ? (
+              {data?.user.isStaff && schedule ? (
                 <Button
                   colorScheme="red"
                   onClick={() => deleteSchedule.mutate(schedule?.id as string)}
