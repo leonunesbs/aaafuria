@@ -1,8 +1,11 @@
 import { Heading, List, ListItem, Stack, Text } from '@chakra-ui/react';
 
+import { ColorContext } from '@/contexts';
 import { Layout } from '@/components/templates';
+import { useContext } from 'react';
 
 function PrivacyPolicy() {
+  const { green } = useContext(ColorContext);
   return (
     <Layout title="Política de privacidade">
       <Stack>
@@ -13,8 +16,8 @@ function PrivacyPolicy() {
         <Text color="gray.800">
           A sua privacidade é importante para nós. É política do A.A.A. FÚRIA
           respeitar a sua privacidade em relação a qualquer informação sua que
-          possamos coletar no site <a href="https">A.A.A. FÚRIA</a>, e outros
-          sites que possuímos e operamos.
+          possamos coletar no site <Text color={green}>A.A.A. FÚRIA</Text>, e
+          outros sites que possuímos e operamos.
         </Text>
 
         <Text color="gray.800">
@@ -70,20 +73,20 @@ function PrivacyPolicy() {
         <List>
           <ListItem>
             <Text color="gray.800">
-              A) Não se envolver em atividades que sejam ilegais ou contrárias à
+              A- Não se envolver em atividades que sejam ilegais ou contrárias à
               boa fé a à ordem pública;
             </Text>
           </ListItem>
           <ListItem>
             <Text color="gray.800">
-              B) Não difundir propaganda ou conteúdo de natureza racista,
+              B- Não difundir propaganda ou conteúdo de natureza racista,
               xenofóbica, qualquer tipo de pornografia, de apologia ao
               terrorismo ou contra os direitos humanos;
             </Text>
           </ListItem>
           <ListItem>
             <Text color="gray.800">
-              C) Não causar danos aos sistemas físicos (hardwares) e lógicos
+              C- Não causar danos aos sistemas físicos (hardwares) e lógicos
               (softwares) do A.A.A. FÚRIA, de seus fornecedores ou terceiros,
               para introduzir ou disseminar vírus informáticos ou quaisquer
               outros sistemas de hardware ou software que sejam capazes de
