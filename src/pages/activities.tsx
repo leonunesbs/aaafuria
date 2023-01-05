@@ -3,12 +3,10 @@ import { CustomInput, Loading } from '@/components/atoms';
 import { Group, Profile, Schedule, User } from '@prisma/client';
 
 import { ActivityGrid } from '@/components/organisms';
-import { GetServerSideProps } from 'next';
 import { GroupCard } from '@/components/molecules';
 import { Layout } from '@/components/templates';
-import { authOptions } from './api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
 import { trpc } from '@/utils/trpc';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
 export type UserWithProfile = User & {
@@ -26,8 +24,11 @@ export type GroupWithSchedulesAndUsers = Group & {
   schedules: ScheduleWithGroupAndInterestedAndPresentUsers[];
 };
 
-function Activities({ isStaff }: { isStaff: boolean }) {
+function Activities() {
   const [q, setQ] = useState<string>();
+  const { data } = useSession();
+  const isStaff = data?.user.isStaff;
+
   const {
     data: groups,
     isLoading,
@@ -74,23 +75,5 @@ function Activities({ isStaff }: { isStaff: boolean }) {
     </Layout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  ctx.res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59',
-  );
-
-  const token = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-
-  return {
-    props: {
-      isStaff: token?.isStaff,
-    },
-  };
-};
 
 export default Activities;

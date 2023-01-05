@@ -103,6 +103,13 @@ function Orders({
           },
         },
       }}
+      footerProps={{
+        sx: {
+          '@media print': {
+            display: 'none',
+          },
+        },
+      }}
     >
       <Card>
         <CardHeader>

@@ -93,6 +93,7 @@ const InterestedUserRow = ({
           variant={'outline'}
           colorScheme={isPresent ? 'red' : 'green'}
           icon={isPresent ? <MdClose /> : <MdCheck />}
+          isLoading={togglePresent.isLoading}
           aria-label="confirm user"
           onClick={() => {
             togglePresent.mutate({
