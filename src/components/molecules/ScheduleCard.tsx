@@ -12,6 +12,7 @@ import {
   Switch,
   Text,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import {
   GroupWithSchedulesAndUsers,
@@ -33,6 +34,9 @@ export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
   const { data: session } = useSession();
   const scheduleDrawer = useDisclosure();
   const { green } = useContext(ColorContext);
+  const toast = useToast({
+    position: 'top',
+  });
 
   const [defaultChecked, setDefaultChecked] = useState<boolean>();
 
@@ -42,6 +46,14 @@ export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
 
   const toggleInterest = trpc.schedule.toggleInterest.useMutation({
     onSuccess: () => refreshData(),
+    onError: (error) => {
+      toast({
+        title: 'Erro ao adicionar ao carrinho',
+        description: error.message,
+        status: 'error',
+        isClosable: true,
+      });
+    },
   });
 
   const handleSwitch = async () => {
