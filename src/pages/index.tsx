@@ -21,7 +21,7 @@ import { useContext } from 'react';
 export default function Home() {
   const { green } = useContext(ColorContext);
   return (
-    <Layout title="Início">
+    <Layout title="A maior do Piauí">
       <Stack
         direction={{ base: 'column-reverse', lg: 'row' }}
         spacing={{ base: '0', lg: '20' }}
@@ -40,10 +40,15 @@ export default function Home() {
         >
           <Stack spacing={{ base: '8', lg: '10' }}>
             <Stack spacing={{ base: '2', lg: '4' }}>
-              <Heading size="xl" color={green}>
+              <Heading size="xl" as="h1" color={green}>
                 A.A.A. FÚRIA
               </Heading>
-              <Heading size="lg" fontWeight="normal" fontFamily={'Lato'}>
+              <Heading
+                size="lg"
+                as="h2"
+                fontWeight="normal"
+                fontFamily={'Lato'}
+              >
                 Venha fazer parte da maior atlética universitária do Piauí!
               </Heading>
             </Stack>
@@ -120,19 +125,19 @@ export default function Home() {
           <Text fontFamily="AACHENN" fontSize={'4xl'}>
             150+
           </Text>
-          <Text>Sócios ativos</Text>
+          <Text as="h3">Sócios ativos</Text>
         </Box>
         <Box textAlign={'center'}>
           <Text fontFamily="AACHENN" fontSize={'4xl'}>
             10+
           </Text>
-          <Text>Modalidades</Text>
+          <Text as="h3">Modalidades</Text>
         </Box>
         <Box textAlign={'center'}>
           <Text fontFamily="AACHENN" fontSize={'4xl'}>
             200+
           </Text>
-          <Text>Atletas e ritmistas</Text>
+          <Text as="h3">Atletas e ritmistas</Text>
         </Box>
       </Stack>
     </Layout>

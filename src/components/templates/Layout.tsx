@@ -32,7 +32,7 @@ export function Layout({
     <>
       <Head>
         <meta charSet="utf-8" />
-        <title>{`${title} | @aaafuria`}</title>
+        <title>{`${title} » A.A.A. Fúria`}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <meta
@@ -40,12 +40,12 @@ export function Layout({
           content={
             description
               ? `${description}`
-              : 'Plataforma de sócios e loja da Associação Atlética de Medicina Fúria Uniniovafapi. Seja sócio da Maior do Piauí e aproveite dos nossos produtos, treinos, ensaios, eventos e mais...'
+              : 'Plataforma de sócios A.A.A. Fúria Medicina Uninovafapi. Seja Sócio da maior do Piauí!'
           }
         />
         <meta
           name="keywords"
-          content={`aaafuria, site, atlética, fúria, medicina, loja, eventos, intermed, ${keywords}`}
+          content={`seja sócio, aaafuria, atlética, fúria, medicina, loja, eventos, maior do piauí, ${keywords}`}
         />
         <link rel="canonical" href={`https://aaafuria.site${router.asPath}`} />
 
