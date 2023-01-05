@@ -50,7 +50,7 @@ export function Footer({ ...rest }: FooterProps) {
               />
               <IconButton
                 as="a"
-                href="https://ticktock.com/@aaafuria"
+                href="https://tiktok.com/@aaafuria"
                 aria-label="TikTok"
                 icon={<FaTiktok fontSize="1.25rem" />}
               />
