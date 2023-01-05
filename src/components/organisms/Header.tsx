@@ -82,7 +82,13 @@ export function Header({ ...rest }: HeaderProps) {
           {isAuth ? (
             <AvatarMenu />
           ) : (
-            <Button colorScheme={'green'} as={NextLink} href="/auth/login">
+            <Button
+              colorScheme={'green'}
+              variant="outline"
+              as={NextLink}
+              size="sm"
+              href="/auth/login"
+            >
               Entrar
             </Button>
           )}

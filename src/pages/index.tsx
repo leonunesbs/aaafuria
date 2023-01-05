@@ -1,10 +1,9 @@
 import {
   Box,
+  Button,
   Flex,
   HStack,
   Heading,
-  Icon,
-  Link,
   Stack,
   Text,
   useColorModeValue,
@@ -40,12 +39,12 @@ export default function Home() {
         >
           <Stack spacing={{ base: '8', lg: '10' }}>
             <Stack spacing={{ base: '2', lg: '4' }}>
-              <Heading size="xl" as="h1" color={green}>
+              <Heading size="xl" as="h2" color={green}>
                 A.A.A. FÚRIA
               </Heading>
               <Heading
                 size="lg"
-                as="h2"
+                as="h1"
                 fontWeight="normal"
                 fontFamily={'Lato'}
               >
@@ -53,16 +52,16 @@ export default function Home() {
               </Heading>
             </Stack>
             <HStack spacing="3">
-              <Link
+              <Button
                 as={NextLink}
                 href="/sejasocio"
-                color={green}
-                fontWeight="bold"
-                fontSize="lg"
+                rightIcon={<FaArrowRight />}
+                colorScheme="green"
+                variant={'solid'}
+                size="lg"
               >
-                Seja Sócio
-              </Link>
-              <Icon color={green} as={FaArrowRight} />
+                <Text as="h3">Seja Sócio</Text>
+              </Button>
             </HStack>
           </Stack>
         </Box>
