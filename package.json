@@ -12,8 +12,7 @@
   ],
   "scripts": {
     "dev": "next",
-    "build": "next build",
-    "postbuild": "next-sitemap",
+    "build": "next build & next-sitemap",
     "start": "next start",
     "type-check": "tsc --noEmit",
     "lint": "eslint --ignore-path .gitignore \"src/**/*.+(ts|js|tsx)\"",
