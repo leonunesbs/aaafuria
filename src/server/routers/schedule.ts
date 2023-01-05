@@ -55,27 +55,33 @@ export const schedule = router({
         const isInterested = schedule.interestedUsers.some(
           (interestedUser) => interestedUser.id === user.id,
         );
-        if (isInterested) {
+        if (isInterested)
           return {
-            disconnect: {
-              id: user.id,
+            interestedUsers: {
+              disconnect: {
+                id: user.id,
+              },
+            },
+            confirmedUsers: {
+              disconnect: {
+                id: user.id,
+              },
             },
           };
-        } else {
+        else
           return {
-            connect: {
-              id: user.id,
+            interestedUsers: {
+              connect: {
+                id: user.id,
+              },
             },
           };
-        }
       };
       return prisma.schedule.update({
         where: {
           id: input,
         },
-        data: {
-          interestedUsers: alternate(),
-        },
+        data: alternate(),
       });
     }),
   togglePresent: staffProcedure
