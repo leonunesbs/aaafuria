@@ -1,27 +1,30 @@
-import { Box, Flex, HStack, Heading, Link, Stack } from '@chakra-ui/react';
-import { Item, Order, OrderItem } from '@prisma/client';
+import {
+  Box,
+  Flex,
+  HStack,
+  Heading,
+  Link,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 
 import { CartItem } from '@/components/molecules';
 import { CartOrderSummary } from '@/components/organisms';
 import { ColorContext } from '@/contexts';
-import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
+import { Loading } from '@/components/atoms';
 import NextLink from 'next/link';
-import { authOptions } from '../api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
-import { prisma } from '@/server/prisma';
+import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
+import { useSession } from 'next-auth/react';
 
-type ItemWithFamily = Item & {
-  parent: Item;
-  childrens: Item[];
-};
-type OrderItemWithItem = OrderItem & {
-  order: Order;
-  item: ItemWithFamily;
-};
-
-function Cart({ orderItems }: { orderItems: OrderItemWithItem[] }) {
+function Cart() {
+  const { data: session } = useSession();
+  const {
+    data: orderItems,
+    isLoading,
+    refetch,
+  } = trpc.store.orderItems.useQuery(session?.user?.email as string, {});
   const subTotal = orderItems?.reduce(
     (acc, orderItem) => acc + orderItem.item.price * orderItem.quantity,
     0,
@@ -44,9 +47,15 @@ function Cart({ orderItems }: { orderItems: OrderItemWithItem[] }) {
       >
         <Stack spacing={{ base: '8', md: '10' }} flex="2">
           <Heading fontSize="2xl" fontWeight="extrabold">
-            Meu carrinho ({orderItems?.length} ite
-            {orderItems && orderItems.length > 1 ? 'ns' : 'm'})
+            Meu carrinho{' '}
+            {orderItems?.length && (
+              <Text>
+                ({orderItems?.length} ite
+                {orderItems && orderItems.length > 1 ? 'ns' : 'm'})
+              </Text>
+            )}
           </Heading>
+          {isLoading && <Loading />}
           <Stack spacing="6">
             {orderItems?.map((orderItem) => (
               <CartItem
@@ -57,6 +66,7 @@ function Cart({ orderItems }: { orderItems: OrderItemWithItem[] }) {
                   createdAt: new Date(orderItem.order.createdAt),
                   updatedAt: new Date(orderItem.order.updatedAt),
                 }}
+                refetch={refetch}
               />
             ))}
             {orderItems && orderItems.length === 0 && (
@@ -89,39 +99,5 @@ function Cart({ orderItems }: { orderItems: OrderItemWithItem[] }) {
     </Layout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const token = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-
-  const orderItems = await prisma.orderItem.findMany({
-    where: {
-      order: {
-        user: {
-          email: token?.email,
-        },
-      },
-      ordered: false,
-      checkedOut: false,
-    },
-    include: {
-      item: {
-        include: {
-          parent: true,
-          childrens: true,
-        },
-      },
-      order: true,
-    },
-  });
-
-  return {
-    props: {
-      orderItems: JSON.parse(JSON.stringify(orderItems)),
-    },
-  };
-};
 
 export default Cart;

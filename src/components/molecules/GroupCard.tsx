@@ -20,7 +20,7 @@ import { ScheduleDrawer } from '../organisms';
 import { useState } from 'react';
 
 interface GroupCardProps {
-  group: GroupWithSchedulesAndUsers;
+  group?: GroupWithSchedulesAndUsers;
   isStaff: boolean;
 }
 
@@ -37,16 +37,18 @@ export function GroupCard({ group, isStaff }: GroupCardProps) {
     scheduleDrawer.onOpen();
   };
 
-  group.schedules = group.schedules.filter(
-    (schedule) =>
-      new Date(schedule.start) > new Date(Date.now() - 24 * 60 * 60 * 1000),
-  );
+  if (group) {
+    group.schedules = group.schedules.filter(
+      (schedule) =>
+        new Date(schedule.start) > new Date(Date.now() - 24 * 60 * 60 * 1000),
+    );
+  }
 
   return (
-    <Card key={group.id} maxW="xl">
+    <Card key={group?.id} maxW="xl">
       <CardHeader>
         <HStack w="full" justify="space-between">
-          <Heading size="md">{group.name}</Heading>
+          <Heading size="md">{group?.name}</Heading>
           <IconButton
             hidden={!isStaff}
             variant={'outline'}
@@ -65,10 +67,10 @@ export function GroupCard({ group, isStaff }: GroupCardProps) {
       </CardHeader>
       <CardBody>
         <Stack>
-          {group.schedules.map((schedule) => (
+          {group?.schedules.map((schedule) => (
             <ScheduleCard key={schedule.id} schedule={schedule} />
           ))}
-          {!group.schedules.length && (
+          {!group?.schedules.length && (
             <Text as="i" textAlign={'center'}>
               Não há nenhuma atividade agendada para esse grupo.
             </Text>

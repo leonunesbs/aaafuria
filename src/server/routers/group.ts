@@ -1,4 +1,4 @@
-import { router, staffProcedure } from '../trpc';
+import { authedProcedure, router, staffProcedure } from '../trpc';
 
 import { TRPCError } from '@trpc/server';
 import { prisma } from '../prisma';
@@ -107,4 +107,37 @@ export const group = router({
         },
       });
     }),
+  activityGroups: authedProcedure.query(async () => {
+    return await prisma.group.findMany({
+      where: {
+        OR: [
+          { type: { contains: 'ESPORTE' } },
+          { type: { contains: 'BATERIA' } },
+        ],
+      },
+      include: {
+        users: true,
+        schedules: {
+          orderBy: {
+            start: 'asc',
+          },
+          include: {
+            interestedUsers: {
+              include: {
+                profile: true,
+              },
+              orderBy: {
+                name: 'asc',
+              },
+            },
+            presentUsers: true,
+            group: true,
+          },
+        },
+      },
+      orderBy: {
+        name: 'asc',
+      },
+    });
+  }),
 });

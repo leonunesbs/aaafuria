@@ -26,9 +26,9 @@ import {
 import {
   GroupWithSchedulesAndUsers,
   ScheduleWithGroupAndInterestedAndPresentUsers,
+  UserWithProfile,
 } from '@/pages/activities';
 import { MdCheck, MdClose } from 'react-icons/md';
-import { Profile, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ColorContext } from '@/contexts';
@@ -39,7 +39,7 @@ import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 interface ScheduleDrawerProps extends Omit<DrawerProps, 'children'> {
-  group: GroupWithSchedulesAndUsers;
+  group?: GroupWithSchedulesAndUsers;
   schedule?: ScheduleWithGroupAndInterestedAndPresentUsers;
 }
 
@@ -57,9 +57,7 @@ const InterestedUserRow = ({
   user,
   schedule,
 }: {
-  user: User & {
-    profile?: Profile;
-  };
+  user: UserWithProfile;
   schedule?: ScheduleWithGroupAndInterestedAndPresentUsers;
 }) => {
   const router = useRouter();
@@ -116,7 +114,7 @@ export function ScheduleDrawer({
   const { handleSubmit, register, reset } = useForm<FormInputs>({
     defaultValues: {
       group: {
-        name: schedule?.group.name || group.name,
+        name: schedule?.group?.name || group?.name,
       },
       description: schedule?.description || '',
       location: schedule?.location || '',
@@ -128,7 +126,7 @@ export function ScheduleDrawer({
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     createSchedule.mutate({
       ...data,
-      groupId: group.id,
+      groupId: group?.id as string,
       start: new Date(data.start),
       end: data.end ? new Date(data.end) : undefined,
     });

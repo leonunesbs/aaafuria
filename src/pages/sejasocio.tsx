@@ -1,38 +1,34 @@
-import { Plan, Profile, User } from '@prisma/client';
 import { SimpleGrid, useDisclosure } from '@chakra-ui/react';
 
 import { ActionButton } from '@/components/atoms';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
+import { Plan } from '@prisma/client';
 import { PlanCard } from '@/components/molecules';
 import { SejaSocioDrawer } from '@/components/organisms';
-import { authOptions } from './api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 
-function Subscribe({
-  plans,
-  user,
-}: {
-  plans: Plan[];
-  user: User & { profile?: Profile };
-}) {
+function Subscribe({ plans }: { plans?: Plan[] }) {
+  const { status } = useSession();
+  const isAuth = status === 'authenticated';
   const sejaSocioDrawer = useDisclosure();
   const [plan, setPlan] = useState<Plan>();
-  const mensal = plans.find((plan) => plan.name.includes('MENSAL'));
-  const semestral = plans.find((plan) => plan.name.includes('SEMESTRAL'));
-  const anual = plans.find((plan) => plan.name.includes('ANUAL'));
+  const mensal = plans?.find((plan) => plan.name.includes('MENSAL'));
+  const semestral = plans?.find((plan) => plan.name.includes('SEMESTRAL'));
+  const anual = plans?.find((plan) => plan.name.includes('ANUAL'));
 
   const router = useRouter();
   const handlePlan = (plan?: Plan) => {
-    if (!user.profile) {
-      router.push('/dashboard/profile');
-    }
-    if (plan) {
-      setPlan(plan);
-      sejaSocioDrawer.onOpen();
+    if (!isAuth) {
+      router.push(`/auth/login?callbackUrl=${router.asPath}`);
+    } else {
+      if (plan) {
+        setPlan(plan);
+        sejaSocioDrawer.onOpen();
+      }
     }
   };
 
@@ -120,30 +116,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     'public, s-maxage=10, stale-while-revalidate=59',
   );
 
-  const user = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-
   const plans = await prisma.plan.findMany({
     orderBy: {
       periodInDays: 'asc',
     },
   });
 
-  const userQuery = await prisma.user.findUnique({
-    where: {
-      email: user?.email as string,
-    },
-    include: {
-      profile: true,
-    },
-  });
-
   return {
     props: {
       plans,
-      user: JSON.parse(JSON.stringify(userQuery)),
     },
   };
 };

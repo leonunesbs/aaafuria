@@ -25,7 +25,6 @@ export const config = {
     '/admin/:path*',
     '/dashboard/:path*',
     '/activities',
-    '/sejasocio',
     '/payments/:path*',
     '/store/cart',
   ],

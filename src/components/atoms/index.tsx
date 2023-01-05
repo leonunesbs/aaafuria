@@ -11,3 +11,4 @@ export * from './Pagination';
 export * from './Calango';
 export * from './Fonts';
 export * from './Logo';
+export * from './Loading';
