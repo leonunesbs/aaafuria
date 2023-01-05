@@ -16,8 +16,11 @@ function PrivacyPolicy() {
         <Text>
           A sua privacidade é importante para nós. É política do A.A.A. FÚRIA
           respeitar a sua privacidade em relação a qualquer informação sua que
-          possamos coletar no site <Text color={green}>A.A.A. FÚRIA</Text>, e
-          outros sites que possuímos e operamos.
+          possamos coletar no site{' '}
+          <Text color={green} as="span">
+            A.A.A. FÚRIA
+          </Text>
+          , e outros sites que possuímos e operamos.
         </Text>
 
         <Text>

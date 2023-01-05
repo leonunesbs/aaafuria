@@ -4,9 +4,7 @@ import {
   HStack,
   Heading,
   Icon,
-  Image,
   Link,
-  Skeleton,
   Stack,
   Text,
   useColorModeValue,
@@ -15,6 +13,7 @@ import {
 import { ColorContext } from '@/contexts';
 import { FaArrowRight } from 'react-icons/fa';
 import { Layout } from '@/components/templates';
+import NextImage from 'next/image';
 import NextLink from 'next/link';
 import { useContext } from 'react';
 
@@ -61,25 +60,47 @@ export default function Home() {
             </HStack>
           </Stack>
         </Box>
-        <Flex flex="1" overflow="hidden">
-          <Image
-            alt="Lovely Image"
-            src="/image01.jpeg"
-            fallback={<Skeleton />}
-            maxH="450px"
+        <Flex flex="1" overflow="hidden" zIndex={-10}>
+          <Flex position={'relative'} minW="300px" h="450px" w="full">
+            <NextImage
+              quality={50}
+              sizes="(max-width: 768px) 70vw,
+              (max-width: 1200px) 35vw,
+              20vw"
+              src="/image01.jpeg"
+              placeholder="blur"
+              blurDataURL="/image02.jpeg"
+              alt={'image01'}
+              fill
+              style={{
+                position: 'absolute',
+                objectFit: 'cover',
+              }}
+            />
+          </Flex>
+          <Flex
+            position={'relative'}
             minW="300px"
-            objectFit="cover"
-            flex="1"
-          />
-
-          <Image
-            src="/image02.jpeg"
+            h="450px"
+            w="full"
             display={{ base: 'none', sm: 'initial' }}
-            alt="Lovely Image"
-            fallback={<Skeleton />}
-            maxH="450px"
-            objectFit="cover"
-          />
+          >
+            <NextImage
+              quality={50}
+              sizes="(max-width: 768px) 70vw,
+              (max-width: 1200px) 35vw,
+              20vw"
+              src="/image02.jpeg"
+              placeholder="blur"
+              blurDataURL="/image02.jpeg"
+              alt={'image02'}
+              fill
+              style={{
+                position: 'absolute',
+                objectFit: 'cover',
+              }}
+            />
+          </Flex>
         </Flex>
       </Stack>
       <Stack
