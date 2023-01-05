@@ -62,7 +62,7 @@ export const schedule = router({
                 id: user.id,
               },
             },
-            confirmedUsers: {
+            presentUsers: {
               disconnect: {
                 id: user.id,
               },
@@ -81,7 +81,9 @@ export const schedule = router({
         where: {
           id: input,
         },
-        data: alternate(),
+        data: {
+          ...alternate(),
+        },
       });
     }),
   togglePresent: staffProcedure
