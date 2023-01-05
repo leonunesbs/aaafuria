@@ -51,7 +51,8 @@ function Login() {
     if (error === 'OAuthAccountNotLinked') {
       toast({
         title: 'Conta não vinculada',
-        description: 'Você deve usar a mesma conta que usou no primeiro acesso',
+        description:
+          'Você deve usar a mesma conta que usou em seu primeiro acesso',
         status: 'error',
         duration: 5000,
         isClosable: true,
