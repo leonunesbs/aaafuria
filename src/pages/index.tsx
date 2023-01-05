@@ -12,6 +12,7 @@ import {
 
 import { ColorContext } from '@/contexts';
 import { FaArrowRight } from 'react-icons/fa';
+import { GetStaticProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
@@ -138,7 +139,7 @@ export default function Home() {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {},
   };
