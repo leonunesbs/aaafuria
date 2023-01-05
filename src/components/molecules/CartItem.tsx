@@ -15,7 +15,6 @@ import { CartProductMeta } from '../atoms/CartProductMeta';
 import { ItemsWithParentAndChildrens } from '@/pages/store';
 import { PriceTag } from '../atoms/PriceTag';
 import { trpc } from '@/utils/trpc';
-import { useRouter } from 'next/router';
 
 type CartItemProps = OrderItem & {
   order: Order;
@@ -36,10 +35,8 @@ const QuantitySelect = ({
   refetch,
 }: QuantitySelectProps) => {
   const toast = useToast({ position: 'top' });
-  const router = useRouter();
   const refreshData = () => {
     refetch();
-    router.replace(router.asPath);
   };
 
   const addToCart = trpc.store.cart.add.useMutation({
@@ -129,12 +126,10 @@ const QuantitySelect = ({
 };
 
 export function CartItem({ ...rest }: CartItemProps) {
-  const router = useRouter();
   const { id, item, quantity, price, currency, refetch } = rest;
 
   const refreshData = () => {
     refetch();
-    router.replace(router.asPath);
   };
 
   const removeFromCart = trpc.store.cart.remove.useMutation({
