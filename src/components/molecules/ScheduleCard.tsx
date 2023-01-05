@@ -31,7 +31,7 @@ interface ScheduleCardProps {
 }
 
 export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const { data: session } = useSession();
   const scheduleDrawer = useDisclosure();
   const { green } = useContext(ColorContext);

@@ -50,7 +50,7 @@ function Payment({
   payment: Payment & { user: User; membership: Membership; order: Order };
 }) {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const drawer = useDisclosure();
   const updatePayment = trpc.payment.update.useMutation({
     onSuccess: () =>

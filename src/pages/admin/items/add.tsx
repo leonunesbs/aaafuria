@@ -49,7 +49,7 @@ export interface ItemInput
 
 function Add({ items }: { items: ItemsWithParentAndChilds[] }) {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const { register, handleSubmit } = useForm<ItemInput>();
   const createItem = trpc.store.item.create.useMutation({
     onSuccess: () => {

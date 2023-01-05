@@ -35,7 +35,7 @@ import { useRouter } from 'next/router';
 
 function Groups({ groups }: { groups: Group[] }) {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<Group>();
 

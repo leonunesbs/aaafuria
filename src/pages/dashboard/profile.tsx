@@ -31,7 +31,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { authOptions } from '../api/auth/[...nextauth]';
 
 function Profile({ user }: { user: User & { profile?: Profile } }) {
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const router = useRouter();
   const { green } = useContext(ColorContext);
   const { register, handleSubmit } = useForm({

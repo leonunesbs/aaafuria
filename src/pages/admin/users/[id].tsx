@@ -64,7 +64,7 @@ function User({
   groups: Group[];
 }) {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const btnRef = useRef<HTMLButtonElement>(null);
   const drawer = useDisclosure();
   const refreshData = () => {

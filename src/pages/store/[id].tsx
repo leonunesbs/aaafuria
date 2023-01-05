@@ -88,7 +88,7 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
   const dec = getDecrementButtonProps();
   const input = getInputProps();
 
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const addToCart = trpc.store.cart.add.useMutation({
     onSuccess: () =>
       toast({

@@ -29,7 +29,7 @@ import { useRouter } from 'next/router';
 
 function Login() {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const { green } = useContext(ColorContext);
   const { callbackUrl, error } = router.query;
   const { register, handleSubmit } = useForm<{ email: string }>();

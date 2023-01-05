@@ -35,7 +35,7 @@ const QuantitySelect = ({
   itemId,
   refetch,
 }: QuantitySelectProps) => {
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const router = useRouter();
   const refreshData = () => {
     refetch();

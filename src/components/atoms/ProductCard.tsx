@@ -27,7 +27,7 @@ interface ProductCardProps {
 
 export function ProductCard({ item, rootProps }: ProductCardProps) {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const { id, name, price, memberPrice, childrens, rating } = item;
 
   const addToCart = trpc.store.cart.add.useMutation({

@@ -29,7 +29,7 @@ import { ItemInput } from './add';
 
 function Item({ item, items }: { item: Item; items: Item[] }) {
   const router = useRouter();
-  const toast = useToast();
+  const toast = useToast({ position: 'top' });
   const { register, handleSubmit } = useForm<ItemInput>({
     defaultValues: {
       ...item,
