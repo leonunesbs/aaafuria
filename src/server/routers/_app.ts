@@ -1,4 +1,14 @@
-import { auth, group, payment, plan, s3, schedule, store, user } from '.';
+import {
+  admin,
+  auth,
+  group,
+  payment,
+  plan,
+  s3,
+  schedule,
+  store,
+  user,
+} from '.';
 
 import { router } from '../trpc';
 
@@ -11,5 +21,6 @@ export const appRouter = router({
   schedule,
   s3,
   payment,
+  admin,
 });
 export type AppRouter = typeof appRouter;

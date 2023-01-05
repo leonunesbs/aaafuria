@@ -21,15 +21,13 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { CustomInput, formatPrice } from '@/components/atoms';
-import { Membership, Plan, User } from '@prisma/client';
+import { Membership, Plan, Profile, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ColorContext } from '@/contexts';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
-import { authOptions } from '../api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
@@ -46,7 +44,9 @@ type PlanWithMemberships = Plan & {
 
 type MembershipWithPlanAndUser = Membership & {
   plan: Plan;
-  user: User;
+  user: User & {
+    profile?: Profile;
+  };
 };
 
 function Memberships({
@@ -218,7 +218,7 @@ function Memberships({
                           <Text>{membership.user.name}</Text>
                         </Link>
                       </Td>
-                      <Td>MED 28</Td>
+                      <Td>{membership.user.profile?.studyClass}</Td>
                       <Td>{membership.plan?.name}</Td>
                       <Td>
                         {new Date(membership.endDate).toLocaleDateString()}
@@ -235,20 +235,7 @@ function Memberships({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const user = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-  if (!user) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-
+export const getServerSideProps: GetServerSideProps = async () => {
   const plans = await prisma.plan.findMany({
     include: {
       memberships: true,

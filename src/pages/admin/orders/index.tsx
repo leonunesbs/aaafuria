@@ -21,48 +21,29 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { CustomInput, Pagination, formatPrice } from '@/components/atoms';
-import { Item, Order, OrderItem, Payment, User } from '@prisma/client';
 import { useContext, useState } from 'react';
 
 import { ColorContext } from '@/contexts';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { getToken } from 'next-auth/jwt';
+import { Payment } from '@prisma/client';
 import { paymentStatus } from '@/pages/dashboard/orders';
 import { prisma } from '@/server/prisma';
+import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
 
-type OrderItemWithItem = OrderItem & {
-  item: Item & {
-    parent: Item;
-  };
-};
-
-type OrderWithUserPaymentAndItems = Order & {
-  user: User;
-  payment: Payment;
-  items: OrderItemWithItem[];
-};
-
-function Orders({
-  orders: initalOrders,
-  page,
-  totalPages,
-}: {
-  orders: OrderWithUserPaymentAndItems[];
-  page: number;
-  totalPages: number;
-}) {
+function Orders({ page, totalPages }: { page: number; totalPages: number }) {
   const { green } = useContext(ColorContext);
 
-  const orders = initalOrders.map((order) => {
+  const { data: initalOrders } = trpc.admin.orders.useQuery({});
+
+  const orders = initalOrders?.map((order) => {
     const total = order.items.reduce((acc, item) => {
       return acc + item.price * item.quantity;
     }, 0);
 
-    const status = paymentStatus(order.payment);
+    const status = paymentStatus(order?.payment as Payment);
 
     return {
       ...order,
@@ -72,7 +53,7 @@ function Orders({
   });
   const router = useRouter();
   const [q, setQ] = useState<string>();
-  const filteredOrders = orders.filter((order) => {
+  const filteredOrders = orders?.filter((order) => {
     if (!q) {
       return order;
     }
@@ -173,7 +154,7 @@ function Orders({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {filteredOrders.map((order) => (
+                  {filteredOrders?.map((order) => (
                     <Tr key={order.id}>
                       <Td>
                         <Text>{order.user.name}</Text>
@@ -258,55 +239,15 @@ function Orders({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const user = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-  if (!user) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
-
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const totalOrders = await prisma.order.count();
-  const pageSize = ctx.query.full ? totalOrders : 20;
-  const page = ctx.query.page ? Number(ctx.query.page) : 1;
-
-  const orders = await prisma.order.findMany({
-    where: {
-      payment: {
-        canceled: false,
-      },
-    },
-    include: {
-      user: true,
-      items: {
-        include: {
-          item: {
-            include: {
-              parent: true,
-            },
-          },
-        },
-      },
-      payment: true,
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-    take: pageSize,
-    skip: (page - 1) * pageSize,
-  });
+  const pageSize = ctx.params?.full ? totalOrders : 20;
+  const page = ctx.params?.page ? Number(ctx.params?.page) : 1;
 
   return {
     props: {
-      orders: JSON.parse(JSON.stringify(orders)),
       page,
-      totalPages: Math.ceil((await prisma.order.count()) / pageSize),
+      totalPages: Math.ceil(totalOrders / pageSize),
     },
   };
 };

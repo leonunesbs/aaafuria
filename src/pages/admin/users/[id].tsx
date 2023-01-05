@@ -35,40 +35,27 @@ import {
 
 import { CustomAvatar, CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
-import { Group, Membership, Profile, User } from '@prisma/client';
+import { Group, Profile, User } from '@prisma/client';
 import axios from 'axios';
-import { GetServerSideProps } from 'next';
-import { getToken } from 'next-auth/jwt';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdAdd, MdClose } from 'react-icons/md';
 
-type UserWithMembershipsGroupsAndProfile = User & {
-  memberships: Membership[];
-  groups: Group[];
-  profile?: Omit<Profile, 'birth'> & { birth: string };
-};
-
 type InputType = Omit<User & Profile, 'birth'> & { birth: string };
 
-function User({
-  user,
-  groups,
-}: {
-  user: UserWithMembershipsGroupsAndProfile;
-  groups: Group[];
-}) {
+function User({ groups, id }: { id?: string; groups: Group[] }) {
   const router = useRouter();
   const toast = useToast({ position: 'top' });
   const btnRef = useRef<HTMLButtonElement>(null);
   const drawer = useDisclosure();
+  const { data: user, refetch } = trpc.admin.user.useQuery(id as string);
   const refreshData = () => {
-    router.replace(router.asPath);
+    refetch();
   };
 
   const addToGroup = trpc.group.addToGroup.useMutation({
@@ -85,14 +72,14 @@ function User({
 
   const { handleSubmit, register } = useForm<InputType>({
     defaultValues: {
-      email: user.email,
-      name: user.name,
-      editable: user.profile?.editable,
-      studyClass: user.profile?.studyClass,
-      registration: user.profile?.registration,
-      phone: user.profile?.phone,
-      cpf: user.profile?.cpf,
-      rg: user.profile?.rg,
+      email: user?.email,
+      name: user?.name,
+      editable: user?.profile?.editable,
+      studyClass: user?.profile?.studyClass,
+      registration: user?.profile?.registration,
+      phone: user?.profile?.phone,
+      cpf: user?.profile?.cpf,
+      rg: user?.profile?.rg,
     },
   });
   const updateUser = trpc.user.update.useMutation({
@@ -117,7 +104,7 @@ function User({
     rg,
   }) => {
     updateUser.mutate({
-      id: user.id,
+      id: user?.id as string,
       editable,
       name: name || '',
       birth: birth ? new Date(birth) : undefined,
@@ -142,7 +129,7 @@ function User({
         .mutateAsync({
           name: file.name,
           type: file.type,
-          path: `media/users/${user.id}`,
+          path: `media/users/${user?.id}`,
           size: file.size,
         })
         .then(async (data) => {
@@ -155,7 +142,7 @@ function User({
             },
           });
           updateUser.mutate({
-            id: user.id,
+            id: user?.id as string,
             image: url.split('?')[0],
           });
         });
@@ -186,7 +173,7 @@ function User({
                   />
                 </Skeleton>
                 <Heading size="md" textAlign={'center'}>
-                  {user.name}
+                  {user?.name}
                 </Heading>
               </Center>
 
@@ -204,13 +191,9 @@ function User({
                   <CustomInput
                     type={'date'}
                     {...register('birth')}
-                    defaultValue={
-                      user.profile?.birth
-                        ? new Date(user.profile?.birth as string)
-                            ?.toISOString()
-                            .slice(0, 10)
-                        : ''
-                    }
+                    defaultValue={user?.profile?.birth
+                      ?.toISOString()
+                      .slice(0, 10)}
                   />
                 </FormControl>
                 <FormControl>
@@ -240,7 +223,7 @@ function User({
                     colorScheme={'green'}
                     onChange={(e) => {
                       updateUser.mutate({
-                        id: user.id,
+                        id: user?.id as string,
                         editable: e.target.checked,
                       });
                     }}
@@ -259,7 +242,7 @@ function User({
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {user.groups.map((group) => (
+                  {user?.groups.map((group) => (
                     <Tr key={group.id}>
                       <Td>
                         <Link as={NextLink} href={`/admin/groups/${group.id}`}>
@@ -273,7 +256,7 @@ function User({
                           variant="ghost"
                           onClick={() => {
                             removeFromGroup.mutate({
-                              usersId: [user.id],
+                              usersId: [user?.id],
                               groupId: group.id,
                             });
                           }}
@@ -308,7 +291,7 @@ function User({
                           placeholder="Selecione uma opção..."
                           onChange={(e) => {
                             addToGroup.mutate({
-                              usersId: [user.id],
+                              usersId: [user?.id as string],
                               groupId: e.target.value,
                             });
                           }}
@@ -350,51 +333,39 @@ function User({
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const sessionUser = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
+export const getStaticPaths: GetStaticPaths = async () => {
+  const users = await prisma.user.findMany({
+    select: {
+      id: true,
+    },
   });
-  if (!sessionUser) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl=${ctx.resolvedUrl}`,
-        permanent: false,
-      },
-    };
-  }
 
+  const paths = users.map((user) => ({
+    params: {
+      id: user.id,
+    },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  const id = ctx.params?.id;
   const groups = await prisma.group.findMany({
     orderBy: {
       name: 'asc',
     },
   });
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: ctx.query.id as string,
-    },
-    include: {
-      profile: true,
-      memberships: {
-        orderBy: {
-          startDate: 'desc',
-        },
-        take: 3,
-      },
-      groups: {
-        orderBy: {
-          name: 'asc',
-        },
-      },
-    },
-  });
-
   return {
     props: {
       groups,
-      user: JSON.parse(JSON.stringify(user)),
+      id,
     },
+    revalidate: 60,
   };
 };
 

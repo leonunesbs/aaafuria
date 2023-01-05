@@ -21,24 +21,22 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ColorContext } from '@/contexts';
 import { CustomInput } from '@/components/atoms';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { Group } from '@prisma/client';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { cleanString } from '@/libs/functions';
-import { getToken } from 'next-auth/jwt';
-import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
-function Groups({ groups }: { groups: Group[] }) {
+function Groups() {
   const router = useRouter();
   const toast = useToast({ position: 'top' });
   const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<Group>();
 
+  const { data: groups } = trpc.admin.groups.useQuery();
   const refreshData = () => {
     router.replace(router.asPath);
   };
@@ -90,7 +88,7 @@ function Groups({ groups }: { groups: Group[] }) {
                 </Thead>
 
                 <Tbody>
-                  {groups.map((group) => (
+                  {groups?.map((group) => (
                     <Tr key={group.id}>
                       <Td>
                         <Link
@@ -153,28 +151,9 @@ function Groups({ groups }: { groups: Group[] }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const user = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-  if (!user) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl${ctx.resolvedUrl}}`,
-        permanent: false,
-      },
-    };
-  }
-  const groups = await prisma.group.findMany({
-    orderBy: {
-      name: 'asc',
-    },
-  });
+export const getStaticProps: GetStaticProps = async () => {
   return {
-    props: {
-      groups,
-    },
+    props: {},
   };
 };
 

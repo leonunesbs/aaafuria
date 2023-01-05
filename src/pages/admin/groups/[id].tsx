@@ -1,6 +1,5 @@
 import { Layout } from '@/components/templates';
 import { ColorContext } from '@/contexts';
-import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { prisma } from '@/server/prisma';
 import {
   Card,
@@ -17,8 +16,7 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { Group, Profile, User } from '@prisma/client';
-import { GetServerSideProps } from 'next';
-import { getToken } from 'next-auth/jwt';
+import { GetStaticProps } from 'next';
 import NextLink from 'next/link';
 import { useContext } from 'react';
 
@@ -69,22 +67,22 @@ function Group({ group }: { group: Group & { users: UserWithProfile[] } }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const user = await getToken({
-    req: ctx.req,
-    secret: authOptions.secret,
-  });
-  if (!user) {
-    return {
-      redirect: {
-        destination: `/auth/login?callbackUrl${ctx.resolvedUrl}}`,
-        permanent: false,
+export const getStaticPaths = async () => {
+  const groups = await prisma.group.findMany();
+  return {
+    paths: groups.map((group) => ({
+      params: {
+        id: group.id,
       },
-    };
-  }
+    })),
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const group = await prisma.group.findUniqueOrThrow({
     where: {
-      id: ctx.query.id as string,
+      id: ctx.params?.id as string,
     },
     include: {
       users: {
@@ -98,6 +96,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {
       group: JSON.parse(JSON.stringify(group)),
     },
+    revalidate: 10,
   };
 };
 
