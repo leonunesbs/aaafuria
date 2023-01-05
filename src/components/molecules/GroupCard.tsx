@@ -22,9 +22,10 @@ import { useState } from 'react';
 interface GroupCardProps {
   group?: GroupWithSchedulesAndUsers;
   isStaff: boolean;
+  refetch: () => void;
 }
 
-export function GroupCard({ group, isStaff }: GroupCardProps) {
+export function GroupCard({ group, isStaff, refetch }: GroupCardProps) {
   const scheduleDrawer = useDisclosure();
   const [activeSchedule, setActiveSchedule] = useState<
     ScheduleWithGroupAndInterestedAndPresentUsers | undefined
@@ -68,7 +69,11 @@ export function GroupCard({ group, isStaff }: GroupCardProps) {
       <CardBody>
         <Stack>
           {group?.schedules.map((schedule) => (
-            <ScheduleCard key={schedule.id} schedule={schedule} />
+            <ScheduleCard
+              key={schedule.id}
+              schedule={schedule}
+              refetch={refetch}
+            />
           ))}
           {!group?.schedules.length && (
             <Text as="i" textAlign={'center'}>

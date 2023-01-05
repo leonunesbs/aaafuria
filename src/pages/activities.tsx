@@ -28,7 +28,11 @@ export type GroupWithSchedulesAndUsers = Group & {
 
 function Activities({ isStaff }: { isStaff: boolean }) {
   const [q, setQ] = useState<string>();
-  const { data: groups, isLoading } = trpc.group.activityGroups.useQuery();
+  const {
+    data: groups,
+    isLoading,
+    refetch,
+  } = trpc.group.activityGroups.useQuery();
 
   const filteredGroups = groups?.filter((group) => {
     if (!q) return group;
@@ -56,7 +60,12 @@ function Activities({ isStaff }: { isStaff: boolean }) {
       <ActivityGrid>
         {isLoading && <Loading />}
         {filteredGroups?.map((group) => (
-          <GroupCard key={group.id} group={group} isStaff={isStaff} />
+          <GroupCard
+            key={group.id}
+            group={group}
+            isStaff={isStaff}
+            refetch={refetch}
+          />
         ))}
       </ActivityGrid>
       {filteredGroups?.length === 0 && (

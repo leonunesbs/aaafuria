@@ -23,15 +23,14 @@ import { useContext, useEffect, useState } from 'react';
 import { ColorContext } from '@/contexts';
 import { ScheduleDrawer } from '../organisms';
 import { trpc } from '@/utils/trpc';
-import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
 interface ScheduleCardProps {
   schedule: ScheduleWithGroupAndInterestedAndPresentUsers;
+  refetch: () => void;
 }
 
-export function ScheduleCard({ schedule }: ScheduleCardProps) {
-  const router = useRouter();
+export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
   const toast = useToast();
   const { data: session } = useSession();
   const scheduleDrawer = useDisclosure();
@@ -40,7 +39,7 @@ export function ScheduleCard({ schedule }: ScheduleCardProps) {
   const [defaultChecked, setDefaultChecked] = useState<boolean>();
 
   const refreshData = () => {
-    router.replace(router.asPath);
+    refetch();
   };
 
   const toggleInterest = trpc.schedule.toggleInterest.useMutation({
