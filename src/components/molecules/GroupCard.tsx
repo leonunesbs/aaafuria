@@ -63,6 +63,7 @@ export function GroupCard({ group, isStaff, refetch }: GroupCardProps) {
         <ScheduleDrawer
           group={group}
           schedule={activeSchedule}
+          refetch={refetch}
           {...scheduleDrawer}
         />
       </CardHeader>

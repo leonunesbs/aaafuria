@@ -41,6 +41,7 @@ import { useRouter } from 'next/router';
 interface ScheduleDrawerProps extends Omit<DrawerProps, 'children'> {
   group?: GroupWithSchedulesAndUsers;
   schedule?: ScheduleWithGroupAndInterestedAndPresentUsers;
+  refetch: () => void;
 }
 
 type FormInputs = {
@@ -103,12 +104,12 @@ const InterestedUserRow = ({
 export function ScheduleDrawer({
   group,
   schedule,
+  refetch,
   ...rest
 }: ScheduleDrawerProps) {
-  const router = useRouter();
   const { onClose } = rest;
   const refreshData = () => {
-    router.replace(router.asPath);
+    refetch();
   };
 
   const { handleSubmit, register, reset } = useForm<FormInputs>({
