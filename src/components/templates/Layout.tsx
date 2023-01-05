@@ -97,7 +97,7 @@ export function Layout({
         {subHeader}
         <Container
           maxW="8xl"
-          minH="80vh"
+          minH="50vh"
           mx="auto"
           px={{ base: '4', md: '8', lg: '12' }}
           py={{ base: '6', md: '8', lg: '12' }}
