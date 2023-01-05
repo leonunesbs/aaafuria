@@ -16,7 +16,12 @@ export type ItemsWithParentAndChildrens = Item & {
 
 function Store({ items }: { items: ItemsWithParentAndChildrens[] }) {
   return (
-    <Layout title="Loja">
+    <Layout
+      title="Loja"
+      description="
+      A loja da Fúria é um espaço para você adquirir produtos oficiais da Atlética.
+    "
+    >
       <Box textAlign={'right'} mb={4}>
         <Button
           as={NextLink}

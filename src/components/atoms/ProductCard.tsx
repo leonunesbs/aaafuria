@@ -19,6 +19,7 @@ import { PriceTag } from './PriceTag';
 import { Rating } from './Rating';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 interface ProductCardProps {
   item: ItemsWithParentAndChildrens;
@@ -26,6 +27,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ item, rootProps }: ProductCardProps) {
+  const { status } = useSession();
+  const isAuth = status === 'authenticated';
   const router = useRouter();
   const toast = useToast({ position: 'top' });
   const { id, name, price, memberPrice, childrens, rating } = item;
@@ -83,21 +86,33 @@ export function ProductCard({ item, rootProps }: ProductCardProps) {
         </HStack>
       </Stack>
       <Stack align="center">
-        <Button
-          colorScheme="green"
-          width="full"
-          isLoading={addToCart.isLoading}
-          onClick={() =>
-            childrens.length > 0
-              ? router.push(`/store/${id}`)
-              : addToCart.mutate({
-                  itemId: item.id,
-                  quantity: 1,
-                })
-          }
-        >
-          Adicionar ao carrinho
-        </Button>
+        {isAuth ? (
+          <Button
+            colorScheme="green"
+            width="full"
+            isLoading={addToCart.isLoading}
+            onClick={() =>
+              childrens.length > 0
+                ? router.push(`/store/${id}`)
+                : addToCart.mutate({
+                    itemId: item.id,
+                    quantity: 1,
+                  })
+            }
+          >
+            Adicionar ao carrinho
+          </Button>
+        ) : (
+          <Button
+            colorScheme="green"
+            width="full"
+            onClick={() =>
+              router.push(`/auth/login?callbackUrl=${router.asPath}`)
+            }
+          >
+            Entrar
+          </Button>
+        )}
       </Stack>
     </Stack>
   );
