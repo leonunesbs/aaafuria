@@ -60,7 +60,7 @@ export default function Home() {
                 variant={'solid'}
                 size="lg"
               >
-                <Text as="h3">Seja Sócio</Text>
+                Seja Sócio
               </Button>
             </HStack>
           </Stack>
@@ -91,7 +91,6 @@ export default function Home() {
             display={{ base: 'none', sm: 'initial' }}
           >
             <NextImage
-              priority
               sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 80vw,
               40vw"
