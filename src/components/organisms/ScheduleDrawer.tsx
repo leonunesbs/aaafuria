@@ -75,9 +75,13 @@ const InterestedUserRow = ({
     (presentUser) => presentUser.id === user.id,
   );
   return (
-    <Tr key={user.id} bgColor={isPresent ? 'green.50' : 'initial'}>
+    <Tr key={user.id}>
       <Td>
-        <Link as={NextLink} href={`/admin/users/${user.id}`} color={green}>
+        <Link
+          as={NextLink}
+          href={`/admin/users/${user.id}`}
+          color={isPresent ? green : 'inherit'}
+        >
           {user.name}
         </Link>
       </Td>
