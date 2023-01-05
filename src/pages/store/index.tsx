@@ -1,6 +1,6 @@
 import { Box, Button } from '@chakra-ui/react';
 
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import { Item } from '@prisma/client';
 import { Layout } from '@/components/templates';
 import { MdShoppingCart } from 'react-icons/md';
@@ -41,7 +41,7 @@ function Store({ items }: { items: ItemsWithParentAndChildrens[] }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
   const items = await prisma.item.findMany({
     where: {
       parentId: null,
@@ -56,6 +56,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     props: {
       items: JSON.parse(JSON.stringify(items)),
     },
+    revalidate: 60,
   };
 };
 

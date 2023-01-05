@@ -18,9 +18,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { CustomInput, PriceTag, Rating } from '@/components/atoms';
+import { GetStaticPaths, GetStaticProps } from 'next';
 
 import { ColorContext } from '@/contexts';
-import { GetServerSideProps } from 'next';
 import { ItemsWithParentAndChildrens } from '.';
 import { Layout } from '@/components/templates';
 import Link from 'next/link';
@@ -209,10 +209,29 @@ function Item({ item }: { item: ItemsWithParentAndChildrens }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const items = await prisma.item.findMany({
+    select: {
+      id: true,
+    },
+  });
+
+  const paths = items.map((item) => ({
+    params: {
+      id: item.id,
+    },
+  }));
+
+  return {
+    paths,
+    fallback: 'blocking',
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const item = await prisma.item.findUnique({
     where: {
-      id: ctx.query.id as string,
+      id: ctx.params?.id as string,
     },
     include: {
       childrens: true,
@@ -230,6 +249,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {
       item: JSON.parse(JSON.stringify(item)),
     },
+    revalidate: 60,
   };
 };
 
