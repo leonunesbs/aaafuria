@@ -63,7 +63,6 @@ export default function Home() {
         <Flex flex="1" overflow="hidden" zIndex={-10}>
           <Flex position={'relative'} minW="300px" h="450px" w="full">
             <NextImage
-              quality={50}
               priority
               sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 80vw,
@@ -87,7 +86,6 @@ export default function Home() {
             display={{ base: 'none', sm: 'initial' }}
           >
             <NextImage
-              quality={50}
               priority
               sizes="(max-width: 768px) 100vw,
               (max-width: 1200px) 80vw,
