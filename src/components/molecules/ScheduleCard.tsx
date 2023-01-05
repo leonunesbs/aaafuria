@@ -12,7 +12,6 @@ import {
   Switch,
   Text,
   useDisclosure,
-  useToast,
 } from '@chakra-ui/react';
 import {
   GroupWithSchedulesAndUsers,
@@ -31,7 +30,6 @@ interface ScheduleCardProps {
 }
 
 export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
-  const toast = useToast({ position: 'top' });
   const { data: session } = useSession();
   const scheduleDrawer = useDisclosure();
   const { green } = useContext(ColorContext);
@@ -43,15 +41,7 @@ export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
   };
 
   const toggleInterest = trpc.schedule.toggleInterest.useMutation({
-    onSuccess: () => {
-      toast({
-        title: 'Participação atualizada!',
-        status: 'info',
-        duration: 5000,
-        isClosable: true,
-      });
-      refreshData();
-    },
+    onSuccess: () => refreshData(),
   });
 
   const handleSwitch = async () => {
