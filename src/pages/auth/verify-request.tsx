@@ -42,7 +42,7 @@ function VerifyRequest() {
         <Card>
           <CardHeader>
             <Heading size="md" textAlign={'center'}>
-              Verifique seu Email
+              VERIFIQUE SEU EMAIL
             </Heading>
           </CardHeader>
           <CardBody>

@@ -75,6 +75,7 @@ export function ScheduleCard({ schedule, refetch }: ScheduleCardProps) {
       <ScheduleDrawer
         group={schedule.group as GroupWithSchedulesAndUsers}
         schedule={schedule}
+        refetch={refetch}
         {...scheduleDrawer}
       />
       <CardBody>
