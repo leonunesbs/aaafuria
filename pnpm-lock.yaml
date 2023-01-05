@@ -29,7 +29,6 @@ specifiers:
   eslint-plugin-import: 2.26.0
   eslint-plugin-prettier: 4.2.1
   framer-motion: 7.8.0
-  globby: ^11.0.1
   husky: 8.0.2
   lint-staged: 13.1.0
   next: 13.1.0
@@ -93,7 +92,6 @@ devDependencies:
   eslint-import-resolver-typescript: 3.5.2_lt3hqehuojhfcbzgzqfngbtmrq
   eslint-plugin-import: 2.26.0_hmezkefo75s2prddlqllgjxqc4
   eslint-plugin-prettier: 4.2.1_5dgjrgoi64tgrv3zzn3walur3u
-  globby: 11.1.0
   husky: 8.0.2
   lint-staged: 13.1.0
   prettier: 2.8.1
