@@ -1,7 +1,3 @@
-import { formatPrice } from '@/components/atoms';
-import { Layout } from '@/components/templates';
-import { prisma } from '@/server/prisma';
-import { trpc } from '@/utils/trpc';
 import {
   Badge,
   Button,
@@ -16,11 +12,12 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  Heading,
   HStack,
+  Heading,
   IconButton,
   Link,
   Select,
+  Skeleton,
   Stack,
   Table,
   TableContainer,
@@ -29,35 +26,41 @@ import {
   Text,
   Th,
   Tr,
+  VisuallyHiddenInput,
   useDisclosure,
   useToast,
-  VisuallyHiddenInput,
 } from '@chakra-ui/react';
-import { Membership, Order, Payment } from '@prisma/client';
-import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { User } from 'next-auth';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
+import { Loading, formatPrice } from '@/components/atoms';
 import { useRef, useState } from 'react';
+
 import { CgArrowsExchange } from 'react-icons/cg';
 import { HiOutlineExternalLink } from 'react-icons/hi';
+import { Layout } from '@/components/templates';
 import { MdDelete } from 'react-icons/md';
+import NextLink from 'next/link';
+import axios from 'axios';
+import { trpc } from '@/utils/trpc';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
-function Payment({
-  payment,
-}: {
-  payment: Payment & { user: User; membership: Membership; order: Order };
-}) {
+function Payment({ paymentId }: { paymentId: string }) {
   const router = useRouter();
   const toast = useToast({ position: 'top' });
   const drawer = useDisclosure();
+  const { data } = useSession();
+
+  const {
+    data: payment,
+    isLoading,
+    refetch,
+  } = trpc.payment.get.useQuery(paymentId);
+  const handleRefresh = () => refetch();
   const updatePayment = trpc.payment.update.useMutation({
-    onSuccess: () =>
-      router.replace(router.asPath, undefined, { scroll: false }),
+    onSuccess: () => handleRefresh(),
   });
   const handleSwitchMethod = async (method: string) => {
-    await updatePayment.mutateAsync({ id: payment.id, method }).then(() => {
+    await updatePayment.mutateAsync({ id: paymentId, method }).then(() => {
       drawer.onClose();
     });
   };
@@ -69,19 +72,18 @@ function Payment({
         status: 'success',
         isClosable: true,
       });
-      router.replace(router.asPath, undefined, { scroll: false });
+      handleRefresh();
     },
   });
   const checkoutPayment = trpc.payment.checkout.useMutation();
   const handleCheckout = async () => {
-    await checkoutPayment.mutateAsync(payment.id).then((data) => {
+    await checkoutPayment.mutateAsync(paymentId).then((data) => {
       router.push(data.url as string);
     });
   };
 
   const cancelPayment = trpc.payment.cancel.useMutation({
-    onSuccess: () =>
-      router.replace(router.asPath, undefined, { scroll: false }),
+    onSuccess: () => handleRefresh(),
     onError: (err) => {
       toast({
         title: 'Erro ao cancelar pagamento',
@@ -93,7 +95,7 @@ function Payment({
     },
   });
   const handleCancel = () => {
-    cancelPayment.mutate(payment.id);
+    cancelPayment.mutate(paymentId);
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,7 +113,7 @@ function Payment({
         .mutateAsync({
           name: file.name,
           type: file.type,
-          path: `media/payments/${payment.id}`,
+          path: `media/payments/${paymentId}`,
           size: file.size,
         })
         .then(async (data) => {
@@ -126,7 +128,7 @@ function Payment({
             })
             .then(() => {
               updatePayment.mutate({
-                id: payment.id,
+                id: paymentId,
                 attachment: url.split('?')[0],
               });
               setUploading(false);
@@ -145,12 +147,14 @@ function Payment({
     }
   };
 
-  const deleteFile = trpc.s3.deleteFile.useMutation();
+  const deleteFile = trpc.s3.deleteFile.useMutation({
+    onSuccess: () => handleRefresh(),
+  });
   const handleDeleteFile = async () => {
-    const fileName = payment.attachment?.split('.com/')[1];
+    const fileName = payment?.attachment?.split('.com/')[1];
     await deleteFile.mutateAsync(fileName as string).then(() => {
       updatePayment.mutate({
-        id: payment.id,
+        id: paymentId,
         attachment: null,
       });
     });
@@ -170,130 +174,175 @@ function Payment({
               <Tbody>
                 <Tr>
                   <Th>ID</Th>
-                  <Td>{payment.id}</Td>
+                  <Td>{paymentId}</Td>
                 </Tr>
                 <Tr>
                   <Th>Ref ID</Th>
-                  <Td>{payment.refId || '---'}</Td>
+                  <Td>
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.refId || '---'}
+                    </Skeleton>
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Usuário</Th>
-                  <Td>{payment.user.email}</Td>
+                  <Td>
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.user.email || '---'}
+                    </Skeleton>
+                  </Td>
                 </Tr>
-                {payment.order && (
+                {payment?.order && (
                   <Tr>
                     <Th>Pedido</Th>
-                    <Td>{payment.order.id}</Td>
+                    <Td>
+                      <Skeleton isLoaded={!isLoading}>
+                        {payment?.order.id || '---'}
+                      </Skeleton>
+                    </Td>
                   </Tr>
                 )}
-                {payment.membership && (
+                {payment?.membership && (
                   <Tr>
                     <Th>Associação</Th>
-                    <Td>{payment.membership.id}</Td>
+                    <Td>
+                      <Skeleton isLoaded={!isLoading}>
+                        {payment?.membership.id || '---'}
+                      </Skeleton>
+                    </Td>
                   </Tr>
                 )}
 
                 <Tr>
                   <Th>Método</Th>
                   <Td>
-                    <HStack>
-                      <Text>{payment.method}</Text>
-                      {!payment.canceled &&
-                        !payment.paid &&
-                        !payment.expired && (
-                          <Button
-                            ref={btnRef}
-                            onClick={drawer.onOpen}
-                            size="xs"
-                            leftIcon={<CgArrowsExchange size="1rem" />}
-                          >
-                            Alterar
-                          </Button>
-                        )}
-                      <Drawer
-                        isOpen={drawer.isOpen}
-                        placement="bottom"
-                        onClose={drawer.onClose}
-                        finalFocusRef={btnRef}
-                      >
-                        <DrawerOverlay />
-                        <DrawerContent>
-                          <DrawerCloseButton />
-                          <DrawerHeader>
-                            Alterar forma de pagamento
-                          </DrawerHeader>
-
-                          <DrawerBody>
-                            <Select
-                              placeholder="Selecione uma opção..."
-                              defaultValue={payment.method}
-                              onChange={(e) =>
-                                handleSwitchMethod(e.target.value)
-                              }
-                            >
-                              <option value="PIX">PIX</option>
-                              <option value="STRIPE">
-                                Cartão de crédito (à vista)
-                              </option>
-                              <option value="PAGSEGURO">
-                                Cartão de crédito (parcelado)
-                              </option>
-                            </Select>
-                          </DrawerBody>
-                          <DrawerFooter>
-                            <Button mr={3} onClick={drawer.onClose}>
-                              Cancelar
-                            </Button>
+                    <Skeleton isLoaded={!isLoading}>
+                      <HStack>
+                        <Text>{payment?.method}</Text>
+                        {!payment?.canceled &&
+                          !payment?.paid &&
+                          !payment?.expired && (
                             <Button
-                              colorScheme="green"
-                              onClick={drawer.onClose}
+                              ref={btnRef}
+                              onClick={drawer.onOpen}
+                              size="xs"
+                              leftIcon={<CgArrowsExchange size="1rem" />}
                             >
                               Alterar
                             </Button>
-                          </DrawerFooter>
-                        </DrawerContent>
-                      </Drawer>
-                    </HStack>
+                          )}
+                        <Drawer
+                          isOpen={drawer.isOpen}
+                          placement="bottom"
+                          onClose={drawer.onClose}
+                          finalFocusRef={btnRef}
+                        >
+                          <DrawerOverlay />
+                          <DrawerContent>
+                            <DrawerCloseButton />
+                            <DrawerHeader>
+                              Alterar forma de pagamento
+                            </DrawerHeader>
+
+                            <DrawerBody>
+                              <Select
+                                placeholder="Selecione uma opção..."
+                                defaultValue={payment?.method}
+                                onChange={(e) =>
+                                  handleSwitchMethod(e.target.value)
+                                }
+                              >
+                                <option value="PIX">PIX</option>
+                                <option value="STRIPE">
+                                  Cartão de crédito (à vista)
+                                </option>
+                                <option value="PAGSEGURO">
+                                  Cartão de crédito (parcelado)
+                                </option>
+                              </Select>
+                            </DrawerBody>
+                            <DrawerFooter>
+                              <Button mr={3} onClick={drawer.onClose}>
+                                Cancelar
+                              </Button>
+                              <Button
+                                colorScheme="green"
+                                onClick={drawer.onClose}
+                              >
+                                Alterar
+                              </Button>
+                            </DrawerFooter>
+                          </DrawerContent>
+                        </Drawer>
+                      </HStack>
+                    </Skeleton>
                   </Td>
                 </Tr>
                 <Tr>
                   <Th>Total</Th>
-                  <Td>{formatPrice(payment.amount)}</Td>
+                  <Td>
+                    <Skeleton isLoaded={!isLoading}>
+                      {formatPrice(payment?.amount as number)}
+                    </Skeleton>
+                  </Td>
                 </Tr>
                 <Tr>
                   <Th>Status</Th>
                   <Td>
-                    {payment.paid ? (
-                      <Badge colorScheme="green">PAGO</Badge>
-                    ) : payment.expired ? (
-                      <Badge colorScheme="gray">EXPIRADO</Badge>
-                    ) : payment.canceled ? (
-                      <Badge colorScheme="red">CANCELADO</Badge>
-                    ) : (
-                      <Badge colorScheme="orange">PENDENTE</Badge>
-                    )}
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.paid ? (
+                        <Badge colorScheme="green">PAGO</Badge>
+                      ) : payment?.expired ? (
+                        <Badge colorScheme="gray">EXPIRADO</Badge>
+                      ) : payment?.canceled ? (
+                        <Badge colorScheme="red">CANCELADO</Badge>
+                      ) : (
+                        <Badge colorScheme="orange">PENDENTE</Badge>
+                      )}
+                    </Skeleton>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Th>Pedido</Th>
+                  <Td>
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.order?.id || '---'}
+                    </Skeleton>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Th>Associação</Th>
+                  <Td>
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.membership?.id || '---'}
+                    </Skeleton>
                   </Td>
                 </Tr>
                 <Tr>
                   <Th>Criado em</Th>
                   <Td>
-                    {new Date(payment.createdAt).toLocaleString('pt-BR', {
-                      timeZone: 'America/Sao_Paulo',
-                      dateStyle: 'short',
-                      timeStyle: 'short',
-                    })}
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.createdAt.toLocaleString('pt-BR', {
+                        timeZone: 'America/Sao_Paulo',
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                      }) || '---'}
+                    </Skeleton>
                   </Td>
                 </Tr>
                 <Tr>
                   <Th>Atualizado em</Th>
                   <Td>
-                    {new Date(payment.updatedAt).toLocaleString('pt-BR', {
-                      timeZone: 'America/Sao_Paulo',
-                      dateStyle: 'short',
-                      timeStyle: 'short',
-                    })}
+                    <Skeleton isLoaded={!isLoading}>
+                      {payment?.updatedAt.toLocaleString('pt-BR', {
+                        timeZone: 'America/Sao_Paulo',
+                        dateStyle: 'short',
+                        timeStyle: 'short',
+                      }) || '---'}
+                    </Skeleton>
                   </Td>
                 </Tr>
+
                 <Tr>
                   <Th>Anexo</Th>
                   <Td>
@@ -302,11 +351,11 @@ function Payment({
                       type="file"
                       onChange={handleOnFileChange}
                     />
-                    {payment.attachment ? (
+                    {payment?.attachment ? (
                       <HStack>
                         <Link
                           as={NextLink}
-                          href={payment.attachment as string}
+                          href={payment?.attachment as string}
                           isExternal
                         >
                           <Button
@@ -318,9 +367,9 @@ function Payment({
                             Abrir
                           </Button>
                         </Link>
-                        {!payment.canceled &&
-                          !payment.paid &&
-                          !payment.expired && (
+                        {!payment?.canceled &&
+                          !payment?.paid &&
+                          !payment?.expired && (
                             <IconButton
                               icon={<MdDelete />}
                               aria-label="remove"
@@ -340,48 +389,57 @@ function Payment({
             </Table>
           </TableContainer>
         </CardBody>
-        <CardFooter>
-          {!payment.canceled && (
-            <Stack w="full">
-              {!payment.paid && (
-                <Button
-                  colorScheme={'green'}
-                  onClick={() => {
-                    confirmPayment.mutate(payment.id);
-                  }}
-                  isLoading={confirmPayment.isLoading}
-                >
-                  Confirmar pagamento
-                </Button>
-              )}
-              {payment.method === 'PIX' ? (
-                <Button
-                  onClick={handleButtonClick}
-                  isDisabled={!!payment.attachment}
-                  isLoading={uploading}
-                  loadingText="Enviando..."
-                >
-                  Anexar comprovante
-                </Button>
-              ) : (
-                <Button
-                  colorScheme={'green'}
-                  onClick={handleCheckout}
-                  isLoading={checkoutPayment.isLoading}
-                >
-                  Pagar
-                </Button>
-              )}
-              <Button
-                colorScheme={'red'}
-                onClick={handleCancel}
-                isLoading={cancelPayment.isLoading}
-              >
-                Cancelar pagamento
-              </Button>
-            </Stack>
-          )}
-        </CardFooter>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <CardFooter>
+            {!payment?.canceled ||
+              (!payment?.paid && (
+                <Stack w="full">
+                  {payment?.method === 'PIX' ? (
+                    <Button
+                      onClick={handleButtonClick}
+                      isDisabled={!!payment.attachment}
+                      isLoading={uploading}
+                      loadingText="Enviando..."
+                    >
+                      Anexar comprovante
+                    </Button>
+                  ) : (
+                    <Button
+                      colorScheme={'green'}
+                      onClick={handleCheckout}
+                      isLoading={checkoutPayment.isLoading}
+                    >
+                      Pagar
+                    </Button>
+                  )}
+                  {data?.user.isStaff && (
+                    <Stack>
+                      {!payment?.paid && (
+                        <Button
+                          colorScheme={'green'}
+                          onClick={() => {
+                            confirmPayment.mutate(paymentId);
+                          }}
+                          isLoading={confirmPayment.isLoading}
+                        >
+                          Confirmar pagamento
+                        </Button>
+                      )}
+                      <Button
+                        colorScheme={'red'}
+                        onClick={handleCancel}
+                        isLoading={cancelPayment.isLoading}
+                      >
+                        Cancelar pagamento
+                      </Button>
+                    </Stack>
+                  )}
+                </Stack>
+              ))}
+          </CardFooter>
+        )}
       </Card>
     </Layout>
   );
@@ -390,31 +448,14 @@ function Payment({
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: 'blocking',
+    fallback: true,
   };
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const payment = await prisma.payment.findUnique({
-    where: {
-      id: ctx.params?.id as string,
-    },
-    include: {
-      user: true,
-      membership: true,
-      order: true,
-    },
-  });
-
-  if (!payment) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
     props: {
-      payment: JSON.parse(JSON.stringify(payment)),
+      paymentId: ctx.params?.id as string,
     },
     revalidate: 5,
   };

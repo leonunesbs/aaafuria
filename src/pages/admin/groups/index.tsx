@@ -17,10 +17,10 @@ import {
   Tr,
   useToast,
 } from '@chakra-ui/react';
+import { CustomInput, Loading } from '@/components/atoms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ColorContext } from '@/contexts';
-import { CustomInput } from '@/components/atoms';
 import { GetStaticProps } from 'next';
 import { Group } from '@prisma/client';
 import { Layout } from '@/components/templates';
@@ -36,7 +36,7 @@ function Groups() {
   const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<Group>();
 
-  const { data: groups } = trpc.admin.groups.useQuery();
+  const { data: groups, isLoading } = trpc.admin.groups.useQuery();
   const refreshData = () => {
     router.replace(router.asPath);
   };
@@ -78,6 +78,7 @@ function Groups() {
             </Heading>
           </CardHeader>
           <CardBody>
+            {isLoading && <Loading />}
             <TableContainer>
               <Table size="sm">
                 <Thead>

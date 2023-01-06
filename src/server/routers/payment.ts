@@ -158,4 +158,26 @@ export const payment = router({
       },
     });
   }),
+  get: authedProcedure.input(z.string()).query(async ({ input: id, ctx }) => {
+    const payment = await prisma.payment.findUniqueOrThrow({
+      where: {
+        id,
+      },
+      include: {
+        user: true,
+        membership: true,
+        order: true,
+      },
+    });
+
+    if (ctx.user.isStaff) {
+      return payment;
+    }
+
+    if (payment.user.email !== ctx.user.email) {
+      throw new TRPCError({ code: 'UNAUTHORIZED' });
+    }
+
+    return payment;
+  }),
 });
