@@ -54,6 +54,8 @@ model Profile {
   id           String    @id @default(cuid())
   userId       String    @unique
   editable     Boolean   @default(true)
+  hidden       Boolean   @default(false)
+  role         String?
   registration String?
   studyClass   String?
   birth        DateTime?
