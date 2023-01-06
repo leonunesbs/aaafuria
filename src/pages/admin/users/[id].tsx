@@ -58,7 +58,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
     data: user,
     refetch,
     isLoading,
-  } = trpc.admin.user.useQuery(id as string);
+  } = trpc.admin.user.useQuery((id as string) || '');
   const refreshData = () => {
     refetch();
   };
@@ -80,6 +80,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
     if (user) {
       reset({
         ...user,
+        birth: user?.profile?.birth?.toISOString().split('T')[0] || '',
         editable: user?.profile?.editable,
         studyClass: user?.profile?.studyClass,
         registration: user?.profile?.registration,
@@ -97,7 +98,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
         duration: 5000,
         isClosable: true,
       });
-      router.reload();
+      refreshData();
     },
   });
   const onSubmit: SubmitHandler<InputType> = ({
@@ -179,9 +180,11 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                     cursor="pointer"
                   />
                 </Skeleton>
-                <Heading size="md" textAlign={'center'}>
-                  {user?.name}
-                </Heading>
+                <Skeleton isLoaded={!isLoading}>
+                  <Heading size="md" textAlign={'center'}>
+                    {user?.name || 'Carregando...'}
+                  </Heading>
+                </Skeleton>
               </Center>
 
               <Stack spacing={4}>
@@ -200,13 +203,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                 <FormControl>
                   <FormLabel>Data de nascimento</FormLabel>
                   <Skeleton isLoaded={!isLoading}>
-                    <CustomInput
-                      type={'date'}
-                      {...register('birth')}
-                      defaultValue={user?.profile?.birth
-                        ?.toISOString()
-                        .slice(0, 10)}
-                    />
+                    <CustomInput type={'date'} {...register('birth')} />
                   </Skeleton>
                 </FormControl>
                 <FormControl>
@@ -326,7 +323,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                                 });
                               }}
                             >
-                              {groups.map((group) => (
+                              {groups?.map((group) => (
                                 <option key={group.id} value={group.id}>
                                   {`${group.name} (${group.type})`}
                                 </option>
@@ -354,7 +351,12 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
           </CardBody>
           <CardFooter>
             <Stack w="full">
-              <Button colorScheme={'green'} type="submit">
+              <Button
+                colorScheme={'green'}
+                type="submit"
+                isLoading={updateUser.isLoading}
+                loadingText="Salvando"
+              >
                 Salvar
               </Button>
               <Button as={NextLink} href="/admin">
