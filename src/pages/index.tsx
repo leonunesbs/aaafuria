@@ -6,17 +6,17 @@ import {
   Center,
   Divider,
   Flex,
-  HStack,
   Heading,
+  HStack,
   IconButton,
   IconButtonProps,
   SimpleGrid,
   Stack,
   Text,
-  Wrap,
-  WrapItem,
   useBreakpointValue,
   useColorModeValue,
+  Wrap,
+  WrapItem,
 } from '@chakra-ui/react';
 import { FaArrowRight, FaDrum } from 'react-icons/fa';
 import {
@@ -27,17 +27,17 @@ import {
   MdSportsVolleyball,
 } from 'react-icons/md';
 
-import { ColorContext } from '@/contexts';
-import { GetStaticProps } from 'next';
-import { GiPokerHand } from 'react-icons/gi';
-import { ItemsWithFamily } from './store';
+import { ProductCard } from '@/components/molecules';
 import { Layout } from '@/components/templates';
+import { ColorContext } from '@/contexts';
+import { prisma } from '@/server/prisma';
+import { User } from '@prisma/client';
+import { GetStaticProps } from 'next';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
-import { ProductCard } from '@/components/molecules';
-import { User } from '@prisma/client';
-import { prisma } from '@/server/prisma';
 import { useContext } from 'react';
+import { GiPokerHand } from 'react-icons/gi';
+import { ItemsWithFamily } from './store';
 
 type ButtonNextLink = ButtonProps & {
   href: string;
@@ -342,5 +342,6 @@ export const getStaticProps: GetStaticProps = async () => {
       items: JSON.parse(JSON.stringify(items)),
       staffUsers: JSON.parse(JSON.stringify(staffUsers)),
     },
+    revalidate: 60,
   };
 };
