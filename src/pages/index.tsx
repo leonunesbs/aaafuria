@@ -332,6 +332,9 @@ export const getStaticProps: GetStaticProps = async () => {
           name: 'DIRETORIA',
         },
       },
+      profile: {
+        hidden: false,
+      },
     },
   });
   return {
