@@ -83,7 +83,6 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
     setValue,
     setError,
     clearErrors,
-    getValues,
     formState: { errors },
   } = useForm<InputType>();
 
@@ -288,6 +287,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                     <Switch
                       size="lg"
                       colorScheme={'green'}
+                      defaultChecked={user?.profile?.editable}
                       onChange={(e) => {
                         updateUser.mutate({
                           id: user?.id as string,

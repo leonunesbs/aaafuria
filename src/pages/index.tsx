@@ -270,19 +270,9 @@ export default function Home({
             Loja
           </Heading>
           <Stack direction={'row'} overflowX="auto" spacing={4} pb={2}>
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
-            <ProductCard item={items[0]} />
+            {items.map((item) => (
+              <ProductCard key={item.id} item={item} />
+            ))}
           </Stack>
           <HStack w="full" justify={'flex-end'}>
             <CTAButton
