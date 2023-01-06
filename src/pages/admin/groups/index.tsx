@@ -37,11 +37,11 @@ function Groups() {
   const { data: groups, isLoading, refetch } = trpc.admin.groups.useQuery();
   const refreshData = () => {
     refetch();
+    reset();
   };
 
   const createGroup = trpc.group.create.useMutation({
     onSuccess: () => {
-      reset();
       refreshData();
     },
   });
@@ -53,7 +53,6 @@ function Groups() {
 
   const deleteGroup = trpc.group.delete.useMutation({
     onSuccess: () => {
-      reset();
       refreshData();
     },
     onError: (error) => {
