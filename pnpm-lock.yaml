@@ -2,8 +2,8 @@ lockfileVersion: 5.4
 
 specifiers:
   '@chakra-ui/react': 2.4.6
-  '@commitlint/cli': 17.3.0
-  '@commitlint/config-conventional': 17.3.0
+  '@commitlint/cli': 17.4.0
+  '@commitlint/config-conventional': 17.4.0
   '@emotion/react': 11.10.5
   '@emotion/styled': 11.10.5
   '@next-auth/prisma-adapter': 1.0.5
@@ -78,8 +78,8 @@ dependencies:
   zod: 3.20.2
 
 devDependencies:
-  '@commitlint/cli': 17.3.0_@types+node@18.11.18
-  '@commitlint/config-conventional': 17.3.0
+  '@commitlint/cli': 17.4.0_@types+node@18.11.18
+  '@commitlint/config-conventional': 17.4.0
   '@types/node': 18.11.18
   '@types/nodemailer': 6.4.7
   '@types/react': 18.0.26
@@ -1224,8 +1224,8 @@ packages:
       react: 18.2.0
     dev: false
 
-  /@commitlint/cli/17.3.0_@types+node@18.11.18:
-    resolution: {integrity: sha512-/H0md7TsKflKzVPz226VfXzVafJFO1f9+r2KcFvmBu08V0T56lZU1s8WL7/xlxqLMqBTVaBf7Ixtc4bskdEEZg==}
+  /@commitlint/cli/17.4.0_@types+node@18.11.18:
+    resolution: {integrity: sha512-SEY4sYe8yVlgxPP7X0wJb96DBAGBPsCsy6QbqJt/UECbIAjDeDV5xXBV4jnS7T/qMC10sk6Ub9kDhEX0VWvblw==}
     engines: {node: '>=v14'}
     hasBin: true
     dependencies:
@@ -1245,8 +1245,8 @@ packages:
       - '@types/node'
     dev: true
 
-  /@commitlint/config-conventional/17.3.0:
-    resolution: {integrity: sha512-hgI+fN5xF8nhS9uG/V06xyT0nlcyvHHMkq0kwRSr96vl5BFlRGaL2C0/YY4kQagfU087tmj01bJkG9Ek98Wllw==}
+  /@commitlint/config-conventional/17.4.0:
+    resolution: {integrity: sha512-G4XBf45J4ZMspO4NwBFzY3g/1Kb+B42BcIxeikF8wucQxcyxcmhRdjeQpRpS1XEcBq5pdtEEQFipuB9IuiNFhw==}
     engines: {node: '>=v14'}
     dependencies:
       conventional-changelog-conventionalcommits: 5.0.0
