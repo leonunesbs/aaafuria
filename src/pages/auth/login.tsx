@@ -15,14 +15,16 @@ import {
 import { Calango, CustomInput } from '@/components/atoms';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { cleanString, extractDomainFromEmail } from '@/libs/functions';
-import { signIn, useSession } from 'next-auth/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { ColorContext } from '@/contexts';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import NextLink from 'next/link';
 import { OAuthButtonGroup } from '@/components/molecules';
+import { authOptions } from '../api/auth/[...nextauth]';
+import { getToken } from 'next-auth/jwt';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 function Login() {
@@ -58,12 +60,6 @@ function Login() {
     }
   }, [error, toast]);
 
-  const { status } = useSession();
-  useEffect(() => {
-    if (status === 'authenticated') {
-      router.push('/');
-    }
-  }, [router, status]);
   return (
     <>
       <Head>
@@ -143,11 +139,23 @@ function Login() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const user = await getToken({
+    req: ctx.req,
+    secret: authOptions.secret,
+  });
+
+  if (user) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {},
-    revalidate: 60 * 60 * 24, // 24 hours
   };
 };
-
 export default Login;

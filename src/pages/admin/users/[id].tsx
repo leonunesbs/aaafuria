@@ -23,6 +23,7 @@ import {
   Switch,
   Table,
   TableCaption,
+  TableContainer,
   Tbody,
   Td,
   Th,
@@ -42,18 +43,22 @@ import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdAdd, MdClose } from 'react-icons/md';
 
 type InputType = Omit<User & Profile, 'birth'> & { birth: string };
 
-function User({ groups, id }: { id?: string; groups: Group[] }) {
+function User({ groups, id }: { id: string; groups: Group[] }) {
   const router = useRouter();
   const toast = useToast({ position: 'top' });
   const btnRef = useRef<HTMLButtonElement>(null);
   const drawer = useDisclosure();
-  const { data: user, refetch } = trpc.admin.user.useQuery(id as string);
+  const {
+    data: user,
+    refetch,
+    isLoading,
+  } = trpc.admin.user.useQuery(id as string);
   const refreshData = () => {
     refetch();
   };
@@ -69,19 +74,21 @@ function User({ groups, id }: { id?: string; groups: Group[] }) {
       refreshData();
     },
   });
+  const { handleSubmit, register, reset } = useForm<InputType>();
 
-  const { handleSubmit, register } = useForm<InputType>({
-    defaultValues: {
-      email: user?.email,
-      name: user?.name,
-      editable: user?.profile?.editable,
-      studyClass: user?.profile?.studyClass,
-      registration: user?.profile?.registration,
-      phone: user?.profile?.phone,
-      cpf: user?.profile?.cpf,
-      rg: user?.profile?.rg,
-    },
-  });
+  useEffect(() => {
+    if (user) {
+      reset({
+        ...user,
+        editable: user?.profile?.editable,
+        studyClass: user?.profile?.studyClass,
+        registration: user?.profile?.registration,
+        phone: user?.profile?.phone,
+        cpf: user?.profile?.cpf,
+        rg: user?.profile?.rg,
+      });
+    }
+  }, [user]);
   const updateUser = trpc.user.update.useMutation({
     onSuccess: () => {
       toast({
@@ -164,7 +171,7 @@ function User({ groups, id }: { id?: string; groups: Group[] }) {
                   ref={fileInputRef}
                   onChange={handleOnFileChange}
                 />
-                <Skeleton isLoaded={!updateUser.isLoading}>
+                <Skeleton rounded={'full'} isLoaded={!updateUser.isLoading}>
                   <CustomAvatar
                     size="2xl"
                     mb={6}
@@ -178,143 +185,171 @@ function User({ groups, id }: { id?: string; groups: Group[] }) {
               </Center>
 
               <Stack spacing={4}>
-                <FormControl isDisabled>
+                <FormControl isDisabled size="sm">
                   <FormLabel>Email</FormLabel>
-                  <CustomInput {...register('email')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput {...register('email')} />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Nome</FormLabel>
-                  <CustomInput {...register('name')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput {...register('name')} />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Data de nascimento</FormLabel>
-                  <CustomInput
-                    type={'date'}
-                    {...register('birth')}
-                    defaultValue={user?.profile?.birth
-                      ?.toISOString()
-                      .slice(0, 10)}
-                  />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput
+                      type={'date'}
+                      {...register('birth')}
+                      defaultValue={user?.profile?.birth
+                        ?.toISOString()
+                        .slice(0, 10)}
+                    />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Matrícula</FormLabel>
-                  <CustomInput {...register('registration')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput {...register('registration')} />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Turma</FormLabel>
-                  <CustomInput {...register('studyClass')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput {...register('studyClass')} />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Telefone</FormLabel>
-                  <CustomInput type={'tel'} {...register('phone')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput type={'tel'} {...register('phone')} />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>CPF</FormLabel>
-                  <CustomInput {...register('cpf')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput {...register('cpf')} />
+                  </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>RG</FormLabel>
-                  <CustomInput {...register('rg')} />
+                  <Skeleton isLoaded={!isLoading}>
+                    <CustomInput {...register('rg')} />
+                  </Skeleton>
                 </FormControl>
                 <Stack w="full" align={'center'}>
                   <FormLabel>Edição pelo usuário</FormLabel>
-                  <Switch
-                    size="lg"
-                    colorScheme={'green'}
-                    onChange={(e) => {
-                      updateUser.mutate({
-                        id: user?.id as string,
-                        editable: e.target.checked,
-                      });
-                    }}
-                  />
+                  <Skeleton isLoaded={!isLoading}>
+                    <Switch
+                      size="lg"
+                      colorScheme={'green'}
+                      onChange={(e) => {
+                        updateUser.mutate({
+                          id: user?.id as string,
+                          editable: e.target.checked,
+                        });
+                      }}
+                    />
+                  </Skeleton>
                 </Stack>
               </Stack>
-              <Table size="sm">
-                <Thead>
-                  <Tr>
-                    <Th>
-                      <Link as={NextLink} href="/admin/groups">
-                        Grupos
-                      </Link>
-                    </Th>
-                    <Th></Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {user?.groups.map((group) => (
-                    <Tr key={group.id}>
-                      <Td>
-                        <Link as={NextLink} href={`/admin/groups/${group.id}`}>
-                          {group.name}
-                        </Link>
-                      </Td>
-                      <Td isNumeric>
-                        <IconButton
-                          aria-label="remove from group"
-                          icon={<MdClose />}
-                          variant="ghost"
-                          onClick={() => {
-                            removeFromGroup.mutate({
-                              usersId: [user?.id],
-                              groupId: group.id,
-                            });
-                          }}
-                        />
-                      </Td>
-                    </Tr>
-                  ))}
-                </Tbody>
-                <TableCaption mt={2}>
-                  <Button
-                    ref={btnRef}
-                    onClick={drawer.onOpen}
-                    variant={'link'}
-                    leftIcon={<MdAdd />}
-                    size="xs"
-                  >
-                    Novo grupo
-                  </Button>
-                  <Drawer
-                    isOpen={drawer.isOpen}
-                    placement="bottom"
-                    onClose={drawer.onClose}
-                    finalFocusRef={btnRef}
-                  >
-                    <DrawerOverlay />
-                    <DrawerContent>
-                      <DrawerCloseButton />
-                      <DrawerHeader>Novo grupo</DrawerHeader>
+              <Skeleton isLoaded={!isLoading}>
+                <TableContainer>
+                  <Table size="sm">
+                    <Thead>
+                      <Tr>
+                        <Th>
+                          <Link as={NextLink} href="/admin/groups">
+                            Grupos
+                          </Link>
+                        </Th>
+                        <Th></Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {user?.groups.map((group) => (
+                        <Tr key={group.id}>
+                          <Td>
+                            <Link
+                              as={NextLink}
+                              href={`/admin/groups/${group.id}`}
+                            >
+                              {group.name}
+                            </Link>
+                          </Td>
+                          <Td isNumeric>
+                            <IconButton
+                              aria-label="remove from group"
+                              icon={<MdClose />}
+                              variant="ghost"
+                              onClick={() => {
+                                removeFromGroup.mutate({
+                                  usersId: [user?.id],
+                                  groupId: group.id,
+                                });
+                              }}
+                            />
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                    <TableCaption mt={2}>
+                      <Button
+                        ref={btnRef}
+                        onClick={drawer.onOpen}
+                        variant={'link'}
+                        leftIcon={<MdAdd />}
+                        size="xs"
+                      >
+                        Novo grupo
+                      </Button>
+                      <Drawer
+                        isOpen={drawer.isOpen}
+                        placement="bottom"
+                        onClose={drawer.onClose}
+                        finalFocusRef={btnRef}
+                      >
+                        <DrawerOverlay />
+                        <DrawerContent>
+                          <DrawerCloseButton />
+                          <DrawerHeader>Novo grupo</DrawerHeader>
 
-                      <DrawerBody>
-                        <Select
-                          placeholder="Selecione uma opção..."
-                          onChange={(e) => {
-                            addToGroup.mutate({
-                              usersId: [user?.id as string],
-                              groupId: e.target.value,
-                            });
-                          }}
-                        >
-                          {groups.map((group) => (
-                            <option key={group.id} value={group.id}>
-                              {`${group.name} (${group.type})`}
-                            </option>
-                          ))}
-                        </Select>
-                      </DrawerBody>
-                      <DrawerFooter>
-                        <Button mr={3} onClick={drawer.onClose}>
-                          Cancelar
-                        </Button>
-                        <Button colorScheme="green" onClick={drawer.onClose}>
-                          Alterar
-                        </Button>
-                      </DrawerFooter>
-                    </DrawerContent>
-                  </Drawer>
-                </TableCaption>
-              </Table>
+                          <DrawerBody>
+                            <Select
+                              placeholder="Selecione uma opção..."
+                              onChange={(e) => {
+                                addToGroup.mutate({
+                                  usersId: [user?.id as string],
+                                  groupId: e.target.value,
+                                });
+                              }}
+                            >
+                              {groups.map((group) => (
+                                <option key={group.id} value={group.id}>
+                                  {`${group.name} (${group.type})`}
+                                </option>
+                              ))}
+                            </Select>
+                          </DrawerBody>
+                          <DrawerFooter>
+                            <Button mr={3} onClick={drawer.onClose}>
+                              Cancelar
+                            </Button>
+                            <Button
+                              colorScheme="green"
+                              onClick={drawer.onClose}
+                            >
+                              Alterar
+                            </Button>
+                          </DrawerFooter>
+                        </DrawerContent>
+                      </Drawer>
+                    </TableCaption>
+                  </Table>
+                </TableContainer>
+              </Skeleton>
             </Stack>
           </CardBody>
           <CardFooter>
@@ -334,21 +369,9 @@ function User({ groups, id }: { id?: string; groups: Group[] }) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const users = await prisma.user.findMany({
-    select: {
-      id: true,
-    },
-  });
-
-  const paths = users.map((user) => ({
-    params: {
-      id: user.id,
-    },
-  }));
-
   return {
-    paths,
-    fallback: 'blocking',
+    paths: [],
+    fallback: true,
   };
 };
 

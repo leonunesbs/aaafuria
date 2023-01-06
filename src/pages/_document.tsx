@@ -58,19 +58,7 @@ export default class MyDocument extends Document {
           />
           <link
             rel="preload"
-            href="/fonts/woff2/Lato-Light.woff2"
-            as="font"
-            crossOrigin=""
-          />
-          <link
-            rel="preload"
             href="/fonts/woff2/Lato-Bold.woff2"
-            as="font"
-            crossOrigin=""
-          />
-          <link
-            rel="preload"
-            href="/fonts/woff2/Lato-Black.woff2"
             as="font"
             crossOrigin=""
           />
