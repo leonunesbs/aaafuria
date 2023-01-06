@@ -3,13 +3,17 @@ import {
   BoxProps,
   ButtonGroup,
   Container,
+  Divider,
+  HStack,
   IconButton,
+  Link,
   Stack,
   Text,
 } from '@chakra-ui/react';
 import { FaFacebook, FaInstagram, FaTiktok, FaTwitter } from 'react-icons/fa';
 
 import { Logo } from '../atoms';
+import NextLink from 'next/link';
 import { ReactNode } from 'react';
 
 interface FooterProps extends BoxProps {
@@ -56,10 +60,21 @@ export function Footer({ ...rest }: FooterProps) {
               />
             </ButtonGroup>
           </Stack>
-          <Text fontSize="sm" color="subtle">
-            &copy; {new Date().getFullYear()} A.A.A. Fúria | All rights
-            reserved.
-          </Text>
+          <Stack justify="space-between" direction="row" align="center">
+            <Text fontSize="sm" color="subtle">
+              &copy; {new Date().getFullYear()} A.A.A. Fúria | All rights
+              reserved.
+            </Text>
+            <HStack fontSize={'xs'}>
+              <Link as={NextLink} href="/privacy">
+                Política de privacidade
+              </Link>
+              <Divider orientation="vertical" />
+              <Link as={NextLink} href="/terms">
+                Termos de uso
+              </Link>
+            </HStack>
+          </Stack>
         </Stack>
       </Container>
     </Box>
