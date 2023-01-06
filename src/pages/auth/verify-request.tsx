@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
+import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { isIOS } from 'react-device-detect';
@@ -38,6 +39,9 @@ function VerifyRequest() {
       py={{ base: '12', md: '24' }}
       px={{ base: '0', sm: '8' }}
     >
+      <Head>
+        <title>Verifique seu email » A.A.A. Fúria</title>
+      </Head>
       <Stack spacing="6">
         <Card>
           <CardHeader>
@@ -46,7 +50,7 @@ function VerifyRequest() {
             </Heading>
           </CardHeader>
           <CardBody>
-            <Heading size="sm" textAlign={'center'}>
+            <Heading size="sm" textAlign={'center'} fontFamily="Lato">
               Enviamos um email para você com um link de acesso, verifique sua
               caixa de entrada e clique no botão para acessar sua conta.
             </Heading>

@@ -13,9 +13,12 @@ import {
   DrawerHeader,
   DrawerOverlay,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   IconButton,
+  InputGroup,
+  InputLeftAddon,
   Link,
   Select,
   Skeleton,
@@ -36,13 +39,13 @@ import {
 
 import { CustomAvatar, CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
+import { formatCPF, formatPhone, validateCPF } from '@/libs/functions';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { Group, Profile, User } from '@prisma/client';
 import axios from 'axios';
 import { GetStaticPaths, GetStaticProps } from 'next';
 import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { useEffect, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { MdAdd, MdClose } from 'react-icons/md';
@@ -50,7 +53,6 @@ import { MdAdd, MdClose } from 'react-icons/md';
 type InputType = Omit<User & Profile, 'birth'> & { birth: string };
 
 function User({ groups, id }: { id: string; groups: Group[] }) {
-  const router = useRouter();
   const toast = useToast({ position: 'top' });
   const btnRef = useRef<HTMLButtonElement>(null);
   const drawer = useDisclosure();
@@ -74,7 +76,16 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
       refreshData();
     },
   });
-  const { handleSubmit, register, reset } = useForm<InputType>();
+  const {
+    handleSubmit,
+    register,
+    reset,
+    setValue,
+    setError,
+    clearErrors,
+    getValues,
+    formState: { errors },
+  } = useForm<InputType>();
 
   useEffect(() => {
     if (user) {
@@ -89,7 +100,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
         rg: user?.profile?.rg,
       });
     }
-  }, [user]);
+  }, [reset, user]);
   const updateUser = trpc.user.update.useMutation({
     onSuccess: () => {
       toast({
@@ -157,6 +168,22 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
     }
   };
 
+  const handleCPF = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearErrors('cpf');
+    const cpf = e.target.value;
+    if (cpf.length >= 11) {
+      setValue('cpf', formatCPF(cpf));
+      if (!validateCPF(cpf)) {
+        setError('cpf', { message: 'CPF inválido' });
+      }
+    }
+  };
+  const handlePhone = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearErrors('phone');
+    const phone = e.target.value;
+    setValue('phone', formatPhone(phone));
+  };
+
   return (
     <Layout title="Editar usuário">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -209,27 +236,46 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                 <FormControl>
                   <FormLabel>Matrícula</FormLabel>
                   <Skeleton isLoaded={!isLoading}>
-                    <CustomInput {...register('registration')} />
+                    <CustomInput {...register('registration')} type="number" />
                   </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Turma</FormLabel>
                   <Skeleton isLoaded={!isLoading}>
-                    <CustomInput {...register('studyClass')} />
+                    <InputGroup>
+                      <InputLeftAddon>MED:</InputLeftAddon>
+                      <CustomInput
+                        type={'number'}
+                        min={10}
+                        max={99}
+                        {...register('studyClass')}
+                      />
+                    </InputGroup>
                   </Skeleton>
                 </FormControl>
                 <FormControl>
                   <FormLabel>Telefone</FormLabel>
                   <Skeleton isLoaded={!isLoading}>
-                    <CustomInput type={'tel'} {...register('phone')} />
+                    <CustomInput
+                      type={'tel'}
+                      {...register('phone', { onChange: handlePhone })}
+                    />
                   </Skeleton>
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.cpf}>
                   <FormLabel>CPF</FormLabel>
                   <Skeleton isLoaded={!isLoading}>
-                    <CustomInput {...register('cpf')} />
+                    <CustomInput
+                      {...register('cpf', {
+                        onChange: handleCPF,
+                      })}
+                    />
                   </Skeleton>
+                  <FormErrorMessage>
+                    {errors.cpf && errors.cpf.message}
+                  </FormErrorMessage>
                 </FormControl>
+
                 <FormControl>
                   <FormLabel>RG</FormLabel>
                   <Skeleton isLoaded={!isLoading}>
@@ -252,8 +298,8 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                   </Skeleton>
                 </Stack>
               </Stack>
-              <Skeleton isLoaded={!isLoading}>
-                <TableContainer>
+              <TableContainer>
+                <Skeleton isLoaded={!removeFromGroup.isLoading}>
                   <Table size="sm">
                     <Thead>
                       <Tr>
@@ -292,6 +338,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                         </Tr>
                       ))}
                     </Tbody>
+
                     <TableCaption mt={2}>
                       <Button
                         ref={btnRef}
@@ -304,14 +351,13 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                       </Button>
                       <Drawer
                         isOpen={drawer.isOpen}
-                        placement="bottom"
                         onClose={drawer.onClose}
                         finalFocusRef={btnRef}
                       >
                         <DrawerOverlay />
                         <DrawerContent>
                           <DrawerCloseButton />
-                          <DrawerHeader>Novo grupo</DrawerHeader>
+                          <DrawerHeader>Adicionar ao grupo</DrawerHeader>
 
                           <DrawerBody>
                             <Select
@@ -337,6 +383,7 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                             <Button
                               colorScheme="green"
                               onClick={drawer.onClose}
+                              isLoading={addToGroup.isLoading}
                             >
                               Alterar
                             </Button>
@@ -345,8 +392,8 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                       </Drawer>
                     </TableCaption>
                   </Table>
-                </TableContainer>
-              </Skeleton>
+                </Skeleton>
+              </TableContainer>
             </Stack>
           </CardBody>
           <CardFooter>

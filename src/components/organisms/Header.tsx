@@ -88,6 +88,7 @@ export function Header({ ...rest }: HeaderProps) {
               as={NextLink}
               size="sm"
               href="/auth/login"
+              isLoading={status === 'loading'}
             >
               Entrar
             </Button>

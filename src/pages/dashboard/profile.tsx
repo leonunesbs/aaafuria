@@ -1,6 +1,7 @@
 import { CustomAvatar, CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { ColorContext } from '@/contexts';
+import { formatCPF, validateCPF } from '@/libs/functions';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import {
@@ -13,6 +14,7 @@ import {
   CardHeader,
   Center,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   Skeleton,
@@ -34,7 +36,14 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
   const toast = useToast({ position: 'top' });
   const router = useRouter();
   const { green } = useContext(ColorContext);
-  const { register, handleSubmit } = useForm({
+  const {
+    register,
+    handleSubmit,
+    setError,
+    setValue,
+    clearErrors,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       email: user.email,
       name: user.name,
@@ -99,6 +108,17 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
             image: url.split('?')[0],
           });
         });
+    }
+  };
+
+  const handleCPF = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearErrors('cpf');
+    const cpf = e.target.value;
+    if (cpf.length >= 11) {
+      setValue('cpf', formatCPF(cpf));
+      if (!validateCPF(cpf)) {
+        setError('cpf', { message: 'CPF inválido' });
+      }
     }
   };
 
@@ -187,9 +207,19 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
                 <FormLabel>RG</FormLabel>
                 <CustomInput isRequired {...register('rg')} />
               </FormControl>
-              <FormControl isRequired isDisabled={!user.profile?.editable}>
+              <FormControl
+                isRequired
+                isDisabled={!user.profile?.editable}
+                isInvalid={!!errors.cpf}
+              >
                 <FormLabel>CPF</FormLabel>
-                <CustomInput isRequired {...register('cpf')} />
+                <CustomInput
+                  isRequired
+                  {...register('cpf', { onChange: handleCPF })}
+                />
+                <FormErrorMessage>
+                  {errors.cpf && errors.cpf.message}
+                </FormErrorMessage>
               </FormControl>
             </Stack>
           </CardBody>
