@@ -26,10 +26,9 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 import { Layout } from '@/components/templates';
-import { ColorContext } from '@/contexts';
 import { paymentStatus } from '@/pages/dashboard/orders';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
@@ -40,8 +39,6 @@ import { useRouter } from 'next/router';
 import { HiExternalLink } from 'react-icons/hi';
 
 function Orders({ page, totalPages }: { page: number; totalPages: number }) {
-  const { green } = useContext(ColorContext);
-
   const { data: initalOrders, isLoading } = trpc.admin.orders.useQuery({});
 
   const orders = initalOrders?.map((order) => {

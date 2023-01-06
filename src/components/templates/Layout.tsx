@@ -1,9 +1,9 @@
-import { Box, BoxProps, Container, ContainerProps } from '@chakra-ui/react';
 import { Footer, Header } from '@/components/organisms';
+import { Box, BoxProps, Container, ContainerProps } from '@chakra-ui/react';
 
 import Head from 'next/head';
-import { ReactNode } from 'react';
 import { useRouter } from 'next/router';
+import { ReactNode } from 'react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -55,10 +55,7 @@ export function Layout({
           property="og:url"
           content={`https://aaafuria.site${router.asPath}`}
         />
-        <meta
-          property="og:title"
-          content={title ? `@aaafuria | ${title}` : '@aaafuria'}
-        />
+        <meta property="og:title" content={`${title} » A.A.A. Fúria`} />
         <meta
           property="og:description"
           content={
@@ -77,10 +74,7 @@ export function Layout({
           property="twitter:url"
           content={`https://aaafuria.site${router.asPath}`}
         />
-        <meta
-          property="twitter:title"
-          content={title ? `@aaafuria | ${title}` : '@aaafuria'}
-        />
+        <meta property="twitter:title" content={`${title} » A.A.A. Fúria`} />
         <meta
           property="twitter:description"
           content={
