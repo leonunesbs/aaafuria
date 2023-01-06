@@ -319,7 +319,12 @@ export default function Home({
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const items = await prisma.item.findMany({});
+  const items = await prisma.item.findMany({
+    include: {
+      childrens: true,
+      parent: true,
+    },
+  });
   const staffUsers = await prisma.user.findMany({
     where: {
       groups: {
