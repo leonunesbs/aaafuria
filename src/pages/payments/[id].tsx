@@ -396,7 +396,9 @@ function Payment({ paymentId }: { paymentId: string }) {
                   <Button
                     onClick={handleButtonClick}
                     isDisabled={!!payment.attachment}
-                    isLoading={updatePayment.isLoading}
+                    isLoading={
+                      getSignedUrl.isLoading || updatePayment.isLoading
+                    }
                     loadingText="Enviando..."
                   >
                     Anexar comprovante

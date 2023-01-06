@@ -1,11 +1,17 @@
 import {
+  CustomInput,
+  formatPrice,
+  Loading,
+  Pagination,
+} from '@/components/atoms';
+import {
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  HStack,
   Heading,
+  HStack,
   Link,
   List,
   ListItem,
@@ -20,23 +26,23 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { CustomInput, Pagination, formatPrice } from '@/components/atoms';
 import { useContext, useState } from 'react';
 
-import { ColorContext } from '@/contexts';
-import { GetStaticProps } from 'next';
 import { Layout } from '@/components/templates';
-import NextLink from 'next/link';
-import { Payment } from '@prisma/client';
+import { ColorContext } from '@/contexts';
 import { paymentStatus } from '@/pages/dashboard/orders';
 import { prisma } from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
+import { Payment } from '@prisma/client';
+import { GetStaticProps } from 'next';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import { HiExternalLink } from 'react-icons/hi';
 
 function Orders({ page, totalPages }: { page: number; totalPages: number }) {
   const { green } = useContext(ColorContext);
 
-  const { data: initalOrders } = trpc.admin.orders.useQuery({});
+  const { data: initalOrders, isLoading } = trpc.admin.orders.useQuery({});
 
   const orders = initalOrders?.map((order) => {
     const total = order.items.reduce((acc, item) => {
@@ -131,91 +137,97 @@ function Orders({ page, totalPages }: { page: number; totalPages: number }) {
                 <Button colorScheme="green">Buscar</Button>
               </HStack>
             </HStack>
-
-            <TableContainer>
-              <Table>
-                <Thead>
-                  <Tr>
-                    <Th>
-                      <Text>Usuário</Text>
-                    </Th>
-                    <Th>
-                      <Text>Itens</Text>
-                    </Th>
-                    <Th>
-                      <Text>Valor</Text>
-                    </Th>
-                    <Th>
-                      <Text>Status de pagamento</Text>
-                    </Th>
-                    <Th>
-                      <Text>Data do pedido</Text>
-                    </Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {filteredOrders?.map((order) => (
-                    <Tr key={order.id}>
-                      <Td>
-                        <Text>{order.user.name}</Text>
-                      </Td>
-                      <Td>
-                        <List>
-                          {order.items.map((orderItem) => (
-                            <ListItem key={orderItem.item.id}>
-                              <Text as={'i'} fontSize="sm">
-                                {orderItem.quantity}x
-                              </Text>{' '}
-                              <Link
-                                href={`/store/${
-                                  orderItem.item.parentId || orderItem.item.id
-                                }`}
-                              >
-                                {orderItem.item.parentId
-                                  ? `${orderItem.item.parent?.name} - ${orderItem.item.name}`
-                                  : orderItem.item.name}
-                              </Link>
-                            </ListItem>
-                          ))}
-                        </List>
-                      </Td>
-                      <Td>
-                        <Text>{formatPrice(order.total)}</Text>
-                      </Td>
-                      <Td>
-                        <Link
-                          as={NextLink}
-                          href={`/payments/${order.paymentId}`}
-                          color={green}
-                        >
-                          {order.status}
-                        </Link>
-                      </Td>
-                      <Td>
-                        <Text>
-                          {new Date(order.createdAt).toLocaleString('pt-BR', {
-                            timeZone: 'America/Sao_Paulo',
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                          })}
-                        </Text>
-                      </Td>
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <TableContainer>
+                <Table>
+                  <Thead>
+                    <Tr>
+                      <Th>
+                        <Text>Usuário</Text>
+                      </Th>
+                      <Th>
+                        <Text>Itens</Text>
+                      </Th>
+                      <Th>
+                        <Text>Valor</Text>
+                      </Th>
+                      <Th>
+                        <Text>Status de pagamento</Text>
+                      </Th>
+                      <Th>
+                        <Text>Data do pedido</Text>
+                      </Th>
                     </Tr>
-                  ))}
-                </Tbody>
-                <TableCaption>
-                  <Pagination
-                    sx={{
-                      '@media print': {
-                        display: 'none',
-                      },
-                    }}
-                    page={page}
-                    totalPages={totalPages}
-                  />
-                </TableCaption>
-              </Table>
-            </TableContainer>
+                  </Thead>
+                  <Tbody>
+                    {filteredOrders?.map((order) => (
+                      <Tr key={order.id}>
+                        <Td>
+                          <Text>{order.user.name}</Text>
+                        </Td>
+                        <Td>
+                          <List>
+                            {order.items.map((orderItem) => (
+                              <ListItem key={orderItem.item.id}>
+                                <Text as={'i'} fontSize="sm">
+                                  {orderItem.quantity}x
+                                </Text>{' '}
+                                <Link
+                                  href={`/store/${
+                                    orderItem.item.parentId || orderItem.item.id
+                                  }`}
+                                >
+                                  {orderItem.item.parentId
+                                    ? `${orderItem.item.parent?.name} - ${orderItem.item.name}`
+                                    : orderItem.item.name}
+                                </Link>
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Td>
+                        <Td>
+                          <Text>{formatPrice(order.total)}</Text>
+                        </Td>
+                        <Td>
+                          <Button
+                            as={NextLink}
+                            href={`/payments/${order.paymentId}`}
+                            colorScheme={'green'}
+                            size="sm"
+                            variant={'outline'}
+                            rightIcon={<HiExternalLink />}
+                          >
+                            {order.status}
+                          </Button>
+                        </Td>
+                        <Td>
+                          <Text>
+                            {order.createdAt.toLocaleString('pt-BR', {
+                              timeZone: 'America/Sao_Paulo',
+                              dateStyle: 'short',
+                              timeStyle: 'short',
+                            })}
+                          </Text>
+                        </Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                  <TableCaption>
+                    <Pagination
+                      sx={{
+                        '@media print': {
+                          display: 'none',
+                        },
+                      }}
+                      page={page}
+                      totalPages={totalPages}
+                    />
+                  </TableCaption>
+                </Table>
+              </TableContainer>
+            )}
           </Stack>
         </CardBody>
         <CardFooter
