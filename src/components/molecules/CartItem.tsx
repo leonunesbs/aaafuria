@@ -12,19 +12,19 @@ import { MdAdd, MdRemove } from 'react-icons/md';
 import { Order, OrderItem } from '@prisma/client';
 
 import { CartProductMeta } from '../atoms/CartProductMeta';
-import { ItemsWithParentAndChildrens } from '@/pages/store';
+import { ItemsWithFamily } from '@/pages/store';
 import { PriceTag } from '../atoms/PriceTag';
 import { trpc } from '@/utils/trpc';
 
 type CartItemProps = OrderItem & {
   order: Order;
-  item: ItemsWithParentAndChildrens;
+  item: ItemsWithFamily;
   refetch: () => void;
 };
 
 type QuantitySelectProps = CartItemProps & {
   order: Order;
-  item: ItemsWithParentAndChildrens;
+  item: ItemsWithFamily;
   refetch: () => void;
 };
 

@@ -1,23 +1,116 @@
 import {
   Box,
   Button,
+  ButtonProps,
+  Center,
+  Divider,
   Flex,
   HStack,
   Heading,
+  IconButton,
+  IconButtonProps,
+  SimpleGrid,
   Stack,
   Text,
+  Wrap,
+  WrapItem,
+  useBreakpointValue,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { FaArrowRight, FaDrum } from 'react-icons/fa';
+import {
+  MdSportsBasketball,
+  MdSportsEsports,
+  MdSportsHandball,
+  MdSportsSoccer,
+  MdSportsVolleyball,
+} from 'react-icons/md';
 
 import { ColorContext } from '@/contexts';
-import { FaArrowRight } from 'react-icons/fa';
 import { GetStaticProps } from 'next';
+import { GiPokerHand } from 'react-icons/gi';
+import { ItemsWithFamily } from './store';
 import { Layout } from '@/components/templates';
 import NextImage from 'next/image';
 import NextLink from 'next/link';
+import { ProductCard } from '@/components/molecules';
+import { prisma } from '@/server/prisma';
 import { useContext } from 'react';
 
-export default function Home() {
+type ButtonNextLink = ButtonProps & {
+  href: string;
+};
+
+const CTAButton = ({ href, children, ...rest }: ButtonNextLink) => (
+  <Button as={NextLink} href={href} {...rest}>
+    {children}
+  </Button>
+);
+
+const CustomIconButton = ({ ...rest }: IconButtonProps) => (
+  <IconButton
+    as={NextLink}
+    href="/activities"
+    size="lg"
+    colorScheme="green"
+    variant="link"
+    {...rest}
+  />
+);
+
+const WrappedActivities = () => {
+  const size = useBreakpointValue([40, 50]);
+  const activities = [
+    {
+      name: 'Carabina',
+      icon: <FaDrum size={size} />,
+    },
+    {
+      name: 'Basquete',
+      icon: <MdSportsBasketball size={size} />,
+    },
+    {
+      name: 'Handebol',
+      icon: <MdSportsHandball size={size} />,
+    },
+    {
+      name: 'Futsal',
+      icon: <MdSportsSoccer size={size} />,
+    },
+    {
+      name: 'Vôlei',
+      icon: <MdSportsVolleyball size={size} />,
+    },
+    {
+      name: 'E-sports',
+      icon: <MdSportsEsports size={size} />,
+    },
+    {
+      name: 'Truco',
+      icon: <GiPokerHand size={size} />,
+    },
+    {
+      name: 'Poker',
+      icon: <GiPokerHand size={size} />,
+    },
+  ];
+  return (
+    <Wrap spacing={10} justify="center">
+      {activities.map((activity) => (
+        <WrapItem key={activity.name}>
+          <Stack>
+            <CustomIconButton aria-label="basquete" icon={activity.icon} />
+            <Heading as="h3" size="sm">
+              {activity.name.toUpperCase()}
+            </Heading>
+          </Stack>
+        </WrapItem>
+      ))}
+    </Wrap>
+  );
+};
+
+export default function Home({ items }: { items: ItemsWithFamily[] }) {
   const { green } = useContext(ColorContext);
   return (
     <Layout title="A maior do Piauí">
@@ -52,8 +145,7 @@ export default function Home() {
               </Heading>
             </Stack>
             <HStack spacing="3">
-              <Button
-                as={NextLink}
+              <CTAButton
                 href="/sejasocio"
                 rightIcon={<FaArrowRight />}
                 colorScheme="green"
@@ -61,7 +153,7 @@ export default function Home() {
                 size="lg"
               >
                 Seja Sócio
-              </Button>
+              </CTAButton>
             </HStack>
           </Stack>
         </Box>
@@ -138,12 +230,67 @@ export default function Home() {
           <Text as="h3">Atletas e ritmistas</Text>
         </Box>
       </Stack>
+      <Divider my={6} />
+      <SimpleGrid columns={[1, 2]} gap={4}>
+        <Stack spacing={4}>
+          <Heading as="h2" size="xl">
+            Loja
+          </Heading>
+          <Stack direction={'row'} overflowX="auto" spacing={4} pb={2}>
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+            <ProductCard item={items[0]} />
+          </Stack>
+          <HStack w="full" justify={'flex-end'}>
+            <CTAButton
+              href="/store"
+              colorScheme="green"
+              variant={'link'}
+              rightIcon={<FaArrowRight />}
+            >
+              Ver tudo
+            </CTAButton>
+          </HStack>
+        </Stack>
+        <Divider display={['flex', 'none']} my={4} />
+        <Stack spacing={4}>
+          <Heading as="h2" size="xl">
+            Atividades
+          </Heading>
+          <Center h="100%" py={6}>
+            <WrappedActivities />
+          </Center>
+          <HStack w="full" justify={'flex-end'}>
+            <CTAButton
+              href="/activities"
+              colorScheme="green"
+              variant={'link'}
+              rightIcon={<FaArrowRight />}
+            >
+              Ver tudo
+            </CTAButton>
+          </HStack>
+        </Stack>
+      </SimpleGrid>
     </Layout>
   );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
+  const items = await prisma.item.findMany({});
   return {
-    props: {},
+    props: {
+      items: JSON.parse(JSON.stringify(items)),
+    },
   };
 };

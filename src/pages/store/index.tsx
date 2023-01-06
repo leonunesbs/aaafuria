@@ -9,12 +9,12 @@ import { ProductCard } from '@/components/molecules';
 import { ProductGrid } from '@/components/organisms';
 import { prisma } from '@/server/prisma';
 
-export type ItemsWithParentAndChildrens = Item & {
+export type ItemsWithFamily = Item & {
   childrens: Item[];
   parent: Item | null;
 };
 
-function Store({ items }: { items: ItemsWithParentAndChildrens[] }) {
+function Store({ items }: { items: ItemsWithFamily[] }) {
   return (
     <Layout
       title="Loja"

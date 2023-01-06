@@ -21,7 +21,7 @@ import { CustomInput, PriceTag, Rating } from '@/components/atoms';
 import { GetStaticPaths, GetStaticProps } from 'next';
 
 import { ColorContext } from '@/contexts';
-import { ItemsWithParentAndChildrens } from '.';
+import { ItemsWithFamily } from '.';
 import { Layout } from '@/components/templates';
 import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
@@ -30,7 +30,7 @@ import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
 import { useSession } from 'next-auth/react';
 
-function Item({ item }: { item: ItemsWithParentAndChildrens }) {
+function Item({ item }: { item: ItemsWithFamily }) {
   const { price, memberPrice, description, rating, childrens } = item;
 
   function CustomRadio(props: any) {

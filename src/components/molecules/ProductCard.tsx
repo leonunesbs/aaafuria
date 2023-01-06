@@ -13,21 +13,23 @@ import {
   useToast,
 } from '@chakra-ui/react';
 
-import { ItemsWithParentAndChildrens } from '@/pages/store';
+import { ItemsWithFamily } from '@/pages/store';
 import NextLink from 'next/link';
 import { PriceTag } from '../atoms/PriceTag';
 import { Rating } from '../atoms/Rating';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 interface ProductCardProps {
-  item: ItemsWithParentAndChildrens;
+  item: ItemsWithFamily;
   rootProps?: StackProps;
 }
 
 export function ProductCard({ item, rootProps }: ProductCardProps) {
   const router = useRouter();
   const toast = useToast({ position: 'top' });
+  const { status } = useSession();
   const { id, name, price, memberPrice, childrens, rating } = item;
 
   const addToCart = trpc.store.cart.add.useMutation({
@@ -82,22 +84,32 @@ export function ProductCard({ item, rootProps }: ProductCardProps) {
           <Rating defaultValue={rating} size="sm" />
         </HStack>
       </Stack>
-      <Stack align="center">
-        <Button
-          colorScheme="green"
-          width="full"
-          isLoading={addToCart.isLoading}
-          onClick={() =>
-            childrens.length > 0
-              ? router.push(`/store/${id}`)
-              : addToCart.mutate({
-                  itemId: item.id,
-                  quantity: 1,
-                })
-          }
-        >
-          Adicionar ao carrinho
-        </Button>
+      <Stack>
+        {status === 'authenticated' ? (
+          <Button
+            colorScheme="green"
+            minW="200px"
+            isLoading={addToCart.isLoading}
+            onClick={() =>
+              childrens.length > 0
+                ? router.push(`/store/${id}`)
+                : addToCart.mutate({
+                    itemId: item.id,
+                    quantity: 1,
+                  })
+            }
+          >
+            Adicionar ao carrinho
+          </Button>
+        ) : (
+          <Button
+            colorScheme="green"
+            minW="200px"
+            onClick={() => router.push(`/auth/login?callbackUrl=/store/${id}`)}
+          >
+            Entrar e comprar
+          </Button>
+        )}
       </Stack>
     </Stack>
   );
