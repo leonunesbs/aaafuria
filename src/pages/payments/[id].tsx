@@ -1,3 +1,4 @@
+import { formatPrice, Loading } from '@/components/atoms';
 import {
   Badge,
   Button,
@@ -12,8 +13,8 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  HStack,
   Heading,
+  HStack,
   IconButton,
   Link,
   Select,
@@ -26,23 +27,22 @@ import {
   Text,
   Th,
   Tr,
-  VisuallyHiddenInput,
   useDisclosure,
   useToast,
+  VisuallyHiddenInput,
 } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { Loading, formatPrice } from '@/components/atoms';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
+import { Layout } from '@/components/templates';
+import { trpc } from '@/utils/trpc';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { CgArrowsExchange } from 'react-icons/cg';
 import { HiOutlineExternalLink } from 'react-icons/hi';
-import { Layout } from '@/components/templates';
 import { MdDelete } from 'react-icons/md';
-import NextLink from 'next/link';
-import axios from 'axios';
-import { trpc } from '@/utils/trpc';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 
 function Payment({ paymentId }: { paymentId: string }) {
   const router = useRouter();
@@ -104,9 +104,7 @@ function Payment({ paymentId }: { paymentId: string }) {
   };
 
   const getSignedUrl = trpc.s3.getSignedUrl.useMutation();
-  const [uploading, setUploading] = useState(false);
   const handleOnFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUploading(true);
     const file = e.target.files?.[0];
     if (file) {
       await getSignedUrl
@@ -131,7 +129,6 @@ function Payment({ paymentId }: { paymentId: string }) {
                 id: paymentId,
                 attachment: url.split('?')[0],
               });
-              setUploading(false);
             });
         })
         .catch((err) => {
@@ -142,7 +139,6 @@ function Payment({ paymentId }: { paymentId: string }) {
             duration: 5000,
             isClosable: true,
           });
-          setUploading(false);
         });
     }
   };
@@ -377,6 +373,7 @@ function Payment({ paymentId }: { paymentId: string }) {
                               colorScheme="red"
                               size="sm"
                               onClick={handleDeleteFile}
+                              isLoading={deleteFile.isLoading}
                             />
                           )}
                       </HStack>
@@ -393,51 +390,50 @@ function Payment({ paymentId }: { paymentId: string }) {
           <Loading />
         ) : (
           <CardFooter>
-            {!payment?.canceled ||
-              (!payment?.paid && (
-                <Stack w="full">
-                  {payment?.method === 'PIX' ? (
-                    <Button
-                      onClick={handleButtonClick}
-                      isDisabled={!!payment.attachment}
-                      isLoading={uploading}
-                      loadingText="Enviando..."
-                    >
-                      Anexar comprovante
-                    </Button>
-                  ) : (
-                    <Button
-                      colorScheme={'green'}
-                      onClick={handleCheckout}
-                      isLoading={checkoutPayment.isLoading}
-                    >
-                      Pagar
-                    </Button>
-                  )}
-                  {data?.user.isStaff && (
-                    <Stack>
-                      {!payment?.paid && (
-                        <Button
-                          colorScheme={'green'}
-                          onClick={() => {
-                            confirmPayment.mutate(paymentId);
-                          }}
-                          isLoading={confirmPayment.isLoading}
-                        >
-                          Confirmar pagamento
-                        </Button>
-                      )}
+            {!payment?.canceled && !payment?.paid && (
+              <Stack w="full">
+                {payment?.method === 'PIX' ? (
+                  <Button
+                    onClick={handleButtonClick}
+                    isDisabled={!!payment.attachment}
+                    isLoading={updatePayment.isLoading}
+                    loadingText="Enviando..."
+                  >
+                    Anexar comprovante
+                  </Button>
+                ) : (
+                  <Button
+                    colorScheme={'green'}
+                    onClick={handleCheckout}
+                    isLoading={checkoutPayment.isLoading}
+                  >
+                    Pagar
+                  </Button>
+                )}
+                {data?.user.isStaff && (
+                  <Stack>
+                    {!payment?.paid && (
                       <Button
-                        colorScheme={'red'}
-                        onClick={handleCancel}
-                        isLoading={cancelPayment.isLoading}
+                        colorScheme={'green'}
+                        onClick={() => {
+                          confirmPayment.mutate(paymentId);
+                        }}
+                        isLoading={confirmPayment.isLoading}
                       >
-                        Cancelar pagamento
+                        Confirmar pagamento
                       </Button>
-                    </Stack>
-                  )}
-                </Stack>
-              ))}
+                    )}
+                    <Button
+                      colorScheme={'red'}
+                      onClick={handleCancel}
+                      isLoading={cancelPayment.isLoading}
+                    >
+                      Cancelar pagamento
+                    </Button>
+                  </Stack>
+                )}
+              </Stack>
+            )}
           </CardFooter>
         )}
       </Card>
