@@ -28,17 +28,15 @@ import NextLink from 'next/link';
 import { cleanString } from '@/libs/functions';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
-import { useRouter } from 'next/router';
 
 function Groups() {
-  const router = useRouter();
   const toast = useToast({ position: 'top' });
   const { green } = useContext(ColorContext);
   const { handleSubmit, register, reset } = useForm<Group>();
 
-  const { data: groups, isLoading } = trpc.admin.groups.useQuery();
+  const { data: groups, isLoading, refetch } = trpc.admin.groups.useQuery();
   const refreshData = () => {
-    router.replace(router.asPath);
+    refetch();
   };
 
   const createGroup = trpc.group.create.useMutation({
