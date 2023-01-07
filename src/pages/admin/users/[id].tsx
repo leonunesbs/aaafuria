@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Card,
   CardBody,
@@ -37,7 +38,7 @@ import {
   VisuallyHiddenInput,
 } from '@chakra-ui/react';
 
-import { CustomAvatar, CustomInput } from '@/components/atoms';
+import { CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { formatCPF, formatPhone, validateCPF } from '@/libs/functions';
 import { prisma } from '@/server/prisma';
@@ -199,11 +200,13 @@ function User({ groups, id }: { id: string; groups: Group[] }) {
                   onChange={handleOnFileChange}
                 />
                 <Skeleton rounded={'full'} isLoaded={!updateUser.isLoading}>
-                  <CustomAvatar
+                  <Avatar
+                    cursor="pointer"
                     size="2xl"
                     mb={6}
+                    name={user?.name as string}
+                    src={user?.image || undefined}
                     onClick={handleButtonClick}
-                    cursor="pointer"
                   />
                 </Skeleton>
                 <Skeleton isLoaded={!isLoading}>

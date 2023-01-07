@@ -1,4 +1,4 @@
-import { CustomAvatar, CustomInput } from '@/components/atoms';
+import { CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { ColorContext } from '@/contexts';
 import { formatCPF, validateCPF } from '@/libs/functions';
@@ -7,6 +7,7 @@ import { trpc } from '@/utils/trpc';
 import {
   Alert,
   AlertIcon,
+  Avatar,
   Button,
   Card,
   CardBody,
@@ -154,11 +155,13 @@ function Profile({ user }: { user: User & { profile?: Profile } }) {
                 onChange={handleOnFileChange}
               />
               <Skeleton isLoaded={!updateUser.isLoading}>
-                <CustomAvatar
+                <Avatar
+                  cursor="pointer"
                   size="2xl"
                   mb={6}
+                  name={user?.name as string}
+                  src={user?.image || undefined}
                   onClick={handleButtonClick}
-                  cursor="pointer"
                 />
               </Skeleton>
               <Heading size="md" textAlign={'center'}>
