@@ -2,7 +2,7 @@
 name: Pedido de recurso
 about: Sugira uma ideia para este projeto
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---

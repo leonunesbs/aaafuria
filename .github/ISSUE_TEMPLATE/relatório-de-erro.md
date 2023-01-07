@@ -2,7 +2,7 @@
 name: Relatório de erro
 about: Crie um relatório e nos ajude a melhorar
 title: ''
-labels: ''
+labels: bug
 assignees: ''
 
 ---
