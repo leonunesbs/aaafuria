@@ -40,7 +40,7 @@ specifiers:
   react: 18.2.0
   react-device-detect: 2.2.2
   react-dom: 18.2.0
-  react-hook-form: 7.41.4
+  react-hook-form: 7.41.5
   react-icons: 4.7.1
   sharp: 0.31.3
   stripe: 11.5.0
@@ -70,7 +70,7 @@ dependencies:
   react: 18.2.0
   react-device-detect: 2.2.2_biqbaboplfbrettd7655fr4n2y
   react-dom: 18.2.0_react@18.2.0
-  react-hook-form: 7.41.4_react@18.2.0
+  react-hook-form: 7.41.5_react@18.2.0
   react-icons: 4.7.1_react@18.2.0
   sharp: 0.31.3
   stripe: 11.5.0
@@ -4836,8 +4836,8 @@ packages:
       use-sidecar: 1.1.2_kzbn2opkn2327fwg5yzwzya5o4
     dev: false
 
-  /react-hook-form/7.41.4_react@18.2.0:
-    resolution: {integrity: sha512-75TOP2OJNj+wmeDvzD4FxDNBitJzqqwobf5q0FegvkNpXDnoAsjFD9O1c7PQOvmIVenUDGcAat5QQARWboDnnQ==}
+  /react-hook-form/7.41.5_react@18.2.0:
+    resolution: {integrity: sha512-DAKjSJ7X9f16oQrP3TW2/eD9N6HOgrmIahP4LOdFphEWVfGZ2LulFd6f6AQ/YS/0cx/5oc4j8a1PXxuaurWp/Q==}
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
