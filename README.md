@@ -75,7 +75,7 @@ pnpm dev
 
 ## Contribuindo
 
-Se você deseja contribuir com este projeto, leia o arquivo [CONTRIBUTING.md](https://github.com/leonunesbs/aaafuria/CONTRIBUTING.md) para obter orientações.
+Se você deseja contribuir com este projeto, leia o arquivo [CONTRIBUTING.md](https://github.com/leonunesbs/aaafuria/blob/main/CONTRIBUTING.md) para obter orientações.
 
 ## Licença
 
