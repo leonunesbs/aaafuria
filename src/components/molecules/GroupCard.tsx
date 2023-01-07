@@ -14,6 +14,7 @@ import {
   ScheduleWithGroupAndInterestedAndPresentUsers,
 } from '@/pages/activities';
 
+import { Loading } from '../atoms';
 import { MdAdd } from 'react-icons/md';
 import { ScheduleCard } from './ScheduleCard';
 import { ScheduleDrawer } from '../organisms';
@@ -23,9 +24,15 @@ interface GroupCardProps {
   group?: GroupWithSchedulesAndUsers;
   isStaff: boolean;
   refetch: () => void;
+  isLoading: boolean;
 }
 
-export function GroupCard({ group, isStaff, refetch }: GroupCardProps) {
+export function GroupCard({
+  group,
+  isStaff,
+  refetch,
+  isLoading,
+}: GroupCardProps) {
   const scheduleDrawer = useDisclosure();
   const [activeSchedule, setActiveSchedule] = useState<
     ScheduleWithGroupAndInterestedAndPresentUsers | undefined
@@ -76,10 +83,14 @@ export function GroupCard({ group, isStaff, refetch }: GroupCardProps) {
               refetch={refetch}
             />
           ))}
-          {!group?.schedules.length && (
-            <Text as="i" textAlign={'center'}>
-              Não há nenhuma atividade agendada para esse grupo.
-            </Text>
+          {isLoading ? (
+            <Loading loadingText="" />
+          ) : (
+            !group?.schedules.length && (
+              <Text as="i" textAlign={'center'}>
+                Não há nenhuma atividade agendada para esse grupo.
+              </Text>
+            )
           )}
         </Stack>
       </CardBody>

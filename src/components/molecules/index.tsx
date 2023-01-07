@@ -5,3 +5,4 @@ export * from './PlanCard';
 export * from './ProductCard';
 export * from './GroupCard';
 export * from './ScheduleCard';
+export * from './CustomAlertDialog';

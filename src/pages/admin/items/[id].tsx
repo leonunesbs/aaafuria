@@ -12,11 +12,13 @@ import {
   InputLeftAddon,
   Select,
   Stack,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { CustomInput } from '@/components/atoms';
+import { CustomAlertDialog } from '@/components/molecules';
 import { Layout } from '@/components/templates';
 import { cleanString } from '@/libs/functions';
 import { prisma } from '@/server/prisma';
@@ -43,6 +45,7 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
       stock: item.stock.toString(),
     },
   });
+  const deleteItemAlert = useDisclosure();
   const deleteItem = trpc.store.item.delete.useMutation({
     onSuccess: () => {
       toast({
@@ -191,12 +194,27 @@ function Item({ item, items }: { item: Item; items: Item[] }) {
               <Button colorScheme={'green'} type="submit">
                 Salvar
               </Button>
-              <Button
-                colorScheme={'red'}
-                onClick={() => deleteItem.mutate(item.id)}
-              >
-                Excluir
-              </Button>
+              <>
+                <Button
+                  colorScheme={'red'}
+                  onClick={deleteItemAlert.onOpen}
+                  isLoading={deleteItem.isLoading}
+                >
+                  Excluir
+                </Button>
+                <CustomAlertDialog
+                  {...deleteItemAlert}
+                  title="Tem certeza que deseja excluir este produto?"
+                  description="
+                  Esta ação não pode ser desfeita. Todos os produtos que dependem deste produto serão excluídos."
+                  actionButtonProps={{
+                    colorScheme: 'red',
+                    isLoading: deleteItem.isLoading,
+                    onClick: () => deleteItem.mutate(item.id),
+                  }}
+                  buttonText="Excluir produto"
+                />
+              </>
               <Button as={Link} href="/admin/items">
                 Lista de produtos
               </Button>

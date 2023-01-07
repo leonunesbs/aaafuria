@@ -1,18 +1,21 @@
-import { HStack, Spinner, Text } from '@chakra-ui/react';
-import { ReactNode, useContext } from 'react';
+import { HStack, Spinner, SpinnerProps, Text } from '@chakra-ui/react';
 
 import { ColorContext } from '@/contexts';
+import { useContext } from 'react';
 
-interface LoadingProps {
-  children?: ReactNode;
+interface LoadingProps extends SpinnerProps {
+  loadingText?: string;
 }
 
-export function Loading({}: LoadingProps) {
+export function Loading({
+  loadingText = 'Carregando...',
+  ...rest
+}: LoadingProps) {
   const { green } = useContext(ColorContext);
   return (
-    <HStack w="full" justify={'center'}>
-      <Spinner color={green} />
-      <Text textAlign={'center'}>Carregando...</Text>
+    <HStack w="full" justify={'center'} py={2}>
+      <Spinner color={green} {...rest} />
+      <Text textAlign={'center'}>{loadingText}</Text>
     </HStack>
   );
 }

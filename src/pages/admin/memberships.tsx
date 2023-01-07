@@ -19,12 +19,14 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { CustomInput, formatPrice } from '@/components/atoms';
 import { Membership, Plan, Profile, User } from '@prisma/client';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ColorContext } from '@/contexts';
+import { CustomAlertDialog } from '@/components/molecules';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
@@ -82,8 +84,12 @@ function Memberships({
     onSuccess: () => refreshData(),
   });
 
+  const deletePlanAlert = useDisclosure();
   const deletePlan = trpc.plan.delete.useMutation({
-    onSuccess: () => refreshData(),
+    onSuccess: () => {
+      refreshData();
+      deletePlanAlert.onClose();
+    },
   });
 
   return (
@@ -145,9 +151,22 @@ function Memberships({
                             size="sm"
                             colorScheme="red"
                             onClick={() => deletePlan.mutate(plan.id)}
+                            isLoading={deletePlan.isLoading}
                           >
                             Excluir
                           </Button>
+                          <CustomAlertDialog
+                            {...deletePlanAlert}
+                            title="Excluir plano"
+                            description="Tem certeza que deseja excluir esse plano?"
+                            actionButtonProps={{
+                              onClick: () => {
+                                deletePlan.mutate(plan.id);
+                              },
+                              isLoading: deletePlan.isLoading,
+                            }}
+                            buttonText="Excluir plano"
+                          />
                         </HStack>
                       </Td>
                     </Tr>

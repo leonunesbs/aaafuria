@@ -1,4 +1,3 @@
-import { formatPrice, Loading } from '@/components/atoms';
 import {
   Badge,
   Button,
@@ -13,8 +12,8 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  Heading,
   HStack,
+  Heading,
   IconButton,
   Link,
   Select,
@@ -27,22 +26,24 @@ import {
   Text,
   Th,
   Tr,
+  VisuallyHiddenInput,
   useDisclosure,
   useToast,
-  VisuallyHiddenInput,
 } from '@chakra-ui/react';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { useRef } from 'react';
+import { Loading, formatPrice } from '@/components/atoms';
 
-import { Layout } from '@/components/templates';
-import { trpc } from '@/utils/trpc';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { CgArrowsExchange } from 'react-icons/cg';
+import { CustomAlertDialog } from '@/components/molecules';
 import { HiOutlineExternalLink } from 'react-icons/hi';
+import { Layout } from '@/components/templates';
 import { MdDelete } from 'react-icons/md';
+import NextLink from 'next/link';
+import axios from 'axios';
+import { trpc } from '@/utils/trpc';
+import { useRef } from 'react';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 function Payment({ paymentId }: { paymentId: string }) {
   const router = useRouter();
@@ -65,6 +66,7 @@ function Payment({ paymentId }: { paymentId: string }) {
     });
   };
 
+  const confirmAlert = useDisclosure();
   const confirmPayment = trpc.payment.confirm.useMutation({
     onSuccess: () => {
       toast({
@@ -94,6 +96,7 @@ function Payment({ paymentId }: { paymentId: string }) {
       });
     },
   });
+  const cancelAlert = useDisclosure();
   const handleCancel = () => {
     cancelPayment.mutate(paymentId);
   };
@@ -143,6 +146,7 @@ function Payment({ paymentId }: { paymentId: string }) {
     }
   };
 
+  const deleteFileAlert = useDisclosure();
   const deleteFile = trpc.s3.deleteFile.useMutation({
     onSuccess: () => handleRefresh(),
   });
@@ -223,13 +227,13 @@ function Payment({ paymentId }: { paymentId: string }) {
                               onClick={drawer.onOpen}
                               size="xs"
                               leftIcon={<CgArrowsExchange size="1rem" />}
+                              isDisabled={!!payment?.attachment}
                             >
                               Alterar
                             </Button>
                           )}
                         <Drawer
                           isOpen={drawer.isOpen}
-                          placement="bottom"
                           onClose={drawer.onClose}
                           finalFocusRef={btnRef}
                         >
@@ -264,6 +268,7 @@ function Payment({ paymentId }: { paymentId: string }) {
                               <Button
                                 colorScheme="green"
                                 onClick={drawer.onClose}
+                                isLoading={updatePayment.isLoading}
                               >
                                 Alterar
                               </Button>
@@ -366,15 +371,31 @@ function Payment({ paymentId }: { paymentId: string }) {
                         {!payment?.canceled &&
                           !payment?.paid &&
                           !payment?.expired && (
-                            <IconButton
-                              icon={<MdDelete />}
-                              aria-label="remove"
-                              variant={'ghost'}
-                              colorScheme="red"
-                              size="sm"
-                              onClick={handleDeleteFile}
-                              isLoading={deleteFile.isLoading}
-                            />
+                            <>
+                              <IconButton
+                                icon={<MdDelete />}
+                                aria-label="remove"
+                                variant={'ghost'}
+                                colorScheme="red"
+                                size="sm"
+                                onClick={deleteFileAlert.onOpen}
+                                isLoading={deleteFile.isLoading}
+                              />
+                              <CustomAlertDialog
+                                {...deleteFileAlert}
+                                title="Confirmar exclusão?"
+                                description="Tem certeza que deseja excluir este anexo? Esta ação não poderá ser desfeita."
+                                buttonText="Confirmar exclusão"
+                                actionButtonProps={{
+                                  onClick: () => {
+                                    handleDeleteFile();
+                                    deleteFileAlert.onClose();
+                                  },
+                                  isLoading: deleteFile.isLoading,
+                                  colorScheme: 'red',
+                                }}
+                              />
+                            </>
                           )}
                       </HStack>
                     ) : (
@@ -399,7 +420,6 @@ function Payment({ paymentId }: { paymentId: string }) {
                     isLoading={
                       getSignedUrl.isLoading || updatePayment.isLoading
                     }
-                    loadingText="Enviando..."
                   >
                     Anexar comprovante
                   </Button>
@@ -415,23 +435,52 @@ function Payment({ paymentId }: { paymentId: string }) {
                 {data?.user.isStaff && (
                   <Stack>
                     {!payment?.paid && (
-                      <Button
-                        colorScheme={'green'}
-                        onClick={() => {
-                          confirmPayment.mutate(paymentId);
-                        }}
-                        isLoading={confirmPayment.isLoading}
-                      >
-                        Confirmar pagamento
-                      </Button>
+                      <>
+                        <Button
+                          colorScheme={'green'}
+                          onClick={confirmAlert.onOpen}
+                          isLoading={confirmPayment.isLoading}
+                        >
+                          Confirmar pagamento
+                        </Button>
+                        <CustomAlertDialog
+                          {...confirmAlert}
+                          title="Confirmar pagamento?"
+                          description="Tem certeza que deseja confirmar este pagamento?"
+                          buttonText="Confirmar pagamento"
+                          enterAction="right"
+                          actionButtonProps={{
+                            onClick: () => {
+                              confirmPayment.mutate(paymentId);
+                              confirmAlert.onClose();
+                            },
+                            isLoading: confirmPayment.isLoading,
+                            colorScheme: 'green',
+                          }}
+                        />
+                      </>
                     )}
                     <Button
                       colorScheme={'red'}
-                      onClick={handleCancel}
+                      onClick={cancelAlert.onOpen}
                       isLoading={cancelPayment.isLoading}
                     >
                       Cancelar pagamento
                     </Button>
+                    <CustomAlertDialog
+                      {...cancelAlert}
+                      title="Cancelar pagamento?"
+                      description="Tem certeza que deseja cancelar este pagamento? Esta ação
+                      não pode ser desfeita."
+                      buttonText="Cancelar pagamento"
+                      actionButtonProps={{
+                        onClick: () => {
+                          handleCancel();
+                          cancelAlert.onClose();
+                        },
+                        isLoading: cancelPayment.isLoading,
+                      }}
+                    />
                   </Stack>
                 )}
               </Stack>
