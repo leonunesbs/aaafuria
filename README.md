@@ -31,18 +31,18 @@ pnpm dev
  ┃ ┣ 📂molecules -> Componentes compostos por átomos, como cards, menus, etc.
  ┃ ┣ 📂organisms -> Componentes compostos por moléculas, como formulários, etc.
  ┃ ┗ 📂templates -> Componentes de UI.
- ┣ 📂contexts -> Contextos React
- ┃ ┣ 📜ColorContext.tsx -> Contexto de cores
+ ┣ 📂contexts
+ ┃ ┣ 📜ColorContext.tsx
  ┃ ┗ 📜index.tsx
  ┣ 📂libs -> Bibliotecas
- ┃ ┗ 📜functions.ts -> Funções úteis que são usadas mais de uma vez
+ ┃ ┗ 📜functions.ts
  ┣ 📂pages -> Páginas Next.js
  ┃ ┣ 📂admin
  ┃ ┣ 📂api -> API do Next.js
  ┃ ┃ ┣ 📂auth
- ┃ ┃ ┃ ┗ 📜[...nextauth].ts -> Autenticação com NextAuth.js
+ ┃ ┃ ┃ ┗ 📜[...nextauth].ts
  ┃ ┃ ┣ 📂trpc
- ┃ ┃ ┃ ┗ 📜[trpc].ts -> API do trpc
+ ┃ ┃ ┃ ┗ 📜[trpc].ts
  ┃ ┣ 📂auth
  ┃ ┣ 📂dashboard
  ┃ ┣ 📂payments
@@ -56,11 +56,11 @@ pnpm dev
  ┃ ┣ 📜privacy.tsx
  ┃ ┣ 📜sejasocio.tsx
  ┃ ┗ 📜terms.tsx
- ┣ 📂server -> Código executado no servidor
- ┃ ┣ 📂routers -> Rotas do tRPC
- ┃ ┣ 📜context.ts -> Contexto do tRPC
- ┃ ┣ 📜prisma.ts -> Conexão com o banco de dados
- ┃ ┗ 📜trpc.ts -> Configuração do tRPC
+ ┣ 📂server
+ ┃ ┣ 📂routers 
+ ┃ ┣ 📜context.ts 
+ ┃ ┣ 📜prisma.ts
+ ┃ ┗ 📜trpc.ts
  ┣ 📂styles
  ┃ ┗ 📂theme -> Estilos do Chakra UI
  ┃ ┃ ┣ 📂components -> Estilos dos componentes do Chakra UI
