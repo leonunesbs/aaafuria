@@ -33,7 +33,10 @@ function Activities() {
     data: groups,
     isLoading,
     refetch,
-  } = trpc.group.activityGroups.useQuery();
+    isRefetching,
+  } = trpc.group.activityGroups.useQuery(undefined, {
+    refetchOnWindowFocus: false,
+  });
 
   const filteredGroups = groups?.filter((group) => {
     if (!q) return group;
@@ -58,14 +61,15 @@ function Activities() {
           <Button colorScheme="green">Buscar</Button>
         </HStack>
       </Box>
+      {isLoading && <Loading />}
       <ActivityGrid>
-        {isLoading && <Loading />}
         {filteredGroups?.map((group) => (
           <GroupCard
             key={group.id}
             group={group}
             isStaff={isStaff}
             refetch={refetch}
+            isLoading={isRefetching}
           />
         ))}
       </ActivityGrid>

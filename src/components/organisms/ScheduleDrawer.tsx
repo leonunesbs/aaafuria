@@ -22,6 +22,7 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react';
 import {
   GroupWithSchedulesAndUsers,
@@ -32,6 +33,7 @@ import { MdCheck, MdClose } from 'react-icons/md';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ColorContext } from '@/contexts';
+import { CustomAlertDialog } from '../molecules';
 import { CustomInput } from '../atoms';
 import NextLink from 'next/link';
 import { trpc } from '@/utils/trpc';
@@ -129,7 +131,11 @@ export function ScheduleDrawer({
     },
   });
   const createSchedule = trpc.schedule.create.useMutation({
-    onSuccess: () => refreshData(),
+    onSuccess: () => {
+      refreshData();
+      onClose();
+      reset();
+    },
   });
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     createSchedule.mutate({
@@ -138,12 +144,14 @@ export function ScheduleDrawer({
       start: new Date(data.start),
       end: data.end ? new Date(data.end) : undefined,
     });
-    onClose();
-    reset();
   };
 
+  const deleteScheduleAlert = useDisclosure();
   const deleteSchedule = trpc.schedule.delete.useMutation({
-    onSuccess: () => refreshData(),
+    onSuccess: () => {
+      refreshData();
+      onClose();
+    },
   });
 
   return (
@@ -242,18 +250,40 @@ export function ScheduleDrawer({
               <Button variant="outline" onClick={onClose}>
                 Cancelar
               </Button>
-              {data?.user.isStaff && schedule ? (
-                <Button
-                  colorScheme="red"
-                  onClick={() => deleteSchedule.mutate(schedule?.id as string)}
-                >
-                  Excluir
-                </Button>
-              ) : (
-                <Button colorScheme="green" type="submit">
-                  Adicionar
-                </Button>
-              )}
+              {data?.user.isStaff &&
+                (schedule ? (
+                  <>
+                    <Button
+                      colorScheme="red"
+                      onClick={deleteScheduleAlert.onOpen}
+                      isLoading={deleteSchedule.isLoading}
+                    >
+                      Excluir
+                    </Button>
+                    <CustomAlertDialog
+                      {...deleteScheduleAlert}
+                      title="Confirmar exclusão?"
+                      description="Tem certeza que deseja excluir este agendamento? As informações associadas a este agendamento serão perdidas. Essa ação não pode ser desfeita"
+                      buttonText="Confirmar exclusão"
+                      actionButtonProps={{
+                        onClick: () => {
+                          deleteSchedule.mutate(schedule?.id as string);
+                          deleteScheduleAlert.onClose();
+                        },
+                        isLoading: deleteSchedule.isLoading,
+                        colorScheme: 'red',
+                      }}
+                    />
+                  </>
+                ) : (
+                  <Button
+                    colorScheme="green"
+                    type="submit"
+                    isLoading={createSchedule.isLoading}
+                  >
+                    Adicionar
+                  </Button>
+                ))}
             </HStack>
           </DrawerFooter>
         </DrawerContent>
