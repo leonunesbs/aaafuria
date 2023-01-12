@@ -19,7 +19,7 @@ specifiers:
   '@types/react-dom': 18.0.10
   '@typescript-eslint/eslint-plugin': 5.48.0
   '@typescript-eslint/parser': 5.48.0
-  aws-sdk: 2.1287.0
+  aws-sdk: 2.1291.0
   axios: 1.2.2
   date-fns: 2.29.3
   eslint: 8.31.0
@@ -59,7 +59,7 @@ dependencies:
   '@trpc/next': 10.7.0_feu6xodxtgd2hktgc23del3mna
   '@trpc/react-query': 10.7.0_voi52uzzn4btzulk52fuvwecw4
   '@trpc/server': 10.7.0
-  aws-sdk: 2.1287.0
+  aws-sdk: 2.1291.0
   axios: 1.2.2
   date-fns: 2.29.3
   framer-motion: 8.1.7_biqbaboplfbrettd7655fr4n2y
@@ -2329,8 +2329,8 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
 
-  /aws-sdk/2.1287.0:
-    resolution: {integrity: sha512-mtfDstUdFNn8FnBaXs2KAaQ0cgDIiwlqwC2UptUKWWrugjZHAoRacfD/6bnah1Kwhu43F9CDEe5QLHnQtymNkw==}
+  /aws-sdk/2.1291.0:
+    resolution: {integrity: sha512-iM82Md2Wb29MZ72BpNF4YeIHtkJTyw+JMGXJG48Dwois2Rq7rLcriX6NN/4Fx4b5EEtUkwAO/wJc+NTHI7QeJw==}
     engines: {node: '>= 10.0.0'}
     dependencies:
       buffer: 4.9.2
