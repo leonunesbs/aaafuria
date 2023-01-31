@@ -89,10 +89,11 @@ function Subscribe({ plans }: { plans?: Plan[] }) {
             price: 'R$' + anual?.price.toString() || 'R$49',
             name: 'Plano ANUAL',
             features: [
-              'All application UI components',
-              'Lifetime access',
-              'Use on unlimited projects',
-              'Free Updates',
+              'TODOS OS BENEFÍCIOS DO SÓCIO FÚRIA',
+              'Participação em atividades',
+              'Desconto em produtos da loja',
+              'Desconto em eventos',
+              'Desconto no INTERMED',
             ],
           }}
           button={
