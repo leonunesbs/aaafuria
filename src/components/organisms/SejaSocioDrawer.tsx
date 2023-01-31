@@ -32,7 +32,7 @@ interface SejaSocioDrawerProps extends Omit<DrawerProps, 'children'> {
 export function SejaSocioDrawer(props: SejaSocioDrawerProps) {
   const router = useRouter();
   const { isOpen, onClose, finalFocusRef, plan } = props;
-  const [method, setMethod] = useState<string>('PIX');
+  const [method, setMethod] = useState<string>('PAGSEGURO');
 
   const checkoutPlan = trpc.plan.checkout.useMutation();
   const handleChekoutPlan = async () => {
@@ -76,14 +76,14 @@ export function SejaSocioDrawer(props: SejaSocioDrawerProps) {
                   colorScheme="green"
                 >
                   <Stack>
-                    <Radio value="PIX" w="full">
+                    <Radio value="PIX" w="full" isDisabled>
                       PIX
                     </Radio>
-                    <Radio value="STRIPE" w="full">
+                    <Radio value="STRIPE" w="full" isDisabled>
                       Cartão de crédito à vista
                     </Radio>
                     <Radio value="PAGSEGURO" w="full">
-                      Cartão de crédito parcelado
+                      PagSeguro
                     </Radio>
                   </Stack>
                 </RadioGroup>
@@ -96,7 +96,12 @@ export function SejaSocioDrawer(props: SejaSocioDrawerProps) {
           <Button variant="outline" mr={3} onClick={onClose}>
             Cancelar
           </Button>
-          <Button colorScheme="green" onClick={handleChekoutPlan}>
+          <Button
+            colorScheme="green"
+            onClick={handleChekoutPlan}
+            isLoading={checkoutPlan.isLoading}
+            loadingText="Gerando pagamento..."
+          >
             Pagar
           </Button>
         </DrawerFooter>

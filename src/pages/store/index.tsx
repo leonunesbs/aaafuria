@@ -7,7 +7,7 @@ import { MdShoppingCart } from 'react-icons/md';
 import NextLink from 'next/link';
 import { ProductCard } from '@/components/molecules';
 import { ProductGrid } from '@/components/organisms';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 
 export type ItemsWithFamily = Item & {
   childrens: Item[];

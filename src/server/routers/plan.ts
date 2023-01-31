@@ -1,6 +1,6 @@
 import { authedProcedure, router, staffProcedure } from '../trpc';
 
-import { prisma } from '../prisma';
+import prisma from '../prisma';
 import { z } from 'zod';
 
 export const plan = router({

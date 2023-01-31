@@ -7,6 +7,7 @@ specifiers:
   '@emotion/react': 11.10.5
   '@emotion/styled': 11.10.5
   '@next-auth/prisma-adapter': 1.0.5
+  '@next/env': 13.1.6
   '@prisma/client': 4.8.1
   '@tanstack/react-query': 4.20.9
   '@trpc/client': 10.7.0
@@ -46,6 +47,7 @@ specifiers:
   stripe: 11.5.0
   superjson: 1.12.1
   typescript: 4.9.4
+  xml-js: 1.6.11
   zod: 3.20.2
 
 dependencies:
@@ -53,6 +55,7 @@ dependencies:
   '@emotion/react': 11.10.5_kzbn2opkn2327fwg5yzwzya5o4
   '@emotion/styled': 11.10.5_qvatmowesywn4ye42qoh247szu
   '@next-auth/prisma-adapter': 1.0.5_vblrumase6agqlas53tad34s44
+  '@next/env': 13.1.6
   '@prisma/client': 4.8.1_prisma@4.8.1
   '@tanstack/react-query': 4.20.9_biqbaboplfbrettd7655fr4n2y
   '@trpc/client': 10.7.0_@trpc+server@10.7.0
@@ -65,7 +68,7 @@ dependencies:
   framer-motion: 8.1.7_biqbaboplfbrettd7655fr4n2y
   next: 13.1.1_biqbaboplfbrettd7655fr4n2y
   next-auth: 4.18.7_mibeyvivfhhmvvbkd4wwrgzcom
-  next-sitemap: 3.1.44_next@13.1.1
+  next-sitemap: 3.1.44_2eehqxiynjxmribrtnpfh7bkly
   nodemailer: 6.8.0
   react: 18.2.0
   react-device-detect: 2.2.2_biqbaboplfbrettd7655fr4n2y
@@ -75,6 +78,7 @@ dependencies:
   sharp: 0.31.3
   stripe: 11.5.0
   superjson: 1.12.1
+  xml-js: 1.6.11
   zod: 3.20.2
 
 devDependencies:
@@ -1654,6 +1658,10 @@ packages:
 
   /@next/env/13.1.1:
     resolution: {integrity: sha512-vFMyXtPjSAiOXOywMojxfKIqE3VWN5RCAx+tT3AS3pcKjMLFTCJFUWsKv8hC+87Z1F4W3r68qTwDFZIFmd5Xkw==}
+    dev: false
+
+  /@next/env/13.1.6:
+    resolution: {integrity: sha512-s+W9Fdqh5MFk6ECrbnVmmAOwxKQuhGMT7xXHrkYIBMBcTiOqNWhv5KbJIboKR5STXxNXl32hllnvKaffzFaWQg==}
     dev: false
 
   /@next/eslint-plugin-next/13.1.1:
@@ -4322,7 +4330,7 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /next-sitemap/3.1.44_next@13.1.1:
+  /next-sitemap/3.1.44_2eehqxiynjxmribrtnpfh7bkly:
     resolution: {integrity: sha512-dg+qGfOpQemAb+LGShJmaJHyuf36rVqsIbkCBt0ldu10sAx+eMowVx6DzEtf2HoIIGWc7J+kfy//YsBCPdj47Q==}
     engines: {node: '>=14.18'}
     hasBin: true
@@ -4331,6 +4339,7 @@ packages:
       next: '*'
     dependencies:
       '@corex/deepmerge': 4.0.29
+      '@next/env': 13.1.6
       minimist: 1.2.7
       next: 13.1.1_biqbaboplfbrettd7655fr4n2y
     dev: false
@@ -5069,6 +5078,10 @@ packages:
     resolution: {integrity: sha512-8I2a3LovHTOpm7NV5yOyO8IHqgVsfK4+UuySrXU8YXkSRX7k6hCV9b3HrkKCr3nMpgj+0bmocaJJWpvp1oc7ZA==}
     dev: false
 
+  /sax/1.2.4:
+    resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
+    dev: false
+
   /scheduler/0.23.0:
     resolution: {integrity: sha512-CtuThmgHNg7zIZWAXi3AsyIzA3n4xx7aNyjwC2VJldO2LMVDhFK+63xGqq6CsJH4rTAt6/M+N4GhZiDYPx9eUw==}
     dependencies:
@@ -5734,10 +5747,17 @@ packages:
   /wrappy/1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
+  /xml-js/1.6.11:
+    resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
+    hasBin: true
+    dependencies:
+      sax: 1.2.4
+    dev: false
+
   /xml2js/0.4.19:
     resolution: {integrity: sha512-esZnJZJOiJR9wWKMyuvSE1y6Dq5LCuJanqhxslH2bxM6duahNZ+HMpCLhBQGZkbX6xRf8x1Y2eJlgt2q3qo49Q==}
     dependencies:
-      sax: 1.2.1
+      sax: 1.2.4
       xmlbuilder: 9.0.7
     dev: false
 

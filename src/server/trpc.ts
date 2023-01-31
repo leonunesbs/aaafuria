@@ -1,7 +1,7 @@
 import { TRPCError, initTRPC } from '@trpc/server';
 
 import { Context } from './context';
-import { prisma } from './prisma';
+import prisma from './prisma';
 import superjson from 'superjson';
 
 // Avoid exporting the entire t-object

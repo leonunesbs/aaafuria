@@ -25,7 +25,7 @@ import { ItemsWithFamily } from '.';
 import { Layout } from '@/components/templates';
 import Link from 'next/link';
 import { MdEdit } from 'react-icons/md';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
 import { useSession } from 'next-auth/react';

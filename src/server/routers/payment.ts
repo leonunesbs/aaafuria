@@ -2,7 +2,8 @@ import { authedProcedure, router, staffProcedure } from '../trpc';
 
 import Stripe from 'stripe';
 import { TRPCError } from '@trpc/server';
-import { prisma } from '../prisma';
+import axios from 'axios';
+import prisma from '../prisma';
 import { z } from 'zod';
 
 export const payment = router({
@@ -117,9 +118,61 @@ export const payment = router({
           url: session.url,
         };
       }
+      async function pagseguroCheckout() {
+        const options = {
+          method: 'POST',
+          url: 'https://ws.pagseguro.uol.com.br/v2/checkout',
+          params: {
+            email: process.env.PAGSEGURO_EMAIL,
+            token: process.env.PAGSEGURO_TOKEN,
+          },
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+          },
+        };
+
+        return await axios
+          .request({
+            ...options,
+            params: {
+              ...options.params,
+              currency: payment?.currency,
+              itemId1: '0001',
+              itemDescription1: 'Compra online em @aaafuria',
+              itemAmount1: payment?.amount.toFixed(2).toString(),
+              itemQuantity1: '1',
+              itemWeight1: '1000',
+              reference: payment?.id,
+              senderEmail: payment?.user.email,
+              redirectURL: 'https://aaafuria.site',
+              notificationURL: 'https://aaafuria.site/api/wh/pagseguro',
+              maxUses: '1',
+              maxAge: '3000',
+            },
+          })
+          .then(function (response) {
+            const convert = require('xml-js');
+            const xml = response.data;
+            const result = convert.xml2js(xml, { compact: true, spaces: 4 });
+            const code = result.checkout.code._text;
+
+            return {
+              url: `https://pagseguro.uol.com.br/v2/checkout/payment.html?code=${code}`,
+            };
+          })
+          .catch(function (error) {
+            return {
+              url: null,
+              error: error,
+            };
+          });
+      }
+
       switch (payment.method) {
         case 'STRIPE':
           return stripeCheckout();
+        case 'PAGSEGURO':
+          return pagseguroCheckout();
         default:
           throw new TRPCError({
             code: 'BAD_REQUEST',

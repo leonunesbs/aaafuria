@@ -25,7 +25,7 @@ import NextLink from 'next/link';
 import { authOptions } from '../api/auth/[...nextauth]';
 import { formatPrice } from '@/components/atoms';
 import { getToken } from 'next-auth/jwt';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { useContext } from 'react';
 
 type OrderItemWithItem = OrderItem & {

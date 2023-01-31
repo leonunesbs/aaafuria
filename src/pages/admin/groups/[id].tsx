@@ -1,6 +1,6 @@
 import { Layout } from '@/components/templates';
 import { ColorContext } from '@/contexts';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import {
   Card,
   CardBody,

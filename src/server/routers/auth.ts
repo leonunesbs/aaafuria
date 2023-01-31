@@ -1,6 +1,6 @@
 import { authedProcedure, router } from '../trpc';
 
-import { prisma } from '../prisma';
+import prisma from '../prisma';
 
 export const auth = router({
   isMember: authedProcedure.query(async ({ ctx }) => {

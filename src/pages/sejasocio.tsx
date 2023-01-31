@@ -6,7 +6,7 @@ import { Layout } from '@/components/templates';
 import { Plan } from '@prisma/client';
 import { PlanCard } from '@/components/molecules';
 import { SejaSocioDrawer } from '@/components/organisms';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';

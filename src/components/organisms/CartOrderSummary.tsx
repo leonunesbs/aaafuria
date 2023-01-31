@@ -100,7 +100,7 @@ export function CartOrderSummary({
                   Cartão de crédito à vista
                 </Radio>
                 <Radio value="PAGSEGURO" w="full">
-                  Cartão de crédito parcelado
+                  PagSeguro
                 </Radio>
               </Stack>
             </RadioGroup>

@@ -24,7 +24,7 @@ import { Item } from '@prisma/client';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { formatPrice } from '@/components/atoms';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { useContext } from 'react';
 
 export type ItemsWithParentAndChilds = Item & {

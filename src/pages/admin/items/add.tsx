@@ -23,7 +23,7 @@ import Link from 'next/link';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { cleanString } from '@/libs/functions';
 import { getToken } from 'next-auth/jwt';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { useRouter } from 'next/router';
 

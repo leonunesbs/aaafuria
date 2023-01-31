@@ -41,7 +41,7 @@ import {
 import { CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { formatCPF, formatPhone, validateCPF } from '@/libs/functions';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { Group, Profile, User } from '@prisma/client';
 import axios from 'axios';

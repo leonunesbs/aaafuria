@@ -1,17 +1,11 @@
 import {
-  CustomInput,
-  formatPrice,
-  Loading,
-  Pagination,
-} from '@/components/atoms';
-import {
   Button,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Heading,
   HStack,
+  Heading,
   Link,
   List,
   ListItem,
@@ -26,17 +20,23 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import {
+  CustomInput,
+  Loading,
+  Pagination,
+  formatPrice,
+} from '@/components/atoms';
 
-import { Layout } from '@/components/templates';
-import { paymentStatus } from '@/pages/dashboard/orders';
-import { prisma } from '@/server/prisma';
-import { trpc } from '@/utils/trpc';
-import { Payment } from '@prisma/client';
 import { GetStaticProps } from 'next';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { HiExternalLink } from 'react-icons/hi';
+import { Layout } from '@/components/templates';
+import NextLink from 'next/link';
+import { Payment } from '@prisma/client';
+import { paymentStatus } from '@/pages/dashboard/orders';
+import prisma from '@/server/prisma';
+import { trpc } from '@/utils/trpc';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 function Orders({ page, totalPages }: { page: number; totalPages: number }) {
   const { data: initalOrders, isLoading } = trpc.admin.orders.useQuery({});

@@ -30,7 +30,7 @@ import { CustomAlertDialog } from '@/components/molecules';
 import { GetServerSideProps } from 'next';
 import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';

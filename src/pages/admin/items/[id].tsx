@@ -21,7 +21,7 @@ import { CustomInput } from '@/components/atoms';
 import { CustomAlertDialog } from '@/components/molecules';
 import { Layout } from '@/components/templates';
 import { cleanString } from '@/libs/functions';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import { Item } from '@prisma/client';
 import { GetServerSideProps } from 'next';

@@ -28,7 +28,7 @@ import { Layout } from '@/components/templates';
 import NextLink from 'next/link';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { getToken } from 'next-auth/jwt';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
 

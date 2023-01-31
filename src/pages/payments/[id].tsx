@@ -428,6 +428,7 @@ function Payment({ paymentId }: { paymentId: string }) {
                     colorScheme={'green'}
                     onClick={handleCheckout}
                     isLoading={checkoutPayment.isLoading}
+                    loadingText="Processando..."
                   >
                     Pagar
                   </Button>

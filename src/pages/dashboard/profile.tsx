@@ -2,7 +2,7 @@ import { CustomInput } from '@/components/atoms';
 import { Layout } from '@/components/templates';
 import { ColorContext } from '@/contexts';
 import { formatCPF, validateCPF } from '@/libs/functions';
-import { prisma } from '@/server/prisma';
+import prisma from '@/server/prisma';
 import { trpc } from '@/utils/trpc';
 import {
   Alert,
