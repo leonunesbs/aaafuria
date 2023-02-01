@@ -33,7 +33,7 @@ specifiers:
   husky: 8.0.3
   lint-staged: 13.1.0
   next: 13.1.1
-  next-auth: 4.18.7
+  next-auth: 4.19.0
   next-sitemap: 3.1.44
   nodemailer: 6.8.0
   prettier: 2.8.1
@@ -54,7 +54,7 @@ dependencies:
   '@chakra-ui/react': 2.4.6_gvhgezo5rfoe6vwpdjjus6ao3y
   '@emotion/react': 11.10.5_kzbn2opkn2327fwg5yzwzya5o4
   '@emotion/styled': 11.10.5_qvatmowesywn4ye42qoh247szu
-  '@next-auth/prisma-adapter': 1.0.5_vblrumase6agqlas53tad34s44
+  '@next-auth/prisma-adapter': 1.0.5_3rvhkq2opx34yasxkt6tgjhvhq
   '@next/env': 13.1.6
   '@prisma/client': 4.8.1_prisma@4.8.1
   '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
@@ -67,7 +67,7 @@ dependencies:
   date-fns: 2.29.3
   framer-motion: 8.1.7_biqbaboplfbrettd7655fr4n2y
   next: 13.1.1_biqbaboplfbrettd7655fr4n2y
-  next-auth: 4.18.7_mibeyvivfhhmvvbkd4wwrgzcom
+  next-auth: 4.19.0_mibeyvivfhhmvvbkd4wwrgzcom
   next-sitemap: 3.1.44_2eehqxiynjxmribrtnpfh7bkly
   nodemailer: 6.8.0
   react: 18.2.0
@@ -1645,14 +1645,14 @@ packages:
       tslib: 2.4.1
     dev: false
 
-  /@next-auth/prisma-adapter/1.0.5_vblrumase6agqlas53tad34s44:
+  /@next-auth/prisma-adapter/1.0.5_3rvhkq2opx34yasxkt6tgjhvhq:
     resolution: {integrity: sha512-VqMS11IxPXrPGXw6Oul6jcyS/n8GLOWzRMrPr3EMdtD6eOalM6zz05j08PcNiis8QzkfuYnCv49OvufTuaEwYQ==}
     peerDependencies:
       '@prisma/client': '>=2.26.0 || >=3'
       next-auth: ^4
     dependencies:
       '@prisma/client': 4.8.1_prisma@4.8.1
-      next-auth: 4.18.7_mibeyvivfhhmvvbkd4wwrgzcom
+      next-auth: 4.19.0_mibeyvivfhhmvvbkd4wwrgzcom
     dev: false
 
   /@next/env/13.1.1:
@@ -4302,9 +4302,8 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-auth/4.18.7_mibeyvivfhhmvvbkd4wwrgzcom:
-    resolution: {integrity: sha512-kR3s1JVPMaDuSAlFxcGyv7Ec3fdE6za71r1F77IOII5zJmW2wfkIA2xj223fM0D20ip2pzFpHfk/qN4L6l5XMA==}
-    engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.12.0}
+  /next-auth/4.19.0_mibeyvivfhhmvvbkd4wwrgzcom:
+    resolution: {integrity: sha512-56Pc/Ni0cxfrVDAz2KeWdj+VXvABbHF1grgFR4+ktXbRmKQOiMU9uyMwhasBQkbL+pRrWujO0Ib/bwkP0oZS4g==}
     peerDependencies:
       next: ^12.2.5 || ^13
       nodemailer: ^6.6.5
