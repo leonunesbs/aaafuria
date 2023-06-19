@@ -36,7 +36,7 @@ specifiers:
   next-auth: 4.19.0
   next-sitemap: 3.1.44
   nodemailer: 6.8.0
-  prettier: 2.8.1
+  prettier: 2.8.8
   prisma: 4.8.1
   react: 18.2.0
   react-device-detect: 2.2.2
@@ -95,10 +95,10 @@ devDependencies:
   eslint-config-prettier: 8.6.0_eslint@8.31.0
   eslint-import-resolver-typescript: 3.5.2_ol7jqilc3wemtdbq3nzhywgxq4
   eslint-plugin-import: 2.26.0_2ormp5iwbkm7gcyxso5inw3gee
-  eslint-plugin-prettier: 4.2.1_32m5uc2milwdw3tnkcq5del26y
+  eslint-plugin-prettier: 4.2.1_q2m3ww52bgcug66s2g7satn7hq
   husky: 8.0.3
   lint-staged: 13.1.0
-  prettier: 2.8.1
+  prettier: 2.8.8
   prisma: 4.8.1
   typescript: 4.9.4
 
@@ -3084,7 +3084,7 @@ packages:
       semver: 6.3.0
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_32m5uc2milwdw3tnkcq5del26y:
+  /eslint-plugin-prettier/4.2.1_q2m3ww52bgcug66s2g7satn7hq:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -3097,7 +3097,7 @@ packages:
     dependencies:
       eslint: 8.31.0
       eslint-config-prettier: 8.6.0_eslint@8.31.0
-      prettier: 2.8.1
+      prettier: 2.8.8
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -4708,8 +4708,8 @@ packages:
       fast-diff: 1.2.0
     dev: true
 
-  /prettier/2.8.1:
-    resolution: {integrity: sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==}
+  /prettier/2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
