@@ -43,7 +43,7 @@
     "framer-motion": "8.1.7",
     "next": "13.1.1",
     "next-auth": "4.19.0",
-    "next-sitemap": "3.1.44",
+    "next-sitemap": "3.1.55",
     "nodemailer": "6.8.0",
     "react": "18.2.0",
     "react-device-detect": "2.2.2",
