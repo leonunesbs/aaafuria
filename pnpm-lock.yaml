@@ -35,7 +35,7 @@ specifiers:
   next: 13.1.1
   next-auth: 4.19.0
   next-sitemap: 3.1.44
-  nodemailer: 6.8.0
+  nodemailer: 6.9.9
   prettier: 2.8.1
   prisma: 4.8.1
   react: 18.2.0
@@ -67,9 +67,9 @@ dependencies:
   date-fns: 2.29.3
   framer-motion: 8.1.7_biqbaboplfbrettd7655fr4n2y
   next: 13.1.1_biqbaboplfbrettd7655fr4n2y
-  next-auth: 4.19.0_mibeyvivfhhmvvbkd4wwrgzcom
+  next-auth: 4.19.0_wcupxj34wgwu5nfydbzgfjkcly
   next-sitemap: 3.1.44_2eehqxiynjxmribrtnpfh7bkly
-  nodemailer: 6.8.0
+  nodemailer: 6.9.9
   react: 18.2.0
   react-device-detect: 2.2.2_biqbaboplfbrettd7655fr4n2y
   react-dom: 18.2.0_react@18.2.0
@@ -1652,7 +1652,7 @@ packages:
       next-auth: ^4
     dependencies:
       '@prisma/client': 4.8.1_prisma@4.8.1
-      next-auth: 4.19.0_mibeyvivfhhmvvbkd4wwrgzcom
+      next-auth: 4.19.0_wcupxj34wgwu5nfydbzgfjkcly
     dev: false
 
   /@next/env/13.1.1:
@@ -4302,7 +4302,7 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-auth/4.19.0_mibeyvivfhhmvvbkd4wwrgzcom:
+  /next-auth/4.19.0_wcupxj34wgwu5nfydbzgfjkcly:
     resolution: {integrity: sha512-56Pc/Ni0cxfrVDAz2KeWdj+VXvABbHF1grgFR4+ktXbRmKQOiMU9uyMwhasBQkbL+pRrWujO0Ib/bwkP0oZS4g==}
     peerDependencies:
       next: ^12.2.5 || ^13
@@ -4318,7 +4318,7 @@ packages:
       cookie: 0.5.0
       jose: 4.11.2
       next: 13.1.1_biqbaboplfbrettd7655fr4n2y
-      nodemailer: 6.8.0
+      nodemailer: 6.9.9
       oauth: 0.9.15
       openid-client: 5.3.1
       preact: 10.11.3
@@ -4397,8 +4397,8 @@ packages:
     resolution: {integrity: sha512-CvkDw2OEnme7ybCykJpVcKH+uAOLV2qLqiyla128dN9TkEWfrYmxG6C2boDe5KcNQqZF3orkqzGgOMvZ/JNekA==}
     dev: false
 
-  /nodemailer/6.8.0:
-    resolution: {integrity: sha512-EjYvSmHzekz6VNkNd12aUqAco+bOkRe3Of5jVhltqKhEsjw/y0PYPJfp83+s9Wzh1dspYAkUW/YNQ350NATbSQ==}
+  /nodemailer/6.9.9:
+    resolution: {integrity: sha512-dexTll8zqQoVJEZPwQAKzxxtFn0qTnjdQTchoU6Re9BUUGBJiOy3YMn/0ShTW6J5M0dfQ1NeDeRTTl4oIWgQMA==}
     engines: {node: '>=6.0.0'}
     dev: false
 
