@@ -21,7 +21,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': 5.49.0
   '@typescript-eslint/parser': 5.49.0
   aws-sdk: 2.1287.0
-  axios: 1.2.2
+  axios: 1.6.0
   date-fns: 2.29.3
   eslint: 8.31.0
   eslint-config-next: 13.1.1
@@ -63,7 +63,7 @@ dependencies:
   '@trpc/react-query': 10.7.0_7btzfrx4wymx4df3qyjcbijxgq
   '@trpc/server': 10.7.0
   aws-sdk: 2.1287.0
-  axios: 1.2.2
+  axios: 1.6.0
   date-fns: 2.29.3
   framer-motion: 8.1.7_biqbaboplfbrettd7655fr4n2y
   next: 13.1.1_biqbaboplfbrettd7655fr4n2y
@@ -2357,8 +2357,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios/1.2.2:
-    resolution: {integrity: sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==}
+  /axios/1.6.0:
+    resolution: {integrity: sha512-EZ1DYihju9pwVB+jg67ogm+Tmqc6JmhamRN6I4Zt8DfZu5lbcQGw3ozH9lFejSJgs/ibaef3A9PMXPLeefFGJg==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
