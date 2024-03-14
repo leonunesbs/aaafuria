@@ -10,10 +10,10 @@ specifiers:
   '@next/env': 13.1.6
   '@prisma/client': 4.8.1
   '@tanstack/react-query': 4.23.0
-  '@trpc/client': 10.7.0
-  '@trpc/next': 10.7.0
-  '@trpc/react-query': 10.7.0
-  '@trpc/server': 10.7.0
+  '@trpc/client': 10.45.2
+  '@trpc/next': 10.45.2
+  '@trpc/react-query': 10.45.2
+  '@trpc/server': 10.45.2
   '@types/node': 18.11.18
   '@types/nodemailer': 6.4.7
   '@types/react': 18.0.26
@@ -58,10 +58,10 @@ dependencies:
   '@next/env': 13.1.6
   '@prisma/client': 4.8.1_prisma@4.8.1
   '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
-  '@trpc/client': 10.7.0_@trpc+server@10.7.0
-  '@trpc/next': 10.7.0_2z5n3bqwwqwdmbpol72oc4igye
-  '@trpc/react-query': 10.7.0_7btzfrx4wymx4df3qyjcbijxgq
-  '@trpc/server': 10.7.0
+  '@trpc/client': 10.45.2_@trpc+server@10.45.2
+  '@trpc/next': 10.45.2_qql7z7qa2rhnu7l7c6sers3t4m
+  '@trpc/react-query': 10.45.2_53ob5ugwqgadxgtxkpmuajpvi4
+  '@trpc/server': 10.45.2
   aws-sdk: 2.1287.0
   axios: 1.2.2
   date-fns: 2.29.3
@@ -1881,53 +1881,52 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /@trpc/client/10.7.0_@trpc+server@10.7.0:
-    resolution: {integrity: sha512-xCPc2hp37REJst6TXMkJvdc85CHvxpVY6YVdZIjl7uCYoQcrstwy8AWi7ElB3x7e19Cweke+9CAaUXKwAE1AKQ==}
+  /@trpc/client/10.45.2_@trpc+server@10.45.2:
+    resolution: {integrity: sha512-ykALM5kYWTLn1zYuUOZ2cPWlVfrXhc18HzBDyRhoPYN0jey4iQHEFSEowfnhg1RvYnrAVjNBgHNeSAXjrDbGwg==}
     peerDependencies:
-      '@trpc/server': 10.7.0
+      '@trpc/server': 10.45.2
     dependencies:
-      '@trpc/server': 10.7.0
+      '@trpc/server': 10.45.2
     dev: false
 
-  /@trpc/next/10.7.0_2z5n3bqwwqwdmbpol72oc4igye:
-    resolution: {integrity: sha512-ZLY4J9IgEHN2op0UM14NCwCDyodRUw8Pmxgnpr62+UMIhDll6uggb2an8Op87l9EeYdKhKe2VavDWphI8vFGgw==}
+  /@trpc/next/10.45.2_qql7z7qa2rhnu7l7c6sers3t4m:
+    resolution: {integrity: sha512-RSORmfC+/nXdmRY1pQ0AalsVgSzwNAFbZLYHiTvPM5QQ8wmMEHilseCYMXpu0se/TbPt9zVR6Ka2d7O6zxKkXg==}
     peerDependencies:
-      '@tanstack/react-query': ^4.3.8
-      '@trpc/client': 10.7.0
-      '@trpc/react-query': ^10.0.0-proxy-beta.21
-      '@trpc/server': 10.7.0
+      '@tanstack/react-query': ^4.18.0
+      '@trpc/client': 10.45.2
+      '@trpc/react-query': 10.45.2
+      '@trpc/server': 10.45.2
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.7.0_@trpc+server@10.7.0
-      '@trpc/react-query': 10.7.0_7btzfrx4wymx4df3qyjcbijxgq
-      '@trpc/server': 10.7.0
+      '@trpc/client': 10.45.2_@trpc+server@10.45.2
+      '@trpc/react-query': 10.45.2_53ob5ugwqgadxgtxkpmuajpvi4
+      '@trpc/server': 10.45.2
       next: 13.1.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
-      react-ssr-prepass: 1.5.0_react@18.2.0
     dev: false
 
-  /@trpc/react-query/10.7.0_7btzfrx4wymx4df3qyjcbijxgq:
-    resolution: {integrity: sha512-dSSmYid6NWocU32QMsH6qWEqnW4mbp7hX01hxsBfAA2mGYD8b4Kgc9ripw4MpPNbsJElJFyWDHfb/UHnhywWbA==}
+  /@trpc/react-query/10.45.2_53ob5ugwqgadxgtxkpmuajpvi4:
+    resolution: {integrity: sha512-BAqb9bGZIscroradlNx+Cc9522R+idY3BOSf5z0jHUtkxdMbjeGKxSSMxxu7JzoLqSIEC+LVzL3VvF8sdDWaZQ==}
     peerDependencies:
-      '@tanstack/react-query': ^4.3.8
-      '@trpc/client': 10.7.0
-      '@trpc/server': 10.7.0
+      '@tanstack/react-query': ^4.18.0
+      '@trpc/client': 10.45.2
+      '@trpc/server': 10.45.2
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.23.0_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.7.0_@trpc+server@10.7.0
-      '@trpc/server': 10.7.0
+      '@trpc/client': 10.45.2_@trpc+server@10.45.2
+      '@trpc/server': 10.45.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@trpc/server/10.7.0:
-    resolution: {integrity: sha512-kFhlqhzZt5PwVRRDci8oJKMMFGjjq9189stT6bvS9xuuLjRzzwhMShRi99sm/jqhdjWmlXyO3Ncx0rnghUvH+w==}
+  /@trpc/server/10.45.2:
+    resolution: {integrity: sha512-wOrSThNNE4HUnuhJG6PfDRp4L2009KDVxsd+2VYH8ro6o/7/jwYZ8Uu5j+VaW+mOmc8EHerHzGcdbGNQSAUPgg==}
     dev: false
 
   /@tsconfig/node10/1.0.9:
@@ -4896,14 +4895,6 @@ packages:
       tslib: 2.4.1
       use-callback-ref: 1.3.0_kzbn2opkn2327fwg5yzwzya5o4
       use-sidecar: 1.1.2_kzbn2opkn2327fwg5yzwzya5o4
-    dev: false
-
-  /react-ssr-prepass/1.5.0_react@18.2.0:
-    resolution: {integrity: sha512-yFNHrlVEReVYKsLI5lF05tZoHveA5pGzjFbFJY/3pOqqjGOmMmqx83N4hIjN2n6E1AOa+eQEUxs3CgRnPmT0RQ==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      react: 18.2.0
     dev: false
 
   /react-style-singleton/2.2.1_kzbn2opkn2327fwg5yzwzya5o4:
