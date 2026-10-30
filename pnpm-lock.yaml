@@ -48,7 +48,7 @@ specifiers:
   superjson: 1.12.1
   typescript: 4.9.4
   xml-js: 1.6.11
-  zod: 3.20.2
+  zod: 4.6.6
 
 dependencies:
   '@chakra-ui/react': 2.4.6_gvhgezo5rfoe6vwpdjjus6ao3y
@@ -79,7 +79,7 @@ dependencies:
   stripe: 11.8.0
   superjson: 1.12.1
   xml-js: 1.6.11
-  zod: 3.20.2
+  zod: 4.6.6
 
 devDependencies:
   '@commitlint/cli': 17.4.2
@@ -5815,6 +5815,6 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /zod/3.20.2:
-    resolution: {integrity: sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==}
+  /zod/4.6.6:
+    resolution: {integrity: sha512-4UmzQUF5fxvfcYHlbjBmejU+w+hbDnWFx4aS8kBx7nPBHcO2SqPbpAG8snbdg+Xse4pRefR98hgjFgIMCI/UhA==}
     dev: false
